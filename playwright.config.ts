@@ -8,6 +8,7 @@ const executablePath = process.env.PW_CHROMIUM_PATH || undefined;
 
 export default defineConfig({
   testDir: "tests/e2e",
+  globalSetup: "./tests/e2e/global-setup.ts",
   outputDir: "test-results",
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
@@ -28,6 +29,11 @@ export default defineConfig({
     ? undefined
     : {
         command: `pnpm start --port ${PORT}`,
+        env: {
+          DATABASE_URL:
+            process.env.DATABASE_URL ?? "postgres://oasis_app:oasis_local@localhost:5432/oasis_dev",
+          OASIS_DEV_AUTH: "1",
+        },
         url: baseURL,
         reuseExistingServer: !process.env.CI,
         timeout: 120_000,

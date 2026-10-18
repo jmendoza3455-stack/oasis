@@ -119,3 +119,20 @@
     font-family: var(--font-figtree), system-ui, sans-serif;
   }
 }
+
+/* FullCalendar v7 (tema classic) con la paleta de la marca */
+.oasis-calendar {
+  --fc-classic-button: var(--brand-green);
+  --fc-classic-button-border: var(--brand-green);
+  --fc-classic-button-strong: #1f281d;
+  --fc-classic-button-strong-border: #1f281d;
+  --fc-classic-button-outline: color-mix(in oklab, var(--brand-green) 50%, transparent);
+  --fc-classic-button-foreground: var(--brand-ivory);
+  --fc-classic-primary: var(--brand-green);
+  --fc-classic-highlight: color-mix(in oklab, var(--brand-camel) 30%, transparent);
+  --fc-classic-today: color-mix(in oklab, var(--brand-sand) 55%, transparent);
+  --fc-classic-background: var(--card);
+  --fc-classic-foreground: var(--foreground);
+  --fc-classic-border: var(--border);
+  font-size: 0.875rem;
+}

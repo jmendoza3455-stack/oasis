@@ -12,7 +12,21 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: postgres
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      TEST_DATABASE_ADMIN_URL: postgres://postgres:postgres@localhost:5432/postgres
+      DATABASE_ADMIN_URL: postgres://postgres:postgres@localhost:5432/postgres
+      DATABASE_URL: postgres://oasis_app:oasis_local@localhost:5432/oasis_dev
+      OASIS_DEV_AUTH: "1"
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4
@@ -29,11 +43,13 @@ jobs:
         run: pnpm format:check
       - name: Unit tests + cobertura del dominio (≥90 %)
         run: pnpm test:coverage
+      - name: BD (migraciones, RLS, constraints, seed)
+        run: pnpm test:db
       - name: Build
         run: pnpm build
       - name: Install Playwright Chromium
         run: pnpm exec playwright install --with-deps chromium
-      - name: E2E
+      - name: E2E (BD local recreada en global-setup)
         run: pnpm test:e2e
       - name: Upload Playwright report and screenshots
         if: always()
@@ -44,28 +60,3 @@ jobs:
             playwright-report
             test-results
           retention-days: 14
-
-  database:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    services:
-      postgres:
-        image: postgres:16
-        env:
-          POSTGRES_PASSWORD: postgres
-        ports: ["5432:5432"]
-        options: >-
-          --health-cmd "pg_isready -U postgres"
-          --health-interval 5s --health-timeout 5s --health-retries 10
-    env:
-      TEST_DATABASE_ADMIN_URL: postgres://postgres:postgres@localhost:5432/postgres
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-      - run: pnpm install --frozen-lockfile
-      - name: Migraciones, RLS, constraints y seed
-        run: pnpm test:db

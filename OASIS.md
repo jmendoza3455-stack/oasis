@@ -354,6 +354,12 @@ Fuente: "SAWA – Estrategia y pasos a seguir" y "SAWA – Manual de marca" (ref
 - Pagos, comisiones pagadas, descuentos sobre el tope, tarifas y settings: solo admin (RLS + triggers).
 - Tests de BD en Postgres puro con un stub de auth de Supabase (`tests/db/supabase-stub.sql`).
 
+15.8 Acceso a datos desde la app (fase 4)
+- La app consulta Postgres directo (`lib/db.ts`, pool `pg` vía Supavisor en modo transacción) en vez de PostgREST. Cada operación abre una transacción con `SET ROLE anon | authenticated | service_role` y el JWT del usuario en `request.jwt.claims`: RLS y `auth.uid()` aplican exactamente igual que con supabase-js.
+- Rol de conexión `oasis_app` (sin privilegios propios; contraseña fuera del repo, en `DATABASE_URL` de Vercel).
+- Auth: Supabase Auth (contraseña y enlace mágico) en Vercel. En local y CI, login de desarrollo (`OASIS_DEV_AUTH=1`, imposible en Vercel) contra una BD local con stub de auth: permite E2E completos sin red.
+- Motivo: el entorno de construcción no alcanza `*.supabase.co`, y así los E2E del CI no dependen de servicios externos ni de secretos.
+
 15.4 Agregados propuestos por Claude
 - Libro de Reclamaciones virtual en la web pública (Código de Protección y Defensa del Consumidor).
 - Inscripción del banco de datos personales ante la ANPD en el checklist legal (Ley 29733).
