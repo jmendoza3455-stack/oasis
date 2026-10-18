@@ -4,6 +4,11 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Fase 14 — despliegue y cierre (18/10/2026)
+- Producción en Vercel desde `main` con todas las migraciones aplicadas, crons registrados y secretos obligatorios cargados.
+- Node fijado a 22.x (`engines`) para evitar saltos de versión automáticos en Vercel.
+- `docs/261018 Cierre de construccion y backlog.md`: checklist §13 con evidencia, pendientes de André y Carlos con fecha límite y backlog de la fase 2 priorizado por impacto en ocupación.
+
 ### Fase 13 — E2E pulido y endurecimiento (18/10/2026)
 - Criterios §13 cubiertos de punta a punta: lead con UTM → pre-reserva → adelanto validado → Separada → CAC por campaña y en el dashboard; montos con y sin IGV verificados dentro de los PDF de cotización y contrato.
 - Secretos obligatorios en Vercel (`NPS_SECRET`, `ICAL_SECRET`, `RATE_LIMIT_SALT`): sin valores por defecto falsificables en producción.
