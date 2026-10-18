@@ -46,5 +46,8 @@ pnpm build && pnpm test:e2e  # capturas en test-results/screenshots
 
 ## Despliegue
 
-Vercel conectado al repo: preview por rama y producción desde `main`.
-La guía completa de puesta en producción estará en `docs/`.
+Vercel (equipo **Sawa**, proyecto `oasis`, región `pdx1`) conectado al repo: preview por rama y producción desde `main`.
+
+- Producción: https://oasis-seven-lemon.vercel.app (protegida con login de Vercel hasta el lanzamiento; se abre al público al conectar el dominio propio).
+- Variables de entorno cargadas en Vercel: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` (sensible), `SUPABASE_PROJECT_REF`.
+  La guía completa de puesta en producción estará en `docs/`.
