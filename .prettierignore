@@ -6,3 +6,6 @@ docs/research
 OASIS.md
 CHANGELOG.md
 assets
+coverage
+playwright-report
+test-results

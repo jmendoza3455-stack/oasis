@@ -62,7 +62,8 @@ assets/         logo y fotos (placeholders marcados si faltan)
 6. Solo el admin cambia tarifas y parámetros, aprueba descuentos sobre el tope, valida pagos y paga comisiones. **Ningún agente automático hace estas acciones.**
 7. Todo parámetro de negocio vive en `settings`/`rate_cards`; nada hardcodeado.
 8. Todo lead conserva UTM y gclid/fbclid hasta la reserva.
-9. No inventar datos presentados como reales: testimonios, fotos y cifras van como placeholders marcados.
+9. `lib/domain/booking.ts` es espejo de `transition_booking()` en SQL: si cambias una, cambia la otra (hay un test que lo verifica).
+10. No inventar datos presentados como reales: testimonios, fotos y cifras van como placeholders marcados.
 
 ## Git
 
