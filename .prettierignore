@@ -1,0 +1,7 @@
+pnpm-lock.yaml
+.next
+node_modules
+supabase/.temp
+docs/research
+OASIS.md
+CHANGELOG.md
