@@ -4,6 +4,13 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Fase 6 — feat/portal-planners (18/10/2026)
+- Portal `/planners/portal` (solo rol planner): contrato marco obligatorio en el primer ingreso (versión, fecha, IP y navegador registrados).
+- Disponibilidad libre / pre-reservado / ocupado, pre-reserva en un toque con cliente propio, contador de holds activos (máx. 2).
+- Mis clientes (registro con consentimiento y protección de 90 días), Mis reservas con cuenta regresiva y liberación de fecha, Comisiones (devengada / por pagar / pagada).
+- Descargas: ficha técnica y tarifario de planner imprimibles (con y sin IGV y comisión por tarifa).
+- E2E: contrato, aislamiento de reservas, registro de cliente, pre-reserva de 72 h y liberación.
+
 ### Fase 5 — feat/web-publica (18/10/2026)
 - Web pública mobile-first: home, landings de Bodas, Empresas y Full day, página de Planners, aviso de privacidad (borrador legal) y Libro de Reclamaciones virtual con código correlativo.
 - Consulta pública de disponibilidad (solo disponible / no disponible), cotizador con rango referencial con IGV desde el tarifario.
