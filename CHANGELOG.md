@@ -4,6 +4,10 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Fase 7c-2 — operación del evento (18/10/2026)
+- `/admin/reservas/[id]/operacion`: checklists D-7 y D-1, actas de entrega y recepción (se cierran solo con todo marcado), fotos del acta, incidencias con fotos y cargo a la garantía (descuento aplicado por el admin), costos directos estándar vs real.
+- Encuesta NPS pública con enlace firmado (`/encuesta/{id}.{firma}`), una respuesta por evento realizado.
+
 ### Fase 7c-1 — configuración y planners (18/10/2026)
 - `/admin/configuracion`: todos los parámetros de OASIS.md §3 editables por el admin con validación (ops en solo lectura), tarifario con precio y marca de «validado», feriados.
 - `/admin/planners`: listado con estado, contrato marco, eventos vendidos y comisión pendiente; solicitudes de la web; invitación al portal (Supabase Auth en producción) y suspensión.

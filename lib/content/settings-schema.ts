@@ -103,5 +103,19 @@ export const SETTINGS: SettingDef[] = [
     type: "number",
   },
   { key: "business_hours", label: "Horario comercial", group: "Comercial", type: "json" },
+  {
+    key: "standard_event_costs",
+    label: "Costos directos estándar por evento (S/)",
+    group: "Dinero",
+    type: "json",
+    help: '{"cleaning": 250, "staff": 400, "security": 200}',
+  },
+  {
+    key: "checklist_templates",
+    label: "Plantillas de checklist",
+    group: "Reservas",
+    type: "json",
+    help: '{"d7": ["..."], "d1": ["..."]}',
+  },
   { key: "occupancy_targets", label: "Metas de ocupación", group: "Metas", type: "json" },
 ];

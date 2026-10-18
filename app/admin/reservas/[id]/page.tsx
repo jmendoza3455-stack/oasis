@@ -77,6 +77,12 @@ async function Detail({ params }: { params: PageProps<"/admin/reservas/[id]">["p
           {STATUS_LABEL[b.status]}
         </Badge>
         <Badge variant="outline">{CHANNEL_LABEL[b.channel]}</Badge>
+        <Link
+          href={`/admin/reservas/${b.id}/operacion`}
+          className="hover:bg-muted ml-auto rounded-md border px-3 py-1.5 text-sm"
+        >
+          Operación del evento
+        </Link>
       </header>
 
       <div className="grid gap-4 lg:grid-cols-3">
