@@ -338,6 +338,13 @@ Fuente: "SAWA – Estrategia y pasos a seguir" y "SAWA – Manual de marca" (ref
 - Legal (al checklist, por validar con abogado): ampliación del objeto social de SAWA, actividades ante SUNAT, licencias, y cuatro contratos tipo: cliente, planner/proveedor, propietario (Carlos ↔ SAWA) y administración de terceros.
 - Marca visual: dirección A ajustada (verde Oasis #2E3B2B + paleta SAWA: olivo, arena, camel, azul grisáceo, grafito; Cormorant Garamond + Figtree). Pendiente de OK de André. El logo de SAWA se usa como texto hasta tener su arte maestro vectorial.
 
+15.6 Respuestas de André (18/10/2026, segunda ronda)
+- Marca: **aprobada la dirección A ajustada** (Oasis Pachacámac · Un espacio SAWA). Ver assets/marca/.
+- **Modelo multi-espacio aprobado**: tabla `venues` y `venue_id` en todas las entidades operativas; la UI muestra un solo venue activo.
+- **WhatsApp Business Cloud API aprobada** para la Ola 2 (Recepcionista en WhatsApp).
+- Propiedad: **SAWA es dueña del total** del Oasis → es un espacio propio de SAWA; no hace falta contrato de arrendamiento Carlos ↔ SAWA (validar con el contador cómo quedó la transferencia).
+- Licencias: el Oasis ya operaba como local de eventos y, según André, la documentación está en regla. El checklist legal queda como verificación de vigencias (licencia, ITSE, piscina, seguro), no como trámite desde cero.
+
 15.4 Agregados propuestos por Claude
 - Libro de Reclamaciones virtual en la web pública (Código de Protección y Defensa del Consumidor).
 - Inscripción del banco de datos personales ante la ANPD en el checklist legal (Ley 29733).

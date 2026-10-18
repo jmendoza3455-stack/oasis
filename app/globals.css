@@ -1,68 +1,84 @@
 @import "tailwindcss";
 
 /*
- * Design tokens de El Oasis.
- * Paleta NEUTRA provisional hasta que André valide la marca (OASIS.md §3 y §15.1).
- * Toda la UI consume estos tokens; cambiar la marca = cambiar solo este bloque.
+ * Design tokens de Oasis Pachacámac · Un espacio SAWA (dirección A aprobada, OASIS.md §15.6).
+ * Paleta: verde Oasis + paleta SAWA (olivo, arena, camel, azul grisáceo, grafito).
+ * Toda la UI consume estos tokens; nunca usar hex sueltos en componentes.
  */
 :root {
   --radius: 0.625rem;
 
-  --background: oklch(0.99 0 0);
-  --foreground: oklch(0.2 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.2 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.2 0 0);
-  --primary: oklch(0.25 0 0);
-  --primary-foreground: oklch(0.98 0 0);
-  --secondary: oklch(0.96 0 0);
-  --secondary-foreground: oklch(0.25 0 0);
-  --muted: oklch(0.96 0 0);
-  --muted-foreground: oklch(0.48 0 0);
-  --accent: oklch(0.95 0 0);
-  --accent-foreground: oklch(0.25 0 0);
-  --destructive: oklch(0.55 0.22 27);
-  --border: oklch(0.91 0 0);
-  --input: oklch(0.91 0 0);
-  --ring: oklch(0.6 0 0);
+  /* Marca */
+  --brand-green: #2e3b2b;
+  --brand-olive: #7a7a45;
+  --brand-sand: #e6dccb;
+  --brand-camel: #c9a46c;
+  --brand-slate: #8a9aa3;
+  --brand-graphite: #3a3a3a;
+  --brand-ivory: #f7f5f0;
+
+  --background: var(--brand-ivory);
+  --foreground: #333333;
+  --card: #ffffff;
+  --card-foreground: #333333;
+  --popover: #ffffff;
+  --popover-foreground: #333333;
+  --primary: var(--brand-green);
+  --primary-foreground: var(--brand-ivory);
+  --secondary: var(--brand-sand);
+  --secondary-foreground: var(--brand-green);
+  --muted: #efebe3;
+  --muted-foreground: #5f5f5f;
+  --accent: var(--brand-camel);
+  --accent-foreground: #2a2418;
+  --destructive: oklch(0.55 0.2 27);
+  --border: #e2dccf;
+  --input: #d9d2c4;
+  --ring: var(--brand-olive);
 
   /* Estados de fecha (OASIS.md §5.1) */
-  --status-free: oklch(0.72 0.15 150);
-  --status-prebooked: oklch(0.8 0.15 85);
-  --status-reserved: oklch(0.62 0.15 250);
-  --status-confirmed: oklch(0.5 0.17 265);
-  --status-done: oklch(0.55 0.02 260);
-  --status-blocked: oklch(0.45 0 0);
-  --status-cancelled: oklch(0.6 0.2 27);
+  --status-free: oklch(0.68 0.12 150);
+  --status-prebooked: oklch(0.8 0.13 85);
+  --status-reserved: oklch(0.62 0.1 230);
+  --status-confirmed: oklch(0.45 0.08 150);
+  --status-done: oklch(0.6 0.02 240);
+  --status-blocked: oklch(0.42 0 0);
+  --status-cancelled: oklch(0.6 0.18 27);
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: oklch(0.16 0 0);
-    --foreground: oklch(0.96 0 0);
-    --card: oklch(0.2 0 0);
-    --card-foreground: oklch(0.96 0 0);
-    --popover: oklch(0.2 0 0);
-    --popover-foreground: oklch(0.96 0 0);
-    --primary: oklch(0.94 0 0);
-    --primary-foreground: oklch(0.2 0 0);
-    --secondary: oklch(0.27 0 0);
-    --secondary-foreground: oklch(0.96 0 0);
-    --muted: oklch(0.27 0 0);
-    --muted-foreground: oklch(0.72 0 0);
-    --accent: oklch(0.3 0 0);
-    --accent-foreground: oklch(0.96 0 0);
-    --destructive: oklch(0.65 0.2 25);
-    --border: oklch(1 0 0 / 12%);
-    --input: oklch(1 0 0 / 16%);
-    --ring: oklch(0.55 0 0);
+    --background: #1b211a;
+    --foreground: #ece6da;
+    --card: #232b22;
+    --card-foreground: #ece6da;
+    --popover: #232b22;
+    --popover-foreground: #ece6da;
+    --primary: var(--brand-sand);
+    --primary-foreground: var(--brand-green);
+    --secondary: #2f3a2d;
+    --secondary-foreground: #ece6da;
+    --muted: #2a3229;
+    --muted-foreground: #b5ad9f;
+    --accent: var(--brand-camel);
+    --accent-foreground: #2a2418;
+    --destructive: oklch(0.65 0.19 25);
+    --border: rgb(255 255 255 / 0.12);
+    --input: rgb(255 255 255 / 0.16);
+    --ring: var(--brand-camel);
   }
 }
 
 @theme inline {
-  --font-sans: var(--font-sans);
-  --font-display: var(--font-display);
+  --font-sans: var(--font-figtree), system-ui, sans-serif;
+  --font-display: var(--font-cormorant), Georgia, serif;
+  --color-brand-green: var(--brand-green);
+  --color-brand-olive: var(--brand-olive);
+  --color-brand-sand: var(--brand-sand);
+  --color-brand-camel: var(--brand-camel);
+  --color-brand-slate: var(--brand-slate);
+  --color-brand-graphite: var(--brand-graphite);
+  --color-brand-ivory: var(--brand-ivory);
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
@@ -100,6 +116,6 @@
   }
   body {
     @apply bg-background text-foreground antialiased;
-    font-family: var(--font-sans), system-ui, sans-serif;
+    font-family: var(--font-figtree), system-ui, sans-serif;
   }
 }

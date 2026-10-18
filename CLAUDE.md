@@ -1,9 +1,15 @@
 @AGENTS.md
 
-# CLAUDE.md — Convenciones del proyecto El Oasis
+# CLAUDE.md — Convenciones del proyecto Oasis Pachacámac (Un espacio SAWA)
 
 La especificación viva es [OASIS.md](OASIS.md). La **sección 15** (decisiones) prevalece sobre el resto.
 Lee OASIS.md antes de cualquier cambio de alcance; si algo cambia, actualízalo y regístralo en CHANGELOG.md.
+
+## Marca
+
+- Nombre comercial: **Oasis Pachacámac · Un espacio SAWA** (nunca "El Oasis" en UI nueva). SAWA es respaldo, no marca independiente.
+- Tokens en `app/globals.css`; logos en `public/brand/` y fuente de verdad en `assets/marca/`.
+- Modelo **multi-espacio**: toda entidad operativa lleva `venue_id`.
 
 ## Idioma y formato
 

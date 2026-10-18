@@ -1,25 +1,32 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Cormorant_Garamond, Figtree } from "next/font/google";
 import "./globals.css";
 
-const sans = Inter({
-  variable: "--font-sans",
+const figtree = Figtree({
+  variable: "--font-figtree",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
+  subsets: ["latin"],
+  weight: ["500", "600"],
   display: "swap",
 });
 
 export const metadata: Metadata = {
   title: {
-    default: "El Oasis · Casa de campo para eventos en Pachacámac",
-    template: "%s · El Oasis",
+    default: "Oasis Pachacámac · Un espacio SAWA",
+    template: "%s · Oasis Pachacámac",
   },
   description:
-    "Casa de campo en Pachacámac para bodas, eventos corporativos y full days con piscina.",
+    "Casa de campo en Pachacámac para bodas, eventos corporativos y full days con piscina. Un espacio SAWA.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="es-PE" className={`${sans.variable} h-full`}>
+    <html lang="es-PE" className={`${figtree.variable} ${cormorant.variable} h-full`}>
       <body className="flex min-h-full flex-col">{children}</body>
     </html>
   );
