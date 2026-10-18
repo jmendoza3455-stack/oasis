@@ -54,3 +54,6 @@ supabase/.temp
 
 # python
 __pycache__/
+
+# archivos locales (vouchers/fotos en dev y CI)
+/.storage/

@@ -36,7 +36,13 @@ export type BookingDetail = {
     method: string;
     status: string;
     paidOn: string;
+    operationCode: string | null;
+    voucherPath: string | null;
+    rejectedReason: string | null;
   }>;
+  quotes: Array<{ version: number; status: string; totalGross: number; createdAt: string }>;
+  guarantee: { amount: number; status: string; deductions: number } | null;
+  commission: { amount: number; status: string; payableOn: string | null } | null;
   history: Array<{
     at: string;
     actorType: string;
@@ -78,7 +84,8 @@ export async function bookingDetail(userId: string, id: string): Promise<Booking
     );
     if (!b) return null;
     const payments = await sql<BookingDetail["payments"][number]>(
-      `select id, kind, amount::float8 as amount, method, status, to_char(paid_on, 'YYYY-MM-DD') as "paidOn"
+      `select id, kind, amount::float8 as amount, method, status, to_char(paid_on, 'YYYY-MM-DD') as "paidOn",
+              operation_code as "operationCode", voucher_path as "voucherPath", rejected_reason as "rejectedReason"
          from payments where booking_id = $1 order by paid_on, created_at`,
       [id],
     );
@@ -92,12 +99,29 @@ export async function bookingDetail(userId: string, id: string): Promise<Booking
         order by a.at`,
       [id],
     );
+    const quotes = await sql<BookingDetail["quotes"][number]>(
+      `select version, status, total_gross::float8 as "totalGross", to_json(created_at) #>> '{}' as "createdAt"
+         from quotes where booking_id = $1 order by version desc`,
+      [id],
+    );
+    const [guarantee] = await sql<NonNullable<BookingDetail["guarantee"]>>(
+      `select amount::float8 as amount, status, deductions::float8 as deductions from guarantees where booking_id = $1`,
+      [id],
+    );
+    const [commission] = await sql<NonNullable<BookingDetail["commission"]>>(
+      `select amount::float8 as amount, status, to_char(payable_on, 'YYYY-MM-DD') as "payableOn"
+         from commissions where booking_id = $1`,
+      [id],
+    );
     const { clientName, clientPhone, clientEmail, clientRuc, ...rest } = b;
     return {
       ...rest,
       client: { name: clientName, phone: clientPhone, email: clientEmail, ruc: clientRuc },
       payments,
       history,
+      quotes,
+      guarantee: guarantee ?? null,
+      commission: commission ?? null,
     };
   });
 }

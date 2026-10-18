@@ -4,6 +4,12 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Fase 7b — pagos, garantías y PDFs (18/10/2026)
+- Pagos manuales (transferencia, Yape, Plin, efectivo, tarjeta) con voucher en Supabase Storage (bucket privado, URLs firmadas); ops registra y solo el admin valida o rechaza con motivo.
+- Garantía retenida al validar su pago; devolución registrada por el admin. Comisión del planner devengada automáticamente al quedar el evento realizado y cobrado al 100 % (trigger en BD) y pago marcado por el admin.
+- Cotizaciones versionadas (la anterior queda "reemplazada") y PDFs de cotización y contrato (react-pdf) con montos con y sin IGV; contrato marcado como borrador legal.
+- E2E: registro de pago con voucher, validación, paso a Separada, PDFs válidos y acceso restringido a staff.
+
 ### Fase 7a — CRM (18/10/2026)
 - `/admin/crm`: tablero por etapas (Nuevo → Liquidado / Perdido), filtros por canal, campaña UTM, alerta de atribución a planner y reloj de minutos hábiles sin primera respuesta (SLA 15 min, `lib/domain/sla.ts`).
 - Ficha de lead: contacto, origen (UTM, gclid, fbclid, landing), etapa con motivo de pérdida obligatorio, actividades con próximo paso y creación de pre-reserva con precio del tarifario y tope de descuento.

@@ -3,7 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { ArrowLeft } from "lucide-react";
+import { DocumentsPanel, PaymentsPanel, SettlementPanel } from "@/components/admin/money-panels";
 import { TransitionActions } from "@/components/admin/transition-actions";
+import { fileUrl } from "@/lib/storage";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireStaff } from "@/lib/auth/session";
@@ -20,17 +22,6 @@ import { bookingDetail } from "@/server/queries/booking";
 
 export const metadata: Metadata = { title: "Reserva" };
 
-const PAYMENT_KIND = {
-  deposit: "Adelanto",
-  balance: "Saldo",
-  guarantee: "Garantía",
-  other: "Otro",
-} as const;
-const PAYMENT_STATUS = {
-  pending: "Por validar",
-  validated: "Validado",
-  rejected: "Rechazado",
-} as const;
 const dateTime = new Intl.DateTimeFormat("es-PE", {
   timeZone: "America/Lima",
   dateStyle: "short",
@@ -148,29 +139,50 @@ async function Detail({ params }: { params: PageProps<"/admin/reservas/[id]">["p
             <CardTitle>Pagos</CardTitle>
           </CardHeader>
           <CardContent>
-            {b.payments.length === 0 ? (
-              <p className="text-muted-foreground text-sm">Sin pagos registrados.</p>
-            ) : (
-              <ul className="divide-y text-sm">
-                {b.payments.map((p) => (
-                  <li key={p.id} className="flex justify-between py-2">
-                    <span>
-                      {PAYMENT_KIND[p.kind as keyof typeof PAYMENT_KIND]} · {formatDate(p.paidOn)} ·{" "}
-                      {p.method}
-                    </span>
-                    <span className="font-medium">
-                      {formatPEN(p.amount)}{" "}
-                      <span className="text-muted-foreground">
-                        ({PAYMENT_STATUS[p.status as keyof typeof PAYMENT_STATUS]})
-                      </span>
-                    </span>
-                  </li>
-                ))}
-              </ul>
-            )}
+            <PaymentsPanel
+              bookingId={b.id}
+              isAdmin={user.role === "admin"}
+              today={today}
+              payments={await Promise.all(
+                b.payments.map(async (p) => ({
+                  ...p,
+                  voucherUrl: p.voucherPath ? await fileUrl(p.voucherPath) : null,
+                })),
+              )}
+            />
           </CardContent>
         </Card>
 
+        <div className="grid content-start gap-4">
+          <Card>
+            <CardHeader>
+              <CardTitle>Documentos</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <DocumentsPanel
+                bookingId={b.id}
+                quotes={b.quotes}
+                contractSignedAt={b.contractSignedAt}
+              />
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Liquidación</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <SettlementPanel
+                bookingId={b.id}
+                isAdmin={user.role === "admin"}
+                guarantee={b.guarantee}
+                commission={b.commission}
+              />
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+
+      <div className="grid gap-4">
         <Card>
           <CardHeader>
             <CardTitle>Historial</CardTitle>

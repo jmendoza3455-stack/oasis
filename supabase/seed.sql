@@ -244,11 +244,7 @@ begin
     perform public.transition_booking(v_b, 'confirmed');
     perform public.transition_booking(v_b, 'done');
     insert into public.guarantees (booking_id, amount, status) values (v_b, 1000, 'held');
-    if i = 8 then
-      insert into public.commissions (booking_id, planner_id, base_net, rate, amount, payable_on)
-      select v_b, planner_id, rental_net, 0.05, round(rental_net * 0.05, 2), v_today - 11
-        from public.bookings where id = v_b;
-    end if;
+    -- La comisión de la reserva 8 (con planner) se devenga sola al marcarla realizada.
   end loop;
 
   -- 9: liquidada (garantía devuelta)
