@@ -58,7 +58,7 @@ test.describe("recorrido completo con UTM (serial, solo desktop)", () => {
     await form.getByLabel(/Voucher/).setInputFiles(path.join(__dirname, "fixtures/voucher.png"));
     await form.getByRole("button", { name: "Registrar pago" }).click();
     await page.getByRole("button", { name: "Validar" }).click();
-    await expect(page.getByText("(Validado)")).toBeVisible();
+    await expect(page.getByText("(Validado)", { exact: true })).toBeVisible();
     await page.getByRole("button", { name: "Marcar como Separada" }).click();
     await expect(page.getByText("Separada", { exact: true }).first()).toBeVisible();
 

@@ -36,7 +36,7 @@ test.describe("pagos, documentos y PDFs (serial, solo desktop)", () => {
     await loginAs(page, "admin@demo.oasis.test");
     await page.goto(`/admin/reservas/${bookingId}`);
     await page.getByRole("button", { name: "Validar" }).click();
-    await expect(page.getByText("(Validado)")).toBeVisible();
+    await expect(page.getByText("(Validado)", { exact: true })).toBeVisible();
     const separar = page.getByRole("button", { name: "Marcar como Separada" });
     await expect(separar).toBeEnabled();
     await separar.click();
@@ -80,7 +80,8 @@ test.describe("pagos, documentos y PDFs (serial, solo desktop)", () => {
     }
     const [quote, contract] = texts;
     // Cotización: montos sin IGV, IGV y total con IGV de la versión 2
-    for (const amount of [q.total_net, q.total_igv, q.total_gross]) expect(quote).toContain(pen(amount));
+    for (const amount of [q.total_net, q.total_igv, q.total_gross])
+      expect(quote).toContain(pen(amount));
     expect(quote).toContain(b.date);
     // Contrato: alquiler con y sin IGV y fecha del evento
     for (const amount of [b.net, b.gross]) expect(contract).toContain(pen(amount));
