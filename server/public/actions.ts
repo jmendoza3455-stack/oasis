@@ -1,6 +1,8 @@
 "use server";
 
+import { cookies } from "next/headers";
 import { z } from "zod";
+import { ATTRIBUTION_COOKIE, parseAttributionCookie } from "@/lib/attribution-cookie";
 import { withDb } from "@/lib/db";
 import {
   estimateRange,
@@ -130,7 +132,14 @@ export async function submitLead(_: LeadState, formData: FormData): Promise<Lead
     return { error: "Recibimos varias solicitudes seguidas. Intenta en unos minutos." };
   }
 
-  const parsed = leadSchema.safeParse(Object.fromEntries(formData));
+  // Respaldo server-side de la atribución (cookie del proxy) si el formulario llegó sin UTM
+  const fromCookie = parseAttributionCookie((await cookies()).get(ATTRIBUTION_COOKIE)?.value);
+  const raw = Object.fromEntries(formData) as Record<string, FormDataEntryValue>;
+  if (!raw.utm_source && !raw.utm_campaign && !raw.gclid && !raw.fbclid) {
+    for (const [k, v] of Object.entries(fromCookie)) if (v) raw[k] = v;
+  }
+
+  const parsed = leadSchema.safeParse(raw);
   if (!parsed.success) {
     const fieldErrors = Object.fromEntries(
       parsed.error.issues.map((i) => [String(i.path[0]), i.message]),
