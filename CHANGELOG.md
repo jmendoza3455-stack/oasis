@@ -4,6 +4,12 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Fase 7c-3 / 8 — finanzas, comisiones y costos (18/10/2026)
+- `/admin/finanzas`: comisiones por planner (devengada / por pagar / pagada) con export a Excel por planner; campañas con inversión, leads, ganados y CAC; costos fijos mensuales; CAPEX de la remodelación.
+- Importación CSV de inversión desde Meta Ads y Google Ads (español o inglés; agrupa por campaña y mes) y de eventos históricos ya realizados (plantilla descargable; valida fila por fila).
+- Exportes CSV (con BOM para Excel) y XLSX de reservas, leads, pagos y comisiones.
+- Dominio: `csv` (RFC 4180, `;` o `,`, montos `2,200` / `1.234,50`, fechas dd/mm/aaaa) e `imports`, con tests.
+
 ### Fase 7c-2 — operación del evento (18/10/2026)
 - `/admin/reservas/[id]/operacion`: checklists D-7 y D-1, actas de entrega y recepción (se cierran solo con todo marcado), fotos del acta, incidencias con fotos y cargo a la garantía (descuento aplicado por el admin), costos directos estándar vs real.
 - Encuesta NPS pública con enlace firmado (`/encuesta/{id}.{firma}`), una respuesta por evento realizado.
