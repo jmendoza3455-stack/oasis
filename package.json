@@ -19,6 +19,7 @@
     "db:seed": "NODE_USE_ENV_PROXY=1 node --env-file-if-exists=.env.local scripts/db-push.mts --seed",
     "db:reset-demo": "NODE_USE_ENV_PROXY=1 node --env-file-if-exists=.env.local scripts/db-push.mts --file scripts/reset-demo.sql",
     "users:create": "node --env-file-if-exists=.env.local scripts/create-users.mts",
+    "agent": "node --env-file-if-exists=.env.local scripts/agent.mts",
     "db:local": "node scripts/db-local.mts",
     "lighthouse": "node scripts/lighthouse.mjs",
     "verify": "pnpm format && pnpm typecheck && pnpm lint && pnpm test:coverage && pnpm test:db"
@@ -54,6 +55,7 @@
     "@vitest/coverage-v8": "^5.0.5",
     "eslint": "^9",
     "eslint-config-next": "16.4.2",
+    "pdfjs-dist": "6.4.299",
     "pg": "^8.23.1",
     "prettier": "^3.9.10",
     "prettier-plugin-tailwindcss": "^0.8.1",

@@ -50,3 +50,20 @@ export function dayLabel(iso: string) {
 export async function expectNoA11yBasics(page: Page) {
   await expect(page.locator("html")).toHaveAttribute("lang", "es-PE");
 }
+
+/** Texto plano de un PDF (espacios normalizados) para verificar montos y datos. */
+export async function pdfText(data: Buffer): Promise<string> {
+  const { getDocument } = await import("pdfjs-dist/legacy/build/pdf.mjs");
+  const doc = await getDocument({ data: new Uint8Array(data), useSystemFonts: true }).promise;
+  const parts: string[] = [];
+  for (let i = 1; i <= doc.numPages; i++) {
+    const page = await doc.getPage(i);
+    const content = await page.getTextContent();
+    parts.push(content.items.map((it) => ("str" in it ? it.str : "")).join(" "));
+  }
+  return parts.join(" ").replace(/\s+/g, " ");
+}
+
+/** Monto como lo imprime la app ("S/ 1,234.50"), con espacios normalizados. */
+export const pen = (n: number | string) =>
+  `S/ ${Number(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;

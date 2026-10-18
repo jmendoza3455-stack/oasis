@@ -1,5 +1,6 @@
 -- Borra TODO el dato comercial de demo antes de producción (OASIS.md §12).
 -- Conserva: venues, settings, spaces, holidays y rate_cards (tarifario placeholder a validar).
+-- Reinicia el correlativo del Libro de Reclamaciones (los reclamos de demo no son reales).
 -- Uso: psql "$SUPABASE_DB_URL" -v ON_ERROR_STOP=1 -f scripts/reset-demo.sql
 
 begin;
@@ -8,10 +9,12 @@ truncate table
   public.documents, public.quotes, public.commissions, public.guarantees, public.payments,
   public.occupancy, public.activities, public.bookings, public.blocks, public.leads,
   public.clients, public.campaign_spend, public.campaigns, public.planner_agreements,
-  public.fixed_costs, public.capex_items
+  public.fixed_costs, public.capex_items, public.notifications, public.agent_proposals,
+  public.agent_runs, public.complaints, public.planner_applications, public.rate_limits
 restart identity cascade;
 
 update public.profiles set planner_id = null where planner_id is not null;
 delete from public.planners;
 truncate table public.audit_log restart identity;
+alter sequence public.complaint_seq restart;
 commit;
