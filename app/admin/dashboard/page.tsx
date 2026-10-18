@@ -99,7 +99,7 @@ async function Dashboard({
   const user = await requireStaff();
   const venue = await activeVenue();
   const f = parseFilters(await searchParams);
-  const d = await dashboardData(user.id, venue.id, f);
+  const d = await dashboardData({ kind: "user", userId: user.id }, venue.id, f);
   const filtered = Boolean(f.eventType || f.channel);
 
   return (

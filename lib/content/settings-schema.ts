@@ -102,6 +102,13 @@ export const SETTINGS: SettingDef[] = [
     group: "Comercial",
     type: "number",
   },
+  {
+    key: "balance_notice_days",
+    label: "Aviso de saldo (días antes)",
+    group: "Dinero",
+    type: "number",
+    help: "Días antes del vencimiento del saldo para el recordatorio automático",
+  },
   { key: "business_hours", label: "Horario comercial", group: "Comercial", type: "json" },
   {
     key: "standard_event_costs",

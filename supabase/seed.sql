@@ -93,6 +93,7 @@ begin
     (v_venue, 'occupancy_targets', '{"weekend": {"m3": 0.5, "m6": 0.7}, "weekday": {"m6": 0.15}}', 'S10'),
     (v_venue, 'business_hours', '{"days": [1,2,3,4,5,6], "start": "09:00", "end": "19:00"}', 'S11'),
     (v_venue, 'first_response_sla_minutes', '15', 'OASIS.md §5.3'),
+    (v_venue, 'balance_notice_days', '3', 'Recordatorio de saldo: días antes del vencimiento'),
     (v_venue, 'high_season_months', '[12, 1, 2, 3]', 'Temporada alta'),
     (v_venue, 'standard_event_costs', '{"cleaning": 250, "staff": 400, "security": 200, "energy": 120, "water": 60, "pool": 80, "supplies": 100, "other": 0}', 'S28')
   on conflict (venue_id, key) do nothing;

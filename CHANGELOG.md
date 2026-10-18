@@ -4,6 +4,15 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Fase 10 — automatizaciones (18/10/2026)
+- Outbox de avisos (`notifications`) con idempotencia por clave: correo vía Resend (si no hay `RESEND_API_KEY` queda registrado como no enviado) y WhatsApp en cola con enlace wa.me prellenado para envío manual.
+- Procesos: avisos del día (recordatorio de saldo antes/día/vencido, D-7 y D-1, resumen de operación para staff), alerta de leads fuera del SLA de primera respuesta y resumen semanal a socios (ocupación a 90 días, pipeline, leads, CAC, alertas).
+- Vercel Cron (`vercel.json`) → `/api/cron/{diario|sla|semanal}` con `CRON_SECRET`; `/admin/avisos` con bandeja, ejecución a demanda (admin) y URL del feed iCal.
+- Feed iCal del calendario maestro (`/api/ical/{token}.ics`, URL firmada, sin datos personales) para Google Calendar.
+- Plantillas de correo y WhatsApp versionadas en `lib/templates`; el outbox guarda la versión usada.
+- Dominio: `reminders` (ventanas de aviso, SLA, semana) e `ical` (RFC 5545) con tests. Nuevo parámetro `balance_notice_days`.
+- E2E: secreto del cron, recordatorio sin duplicados, envío manual de WhatsApp, alerta SLA, resumen semanal, feed iCal y permisos de ops.
+
 ### Fase 9 — dashboard gerencial (18/10/2026)
 - `/admin/dashboard` con filtros por mes, segmento y canal (GET, compartibles por URL).
 - Ocupación V-S-D + feriados vs. L-J del mes, comprometida a 90 días y del año, con meta escalonada desde la reapertura y semáforo (ícono + texto); small multiples mensuales con línea de meta y vista de tabla.

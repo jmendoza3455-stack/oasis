@@ -8,3 +8,5 @@ export * from "./pricing";
 export * from "./sla";
 export * from "./csv";
 export * from "./imports";
+export * from "./reminders";
+export * from "./ical";

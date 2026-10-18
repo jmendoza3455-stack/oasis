@@ -1,5 +1,5 @@
 import "server-only";
-import { withDb } from "@/lib/db";
+import { withDb, type DbActor } from "@/lib/db";
 import {
   addDays,
   averageTicket,
@@ -42,14 +42,14 @@ function addMonths(m: string, n: number) {
   return d.toISOString().slice(0, 10);
 }
 
-export async function dashboardData(userId: string, venueId: string, f: DashboardFilters) {
+export async function dashboardData(actor: DbActor, venueId: string, f: DashboardFilters) {
   const today = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Lima" }).format(new Date());
   const monthStart = f.month;
   const mEnd = monthEnd(monthStart);
   const yearStart = `${monthStart.slice(0, 4)}-01-01`;
   const yearEnd = `${monthStart.slice(0, 4)}-12-31`;
 
-  return withDb({ kind: "user", userId }, async (sql) => {
+  return withDb(actor, async (sql) => {
     const settings = Object.fromEntries(
       (
         await sql<{ key: string; value: unknown }>(
