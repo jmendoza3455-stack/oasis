@@ -329,6 +329,15 @@ Ola 2 (gestión completa):
 - Diseño propuesto en docs/agentes.md, pendiente de validación de André (dinero: costo de API y WhatsApp).
 - Guardarraíles no negociables: ningún agente valida pagos, aprueba descuentos sobre el tope, cambia tarifas, firma contratos ni marca comisiones como pagadas; eso sigue siendo del admin. Toda acción de agente queda en audit_log con actor = agente.
 
+15.5 Insumos de SAWA (documentos de Carlos, 18/10/2026)
+Fuente: "SAWA – Estrategia y pasos a seguir" y "SAWA – Manual de marca" (referencia visual en assets/marca/).
+- Nombre comercial del venue: **Oasis Pachacámac · Un espacio SAWA** (reemplaza "El Oasis" en UI, copys y documentos). Marca respaldada: el lugar tiene identidad propia y SAWA aparece como respaldo, nunca como marca independiente de la línea.
+- SAWA abre la línea "Gestión de Espacios y Experiencias": operadora de espacios propios, alquilados o de terceros. **Implicancia de arquitectura (propuesta): modelo de datos multi-espacio desde el inicio** (`venues` + `venue_id` en reservas, tarifas, bloqueos, costos y settings), con un solo venue activo en la UI. Pendiente de OK de André.
+- Posicionamiento con planners: no competir con ellas. Mensaje: "Nosotros hacemos que el espacio funcione; tú haces que el evento sea único." Servicios modulares, proveedores externos permitidos con estándares objetivos.
+- Promesa al cliente final: belleza del lugar + facilidad operativa + libertad para personalizar.
+- Legal (al checklist, por validar con abogado): ampliación del objeto social de SAWA, actividades ante SUNAT, licencias, y cuatro contratos tipo: cliente, planner/proveedor, propietario (Carlos ↔ SAWA) y administración de terceros.
+- Marca visual: dirección A ajustada (verde Oasis #2E3B2B + paleta SAWA: olivo, arena, camel, azul grisáceo, grafito; Cormorant Garamond + Figtree). Pendiente de OK de André. El logo de SAWA se usa como texto hasta tener su arte maestro vectorial.
+
 15.4 Agregados propuestos por Claude
 - Libro de Reclamaciones virtual en la web pública (Código de Protección y Defensa del Consumidor).
 - Inscripción del banco de datos personales ante la ANPD en el checklist legal (Ley 29733).
