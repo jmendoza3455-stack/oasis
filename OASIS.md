@@ -345,6 +345,15 @@ Fuente: "SAWA – Estrategia y pasos a seguir" y "SAWA – Manual de marca" (ref
 - Propiedad: **SAWA es dueña del total** del Oasis → es un espacio propio de SAWA; no hace falta contrato de arrendamiento Carlos ↔ SAWA (validar con el contador cómo quedó la transferencia).
 - Licencias: el Oasis ya operaba como local de eventos y, según André, la documentación está en regla. El checklist legal queda como verificación de vigencias (licencia, ITSE, piscina, seguro), no como trámite desde cero.
 
+15.7 Decisiones de diseño de la BD (fase 2)
+- Holds = reservas en estado `prebooked` con `hold_expires_at` (no tabla `holds` aparte): así una sola exclusion constraint cubre holds, reservas y bloqueos.
+- Tabla `occupancy` mantenida por triggers desde `bookings` y `blocks`, con `EXCLUDE USING gist (venue_id WITH =, during WITH &&)`. Probado con inserciones concurrentes.
+- `during` (tstzrange) se calcula según `settings.booking_mode`: `one_per_day` (día comercial 06:00–06:00) o `slots` (franjas; la noche cruza medianoche). El pernocte extiende hasta `checkout_time`.
+- Cambios de estado solo por `transition_booking()` (rol + guardas de negocio); un UPDATE directo de `status` se rechaza. Todo queda en `audit_log` con `actor_type` user/agent/system.
+- Un hold vencido nunca bloquea: se expira antes de cada reserva nueva, en la consulta de disponibilidad y por pg_cron cada 5 min.
+- Pagos, comisiones pagadas, descuentos sobre el tope, tarifas y settings: solo admin (RLS + triggers).
+- Tests de BD en Postgres puro con un stub de auth de Supabase (`tests/db/supabase-stub.sql`).
+
 15.4 Agregados propuestos por Claude
 - Libro de Reclamaciones virtual en la web pública (Código de Protección y Defensa del Consumidor).
 - Inscripción del banco de datos personales ante la ANPD en el checklist legal (Ley 29733).
