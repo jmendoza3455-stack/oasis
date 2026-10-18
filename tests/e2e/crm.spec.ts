@@ -9,7 +9,10 @@ test("CRM: tablero por etapas con canal y campaña", async ({ page }, info) => {
   }
   await expect(page.getByText("fd-verano-meta").first()).toBeVisible();
   await shot(page, info, "admin-crm");
-  await page.getByRole("navigation", { name: "Filtros" }).getByRole("link", { name: "Planner", exact: true }).click();
+  await page
+    .getByRole("navigation", { name: "Filtros" })
+    .getByRole("link", { name: "Planner", exact: true })
+    .click();
   await expect(page).toHaveURL(/canal=planner/);
 });
 

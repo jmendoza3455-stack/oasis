@@ -20,7 +20,8 @@
     "db:reset-demo": "NODE_USE_ENV_PROXY=1 node --env-file-if-exists=.env.local scripts/db-push.mts --file scripts/reset-demo.sql",
     "users:create": "node --env-file-if-exists=.env.local scripts/create-users.mts",
     "db:local": "node scripts/db-local.mts",
-    "lighthouse": "node scripts/lighthouse.mjs"
+    "lighthouse": "node scripts/lighthouse.mjs",
+    "verify": "pnpm format && pnpm typecheck && pnpm lint && pnpm test:coverage && pnpm test:db"
   },
   "dependencies": {
     "@date-fns/tz": "^1.5.0",

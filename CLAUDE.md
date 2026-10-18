@@ -43,15 +43,16 @@ assets/         logo y fotos (placeholders marcados si faltan)
 
 ## Comandos
 
-| Acción         | Comando                                                                                                  |
-| -------------- | -------------------------------------------------------------------------------------------------------- |
-| Dev            | `pnpm dev`                                                                                               |
-| Typecheck      | `pnpm typecheck`                                                                                         |
-| Lint / formato | `pnpm lint` · `pnpm format`                                                                              |
-| Unit           | `pnpm test` (cobertura de dominio: `pnpm test:coverage`, umbral 90%)                                     |
-| BD local       | `pnpm db:local` (crea `oasis_dev` con seed y usuarios demo; login de desarrollo en /ingresar)            |
-| E2E            | `pnpm build && pnpm test:e2e` (en el contenedor de Claude: `PW_CHROMIUM_PATH=/opt/pw-browsers/chromium`) |
-| Capturas       | se guardan en `test-results/screenshots/{pantalla}-{desktop                                              | mobile}.png` |
+| Acción          | Comando                                                                                                  |
+| --------------- | -------------------------------------------------------------------------------------------------------- |
+| Dev             | `pnpm dev`                                                                                               |
+| Typecheck       | `pnpm typecheck`                                                                                         |
+| Antes de commit | `pnpm verify` (formato, typecheck, lint, unit con cobertura, BD)                                         |
+| Lint / formato  | `pnpm lint` · `pnpm format`                                                                              |
+| Unit            | `pnpm test` (cobertura de dominio: `pnpm test:coverage`, umbral 90%)                                     |
+| BD local        | `pnpm db:local` (crea `oasis_dev` con seed y usuarios demo; login de desarrollo en /ingresar)            |
+| E2E             | `pnpm build && pnpm test:e2e` (en el contenedor de Claude: `PW_CHROMIUM_PATH=/opt/pw-browsers/chromium`) |
+| Capturas        | se guardan en `test-results/screenshots/{pantalla}-{desktop                                              | mobile}.png` |
 
 ## Reglas de negocio críticas (no romper nunca)
 
