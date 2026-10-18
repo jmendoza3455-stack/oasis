@@ -1,6 +1,6 @@
 -- Seed de DEMO de Oasis Pachacámac (OASIS.md §12).
 -- Todo lo comercial aquí es FICTICIO y se borra con scripts/reset-demo antes de producción.
--- Precios: valor "medio" del benchmark (docs/research/benchmark-competidores.md §3),
+-- Precios: valor "medio" del benchmark ("docs/research/261018 Benchmark de competidores.md" §3),
 -- tratados como SIN IGV y marcados is_placeholder hasta la validación de André.
 
 begin;
@@ -9,7 +9,7 @@ select set_config('oasis.actor_type', 'system', true);
 select set_config('oasis.actor_name', 'seed', true);
 
 -- ---------------------------------------------------------------------------
--- Feriados 2026–2027 (docs/research/feriados-peru-2026-2027.md)
+-- Feriados 2026–2027 ("docs/research/261018 Feriados Peru 2026-2027.md")
 -- ---------------------------------------------------------------------------
 insert into public.holidays (date, name, type) values
   ('2026-01-01', 'Año Nuevo', 'feriado'),
