@@ -15,14 +15,17 @@ test.describe("web pública", () => {
   });
 
   test("consulta de disponibilidad: libre y ocupada", async ({ page }) => {
-    const [taken] = await db<{ d: string }>(
-      `select to_char(event_date, 'YYYY-MM-DD') as d from bookings where status in ('reserved','confirmed') order by event_date limit 1`,
-    );
     await page.goto("/");
     const input = page.getByLabel("¿Qué fecha tienes en mente?");
-    await input.fill(taken.d);
-    await page.getByRole("button", { name: "Consultar", exact: true }).click();
-    await expect(page.getByText(/no está disponible/)).toBeVisible();
+    // Otros tests mutan reservas en paralelo: se re-consulta la fecha ocupada en cada intento
+    await expect(async () => {
+      const [taken] = await db<{ d: string }>(
+        `select to_char(event_date, 'YYYY-MM-DD') as d from bookings where status in ('reserved','confirmed') order by event_date desc limit 1`,
+      );
+      await input.fill(taken.d);
+      await page.getByRole("button", { name: "Consultar", exact: true }).click();
+      await expect(page.getByText(/no está disponible/)).toBeVisible({ timeout: 3000 });
+    }).toPass({ timeout: 20_000 });
     await input.fill("2030-03-12");
     await page.getByRole("button", { name: "Consultar", exact: true }).click();
     await expect(page.getByText(/12\/03\/2030 está disponible/)).toBeVisible();

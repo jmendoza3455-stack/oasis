@@ -4,6 +4,13 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Fase 9 — dashboard gerencial (18/10/2026)
+- `/admin/dashboard` con filtros por mes, segmento y canal (GET, compartibles por URL).
+- Ocupación V-S-D + feriados vs. L-J del mes, comprometida a 90 días y del año, con meta escalonada desde la reapertura y semáforo (ícono + texto); small multiples mensuales con línea de meta y vista de tabla.
+- Ingreso neto por día disponible, ticket promedio, margen por evento, comisiones por pagar, CAC del canal directo vs. 5 % del ticket con alerta, ROAS, mezcla de canales, embudo por canal, pipeline en S/ por estado, top motivos de pérdida y NPS.
+- Dominio: `nps`, `occupancyTarget`, `monthsSince` con tests. Tokens de visualización validados (claro/oscuro).
+- E2E: la ocupación del dashboard cuadra con un conteo SQL independiente del mes del seed.
+
 ### Fase 7c-3 / 8 — finanzas, comisiones y costos (18/10/2026)
 - `/admin/finanzas`: comisiones por planner (devengada / por pagar / pagada) con export a Excel por planner; campañas con inversión, leads, ganados y CAC; costos fijos mensuales; CAPEX de la remodelación.
 - Importación CSV de inversión desde Meta Ads y Google Ads (español o inglés; agrupa por campaña y mes) y de eventos históricos ya realizados (plantilla descargable; valida fila por fila).

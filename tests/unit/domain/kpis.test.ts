@@ -105,3 +105,23 @@ describe("indicadores de control", () => {
     expect(trafficLight(null, 0.5)).toBe("red");
   });
 });
+
+import { monthsSince, nps, occupancyTarget } from "@/lib/domain";
+
+describe("NPS y metas", () => {
+  it("NPS = promotores − detractores", () => {
+    expect(nps([10, 9, 8, 7, 3])).toBe(20);
+    expect(nps([])).toBeNull();
+  });
+
+  it("meta por mes desde la reapertura", () => {
+    const t = { weekend: { m3: 0.5, m6: 0.7 }, weekday: { m6: 0.15 } };
+    expect(monthsSince("2026-12-17", "2026-12-01")).toBe(1);
+    expect(monthsSince("2026-12-17", "2027-03-01")).toBe(4);
+    expect(monthsSince("2026-12-17", "2026-11-01")).toBe(0);
+    expect(occupancyTarget(0, t)).toEqual({ weekend: null, weekday: null });
+    expect(occupancyTarget(3, t)).toEqual({ weekend: 0.5, weekday: 0.075 });
+    expect(occupancyTarget(6, t)).toEqual({ weekend: 0.7, weekday: 0.15 });
+    expect(occupancyTarget(9, t).weekday).toBe(0.15);
+  });
+});

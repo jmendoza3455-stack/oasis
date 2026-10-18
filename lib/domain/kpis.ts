@@ -101,3 +101,34 @@ export function trafficLight(value: number | null, target: number, yellowRatio =
 export function conversion(from: number, to: number): number | null {
   return from > 0 ? to / from : null;
 }
+
+/** NPS = % promotores (9–10) − % detractores (0–6). */
+export function nps(scores: readonly number[]): number | null {
+  if (scores.length === 0) return null;
+  const promoters = scores.filter((s) => s >= 9).length;
+  const detractors = scores.filter((s) => s <= 6).length;
+  return Math.round(((promoters - detractors) / scores.length) * 100);
+}
+
+export type OccupancyTargets = {
+  weekend: { m3: number; m6: number };
+  weekday: { m6: number };
+};
+
+/**
+ * Meta del mes según los meses transcurridos desde la reapertura (1 = mes de reapertura).
+ * Fin de semana: m3 hasta el mes 3, m6 desde el mes 4. Entre semana: m6 escalonado linealmente.
+ */
+export function occupancyTarget(monthIndex: number, targets: OccupancyTargets) {
+  if (monthIndex < 1) return { weekend: null, weekday: null };
+  const weekend = monthIndex <= 3 ? targets.weekend.m3 : targets.weekend.m6;
+  const weekday = Math.round(targets.weekday.m6 * Math.min(1, monthIndex / 6) * 1000) / 1000;
+  return { weekend, weekday };
+}
+
+/** Meses entre la reapertura y un mes dado (ambos "YYYY-MM-DD"); el mes de reapertura es 1. */
+export function monthsSince(reopening: string, month: string): number {
+  const [ry, rm] = reopening.split("-").map(Number);
+  const [y, m] = month.split("-").map(Number);
+  return (y - ry) * 12 + (m - rm) + 1;
+}

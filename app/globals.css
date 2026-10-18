@@ -136,3 +136,27 @@
   --fc-classic-border: var(--border);
   font-size: 0.875rem;
 }
+
+/* Data-viz: canales (paleta categórica validada claro/oscuro) y estados del semáforo */
+:root {
+  --series-planner: #2f7d4a;
+  --series-direct: #3d74b8;
+  --series-referral: #d08a1e;
+  --series-organic: #7b5cc4;
+  --status-good: #1e7f5c;
+  --status-warning: #a86a12;
+  --status-critical: #b83a2e;
+  --viz-grid: #e7e2d7;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --series-planner: #3c9457;
+    --series-direct: #5b86c4;
+    --series-referral: #c2852a;
+    --series-organic: #9a7bd6;
+    --status-good: #4fb38a;
+    --status-warning: #d79a3c;
+    --status-critical: #e0675b;
+    --viz-grid: rgb(255 255 255 / 0.1);
+  }
+}
