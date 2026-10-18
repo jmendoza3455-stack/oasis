@@ -4,6 +4,17 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Fase 5 — feat/web-publica (18/10/2026)
+- Web pública mobile-first: home, landings de Bodas, Empresas y Full day, página de Planners, aviso de privacidad (borrador legal) y Libro de Reclamaciones virtual con código correlativo.
+- Consulta pública de disponibilidad (solo disponible / no disponible), cotizador con rango referencial con IGV desde el tarifario.
+- Formulario de lead con honeypot, Cloudflare Turnstile (si hay llave), rate limiting en BD y UTM/gclid/fbclid first-touch hasta la BD.
+- Atribución automática: un cliente de planner que entra directo dentro de los 90 días queda con el planner y alerta.
+- WhatsApp con mensaje prellenado y código de campaña (aparece al configurar el número).
+- Banner de cookies (Ley 29733) y carga diferida de GA4, Meta Pixel y Google Ads con eventos lead_submit, whatsapp_click, availability_check y quote_view.
+- SEO: metadata y Open Graph por página, imagen OG, sitemap.xml, robots.txt (previews no indexables), JSON-LD EventVenue/LocalBusiness.
+- Lighthouse móvil: rendimiento 96–99, accesibilidad/buenas prácticas/SEO 100. Chequeo de Lighthouse en CI.
+- Fotos y testimonios como placeholders marcados.
+
 ### Fase 4 — feat/calendario (18/10/2026)
 - Capa de datos `lib/db.ts` con RLS por request (SET ROLE + JWT claims) y rol `oasis_app`.
 - Login `/ingresar`: contraseña y enlace mágico (Supabase Auth); modo desarrollo para local/CI. Solo por invitación.

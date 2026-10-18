@@ -19,7 +19,8 @@
     "db:seed": "NODE_USE_ENV_PROXY=1 node --env-file-if-exists=.env.local scripts/db-push.mts --seed",
     "db:reset-demo": "NODE_USE_ENV_PROXY=1 node --env-file-if-exists=.env.local scripts/db-push.mts --file scripts/reset-demo.sql",
     "users:create": "node --env-file-if-exists=.env.local scripts/create-users.mts",
-    "db:local": "node scripts/db-local.mts"
+    "db:local": "node scripts/db-local.mts",
+    "lighthouse": "node scripts/lighthouse.mjs"
   },
   "dependencies": {
     "@date-fns/tz": "^1.5.0",
@@ -60,5 +61,11 @@
   "packageManager": "pnpm@10.28.0",
   "engines": {
     "node": ">=22"
-  }
+  },
+  "browserslist": [
+    "chrome >= 111",
+    "edge >= 111",
+    "firefox >= 111",
+    "safari >= 16.4"
+  ]
 }

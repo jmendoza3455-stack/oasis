@@ -51,6 +51,14 @@ jobs:
         run: pnpm exec playwright install --with-deps chromium
       - name: E2E (BD local recreada en global-setup)
         run: pnpm test:e2e
+      - name: Lighthouse móvil (web pública)
+        env:
+          LH_MIN_PERF: "85"
+          CHROME_PATH: /usr/bin/google-chrome
+        run: |
+          PORT=3100 pnpm start &
+          npx --yes wait-on http://localhost:3100 --timeout 60000
+          pnpm lighthouse
       - name: Upload Playwright report and screenshots
         if: always()
         uses: actions/upload-artifact@v4

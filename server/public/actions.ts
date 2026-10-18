@@ -1,0 +1,335 @@
+"use server";
+
+import { z } from "zod";
+import { withDb } from "@/lib/db";
+import {
+  estimateRange,
+  findProtectedMatch,
+  normalizeEmail,
+  normalizePhone,
+  normalizeRuc,
+  PricingError,
+} from "@/lib/domain";
+import { loadPricingContext } from "@/server/pricing-context";
+import { activeVenue } from "@/server/venue";
+import { verifyTurnstile, withinRateLimit } from "./antispam";
+
+const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Elige una fecha.");
+const eventType = z.enum(["wedding", "social", "corporate", "family_day"]);
+
+function todayLima() {
+  return new Intl.DateTimeFormat("en-CA", { timeZone: "America/Lima" }).format(new Date());
+}
+
+// ---------------------------------------------------------------------------
+// Disponibilidad: solo "disponible / no disponible"
+// ---------------------------------------------------------------------------
+export async function checkAvailability(
+  date: string,
+): Promise<{ ok: true; available: boolean } | { ok: false; error: string }> {
+  const parsed = isoDate.safeParse(date);
+  if (!parsed.success) return { ok: false, error: "Elige una fecha válida." };
+  if (parsed.data < todayLima()) return { ok: false, error: "Elige una fecha futura." };
+  if (!(await withinRateLimit("availability", 60))) {
+    return { ok: false, error: "Demasiadas consultas. Intenta en unos minutos." };
+  }
+  const venue = await activeVenue();
+  const [row] = await withDb({ kind: "anon" }, (sql) =>
+    sql<{ ok: boolean }>(`select public.is_date_available($1, $2) as ok`, [
+      venue.slug,
+      parsed.data,
+    ]),
+  );
+  return { ok: true, available: row.ok };
+}
+
+// ---------------------------------------------------------------------------
+// Cotizador rápido: rango estimado con IGV
+// ---------------------------------------------------------------------------
+const quoteSchema = z.object({
+  eventType,
+  date: isoDate,
+  guests: z.coerce.number().int().min(1, "Indica el número de invitados.").max(500),
+});
+
+export type QuoteResult =
+  | { ok: true; min: number; max: number; deposit: number; guarantee: number; isPlaceholder: true }
+  | { ok: false; error: string };
+
+export async function estimateQuote(input: z.input<typeof quoteSchema>): Promise<QuoteResult> {
+  const parsed = quoteSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: parsed.error.issues[0].message };
+  if (!(await withinRateLimit("quote", 60))) {
+    return { ok: false, error: "Demasiadas consultas. Intenta en unos minutos." };
+  }
+  const venue = await activeVenue();
+  const ctx = await loadPricingContext(venue.id);
+  try {
+    const r = estimateRange(ctx.cards, parsed.data, ctx.holidays, ctx.settings);
+    return {
+      ok: true,
+      min: r.min,
+      max: r.max,
+      deposit: r.base.deposit,
+      guarantee: r.base.guarantee,
+      isPlaceholder: true,
+    };
+  } catch (error) {
+    if (error instanceof PricingError && error.code === "no_rate_card") {
+      return {
+        ok: false,
+        error: "Para ese aforo o fecha preparamos una cotización a medida. Déjanos tus datos.",
+      };
+    }
+    throw error;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Lead con UTM de punta a punta y atribución al planner (90 días)
+// ---------------------------------------------------------------------------
+const optional = (s: z.ZodString) => s.optional().transform((v) => (v ? v : undefined));
+
+const leadSchema = z.object({
+  fullName: z.string().trim().min(2, "Escribe tu nombre.").max(120),
+  phone: z.string().trim().min(7, "Escribe un teléfono válido.").max(20),
+  email: z.email("Escribe un correo válido."),
+  eventType,
+  eventDate: isoDate.optional().or(z.literal("").transform(() => undefined)),
+  guests: z.coerce
+    .number()
+    .int()
+    .min(1)
+    .max(500)
+    .optional()
+    .or(z.literal("").transform(() => undefined)),
+  message: optional(z.string().trim().max(1000)),
+  privacy: z.literal("on", { error: "Debes aceptar el aviso de privacidad." }),
+  marketing: z.literal("on").optional(),
+  utm_source: optional(z.string().max(100)),
+  utm_medium: optional(z.string().max(100)),
+  utm_campaign: optional(z.string().max(150)),
+  utm_content: optional(z.string().max(150)),
+  utm_term: optional(z.string().max(150)),
+  gclid: optional(z.string().max(300)),
+  fbclid: optional(z.string().max(300)),
+  landing_path: optional(z.string().max(300)),
+  referrer: optional(z.string().max(500)),
+  form: optional(z.string().max(40)),
+});
+
+export type LeadState = { ok?: boolean; error?: string; fieldErrors?: Record<string, string> };
+
+export async function submitLead(_: LeadState, formData: FormData): Promise<LeadState> {
+  // Honeypot: los bots llenan el campo oculto "website"
+  if (formData.get("website")) return { ok: true };
+  if (!(await verifyTurnstile(formData.get("cf-turnstile-response") as string | null))) {
+    return { error: "No pudimos verificar que no eres un robot. Recarga la página." };
+  }
+  if (!(await withinRateLimit("lead", 5))) {
+    return { error: "Recibimos varias solicitudes seguidas. Intenta en unos minutos." };
+  }
+
+  const parsed = leadSchema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) {
+    const fieldErrors = Object.fromEntries(
+      parsed.error.issues.map((i) => [String(i.path[0]), i.message]),
+    );
+    return { error: "Revisa los campos marcados.", fieldErrors };
+  }
+  const d = parsed.data;
+  const venue = await activeVenue();
+  const today = todayLima();
+
+  await withDb({ kind: "service", actorName: "web" }, async (sql) => {
+    // Atribución: ¿algún planner registró a este cliente en los últimos días de protección?
+    const phone = normalizePhone(d.phone);
+    const email = normalizeEmail(d.email);
+    const [setting] = await sql<{ days: number }>(
+      `select coalesce((value #>> '{}')::int, 90) as days from settings where venue_id = $1 and key = 'planner_protection_days'`,
+      [venue.id],
+    );
+    const candidates = await sql<{
+      plannerId: string;
+      clientId: string;
+      phone: string | null;
+      email: string | null;
+      ruc: string | null;
+      registeredOn: string;
+    }>(
+      `select created_by_planner_id as "plannerId", id as "clientId", phone, email, ruc,
+              to_char(created_at at time zone 'America/Lima', 'YYYY-MM-DD') as "registeredOn"
+         from clients
+        where created_by_planner_id is not null
+          and ((right(phone_norm, 9) = $1) or (email_norm = $2))`,
+      [phone, email],
+    );
+    const match = findProtectedMatch(
+      { phone, email, ruc: normalizeRuc(null) },
+      candidates,
+      today,
+      setting?.days ?? 90,
+    );
+
+    const [client] = await sql<{ id: string }>(
+      `insert into clients (full_name, phone, email, marketing_consent, privacy_accepted_at)
+       values ($1, $2, $3, $4, now()) returning id`,
+      [d.fullName, d.phone, d.email, d.marketing === "on"],
+    );
+    const channel = match ? "planner" : d.utm_source || d.gclid || d.fbclid ? "direct" : "organic";
+    await sql(
+      `insert into leads (venue_id, client_id, planner_id, channel, event_type, event_date, guests, message,
+                          utm_source, utm_medium, utm_campaign, utm_content, utm_term, gclid, fbclid,
+                          landing_path, referrer, consent_marketing, source_form, attribution_alert,
+                          protected_until)
+       values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)`,
+      [
+        venue.id,
+        client.id,
+        match?.plannerId ?? null,
+        channel,
+        d.eventType,
+        d.eventDate ?? null,
+        d.guests ?? null,
+        d.message ?? null,
+        d.utm_source ?? null,
+        d.utm_medium ?? null,
+        d.utm_campaign ?? null,
+        d.utm_content ?? null,
+        d.utm_term ?? null,
+        d.gclid ?? null,
+        d.fbclid ?? null,
+        d.landing_path ?? null,
+        d.referrer ?? null,
+        d.marketing === "on",
+        d.form ?? null,
+        match
+          ? `Cliente registrado por un planner (match por ${match.matchedOn.join(", ")}); protegido hasta ${match.protectedUntil}`
+          : null,
+        match?.protectedUntil ?? null,
+      ],
+    );
+  });
+  return { ok: true };
+}
+
+// ---------------------------------------------------------------------------
+// Solicitud de alta de planner
+// ---------------------------------------------------------------------------
+const plannerSchema = z.object({
+  businessName: z.string().trim().min(2, "Escribe el nombre de tu marca o empresa.").max(120),
+  contactName: z.string().trim().min(2, "Escribe tu nombre.").max(120),
+  email: z.email("Escribe un correo válido."),
+  phone: z.string().trim().min(7, "Escribe un teléfono válido.").max(20),
+  instagram: optional(z.string().trim().max(100)),
+  eventsPerYear: z.coerce
+    .number()
+    .int()
+    .min(0)
+    .max(1000)
+    .optional()
+    .or(z.literal("").transform(() => undefined)),
+  message: optional(z.string().trim().max(1000)),
+  privacy: z.literal("on", { error: "Debes aceptar el aviso de privacidad." }),
+});
+
+export async function submitPlannerApplication(
+  _: LeadState,
+  formData: FormData,
+): Promise<LeadState> {
+  if (formData.get("website")) return { ok: true };
+  if (!(await withinRateLimit("planner_app", 3))) return { error: "Intenta en unos minutos." };
+  const parsed = plannerSchema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) {
+    return {
+      error: "Revisa los campos marcados.",
+      fieldErrors: Object.fromEntries(
+        parsed.error.issues.map((i) => [String(i.path[0]), i.message]),
+      ),
+    };
+  }
+  const d = parsed.data;
+  await withDb({ kind: "service", actorName: "web" }, (sql) =>
+    sql(
+      `insert into planner_applications (business_name, contact_name, email, phone, instagram, events_per_year, message)
+       values ($1, $2, $3, $4, $5, $6, $7)`,
+      [
+        d.businessName,
+        d.contactName,
+        d.email,
+        d.phone,
+        d.instagram ?? null,
+        d.eventsPerYear ?? null,
+        d.message ?? null,
+      ],
+    ),
+  );
+  return { ok: true };
+}
+
+// ---------------------------------------------------------------------------
+// Libro de Reclamaciones
+// ---------------------------------------------------------------------------
+const complaintSchema = z.object({
+  kind: z.enum(["reclamo", "queja"]),
+  fullName: z.string().trim().min(3, "Escribe tu nombre completo.").max(150),
+  documentType: z.enum(["DNI", "CE", "PASAPORTE", "RUC"]),
+  documentNumber: z.string().trim().min(6, "Escribe tu número de documento.").max(20),
+  address: z.string().trim().min(5, "Escribe tu domicilio.").max(250),
+  phone: optional(z.string().trim().max(20)),
+  email: z.email("Escribe un correo válido."),
+  guardianName: optional(z.string().trim().max(150)),
+  serviceDescription: z.string().trim().min(3, "Describe el servicio contratado.").max(500),
+  amount: z.coerce
+    .number()
+    .min(0)
+    .optional()
+    .or(z.literal("").transform(() => undefined)),
+  detail: z.string().trim().min(10, "Detalla lo ocurrido.").max(3000),
+  request: z.string().trim().min(5, "Indica tu pedido.").max(2000),
+  privacy: z.literal("on", { error: "Debes aceptar el aviso de privacidad." }),
+});
+
+export type ComplaintState = LeadState & { code?: string };
+
+export async function submitComplaint(
+  _: ComplaintState,
+  formData: FormData,
+): Promise<ComplaintState> {
+  if (formData.get("website")) return { ok: true };
+  if (!(await withinRateLimit("complaint", 3))) return { error: "Intenta en unos minutos." };
+  const parsed = complaintSchema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) {
+    return {
+      error: "Revisa los campos marcados.",
+      fieldErrors: Object.fromEntries(
+        parsed.error.issues.map((i) => [String(i.path[0]), i.message]),
+      ),
+    };
+  }
+  const d = parsed.data;
+  const venue = await activeVenue();
+  const [row] = await withDb({ kind: "service", actorName: "web" }, (sql) =>
+    sql<{ code: string }>(
+      `insert into complaints (venue_id, code, kind, full_name, document_type, document_number, address, phone, email,
+                               guardian_name, service_description, amount, detail, request)
+       values ($1, '', $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) returning code`,
+      [
+        venue.id,
+        d.kind,
+        d.fullName,
+        d.documentType,
+        d.documentNumber,
+        d.address,
+        d.phone ?? null,
+        d.email,
+        d.guardianName ?? null,
+        d.serviceDescription,
+        d.amount ?? null,
+        d.detail,
+        d.request,
+      ],
+    ),
+  );
+  return { ok: true, code: row.code };
+}

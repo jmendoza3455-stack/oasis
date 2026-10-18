@@ -16,6 +16,8 @@ const cormorant = Cormorant_Garamond({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
+  openGraph: { siteName: "Oasis Pachacámac", locale: "es_PE", type: "website" },
   title: {
     default: "Oasis Pachacámac · Un espacio SAWA",
     template: "%s · Oasis Pachacámac",
