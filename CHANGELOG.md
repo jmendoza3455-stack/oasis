@@ -4,6 +4,15 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Fase 11 — agentes (18/10/2026)
+- Recepcionista con IA en la web pública: chat que consulta disponibilidad, da el rango del cotizador, registra el lead (UTM y atribución al planner incluidas) y agenda la llamada; deriva a una persona descuentos, excepciones y reclamos. Corre como actor `agent` y queda en `audit_log`.
+- Tope de gasto mensual de IA con registro por corrida (`agent_runs`); al alcanzarlo deriva a WhatsApp. Se activa solo con `ANTHROPIC_API_KEY` y `ANTHROPIC_MODEL`.
+- Bandeja `/admin/agentes`: propuestas y derivaciones de los agentes; solo el admin aprueba o rechaza (aprobar no cambia dinero). Alerta por correo al staff en cada derivación.
+- Agentes por cadencia (Closer, Revenue, Growth, Planners, Controller, Contenido): playbooks en `agents/` y `scripts/agent.mts` (snapshot de solo lectura y registro de propuestas).
+- El chat cuenta como primera respuesta del lead; el lead sigue "nuevo" hasta que una persona lo contacte.
+- Refactor: alta de lead compartida entre el formulario y el chat (`server/public/leads.ts`).
+- E2E con proveedor simulado (`OASIS_AGENT_FAKE=1`, nunca en Vercel): disponibilidad, cotización, registro de lead auditado, derivación y decisión del admin, validación del historial.
+
 ### Fase 10 — automatizaciones (18/10/2026)
 - Outbox de avisos (`notifications`) con idempotencia por clave: correo vía Resend (si no hay `RESEND_API_KEY` queda registrado como no enviado) y WhatsApp en cola con enlace wa.me prellenado para envío manual.
 - Procesos: avisos del día (recordatorio de saldo antes/día/vencido, D-7 y D-1, resumen de operación para staff), alerta de leads fuera del SLA de primera respuesta y resumen semanal a socios (ocupación a 90 días, pipeline, leads, CAC, alertas).

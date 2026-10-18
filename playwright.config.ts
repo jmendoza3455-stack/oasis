@@ -34,6 +34,7 @@ export default defineConfig({
             process.env.DATABASE_URL ?? "postgres://oasis_app:oasis_local@localhost:5432/oasis_dev",
           OASIS_DEV_AUTH: "1",
           CRON_SECRET: "e2e-cron-secret",
+          OASIS_AGENT_FAKE: "1",
           ICAL_SECRET: "e2e-ical-secret",
         },
         url: baseURL,

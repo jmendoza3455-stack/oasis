@@ -4,7 +4,8 @@ import { writeStored } from "@/lib/use-stored";
 
 // Eventos de conversión (OASIS.md §6.1). Solo se envían si el visitante aceptó cookies de
 // medición y si los IDs están configurados (los scripts se cargan en <Analytics />).
-export type TrackEvent = "lead_submit" | "whatsapp_click" | "availability_check" | "quote_view";
+export type TrackEvent =
+  "lead_submit" | "whatsapp_click" | "availability_check" | "quote_view" | "chat_open";
 
 type Win = Window & {
   gtag?: (...args: unknown[]) => void;
@@ -17,6 +18,7 @@ const META_EVENT: Record<TrackEvent, string> = {
   whatsapp_click: "Contact",
   availability_check: "Search",
   quote_view: "ViewContent",
+  chat_open: "Contact",
 };
 
 export function track(event: TrackEvent, params: Record<string, string | number | undefined> = {}) {

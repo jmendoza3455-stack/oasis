@@ -4,17 +4,11 @@ import { cookies } from "next/headers";
 import { z } from "zod";
 import { ATTRIBUTION_COOKIE, parseAttributionCookie } from "@/lib/attribution-cookie";
 import { withDb } from "@/lib/db";
-import {
-  estimateRange,
-  findProtectedMatch,
-  normalizeEmail,
-  normalizePhone,
-  normalizeRuc,
-  PricingError,
-} from "@/lib/domain";
+import { estimateRange, PricingError } from "@/lib/domain";
 import { loadPricingContext } from "@/server/pricing-context";
 import { activeVenue } from "@/server/venue";
 import { verifyTurnstile, withinRateLimit } from "./antispam";
+import { createLead } from "./leads";
 
 const isoDate = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Elige una fecha.");
 const eventType = z.enum(["wedding", "social", "corporate", "family_day"]);
@@ -147,78 +141,14 @@ export async function submitLead(_: LeadState, formData: FormData): Promise<Lead
     return { error: "Revisa los campos marcados.", fieldErrors };
   }
   const d = parsed.data;
-  const venue = await activeVenue();
-  const today = todayLima();
-
-  await withDb({ kind: "service", actorName: "web" }, async (sql) => {
-    // Atribución: ¿algún planner registró a este cliente en los últimos días de protección?
-    const phone = normalizePhone(d.phone);
-    const email = normalizeEmail(d.email);
-    const [setting] = await sql<{ days: number }>(
-      `select coalesce((value #>> '{}')::int, 90) as days from settings where venue_id = $1 and key = 'planner_protection_days'`,
-      [venue.id],
-    );
-    const candidates = await sql<{
-      plannerId: string;
-      clientId: string;
-      phone: string | null;
-      email: string | null;
-      ruc: string | null;
-      registeredOn: string;
-    }>(
-      `select created_by_planner_id as "plannerId", id as "clientId", phone, email, ruc,
-              to_char(created_at at time zone 'America/Lima', 'YYYY-MM-DD') as "registeredOn"
-         from clients
-        where created_by_planner_id is not null
-          and ((right(phone_norm, 9) = $1) or (email_norm = $2))`,
-      [phone, email],
-    );
-    const match = findProtectedMatch(
-      { phone, email, ruc: normalizeRuc(null) },
-      candidates,
-      today,
-      setting?.days ?? 90,
-    );
-
-    const [client] = await sql<{ id: string }>(
-      `insert into clients (full_name, phone, email, marketing_consent, privacy_accepted_at)
-       values ($1, $2, $3, $4, now()) returning id`,
-      [d.fullName, d.phone, d.email, d.marketing === "on"],
-    );
-    const channel = match ? "planner" : d.utm_source || d.gclid || d.fbclid ? "direct" : "organic";
-    await sql(
-      `insert into leads (venue_id, client_id, planner_id, channel, event_type, event_date, guests, message,
-                          utm_source, utm_medium, utm_campaign, utm_content, utm_term, gclid, fbclid,
-                          landing_path, referrer, consent_marketing, source_form, attribution_alert,
-                          protected_until)
-       values ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)`,
-      [
-        venue.id,
-        client.id,
-        match?.plannerId ?? null,
-        channel,
-        d.eventType,
-        d.eventDate ?? null,
-        d.guests ?? null,
-        d.message ?? null,
-        d.utm_source ?? null,
-        d.utm_medium ?? null,
-        d.utm_campaign ?? null,
-        d.utm_content ?? null,
-        d.utm_term ?? null,
-        d.gclid ?? null,
-        d.fbclid ?? null,
-        d.landing_path ?? null,
-        d.referrer ?? null,
-        d.marketing === "on",
-        d.form ?? null,
-        match
-          ? `Cliente registrado por un planner (match por ${match.matchedOn.join(", ")}); protegido hasta ${match.protectedUntil}`
-          : null,
-        match?.protectedUntil ?? null,
-      ],
-    );
-  });
+  await createLead(
+    {
+      ...d,
+      marketing: d.marketing === "on",
+      sourceForm: d.form ?? null,
+    },
+    { kind: "service", actorName: "web" },
+  );
   return { ok: true };
 }
 

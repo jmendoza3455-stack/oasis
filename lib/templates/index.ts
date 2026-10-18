@@ -88,6 +88,11 @@ export const TEMPLATES = {
     subject: (c) => `Leads sin respuesta · ${c.venueName}`,
     email: (c) => digest(c, "Hay leads que superaron el tiempo de primera respuesta"),
   }),
+  agent_handoff: dg({
+    version: "2026-10-18.1",
+    subject: (c) => `El Recepcionista derivó una conversación · ${c.venueName}`,
+    email: (c) => digest(c, "Un cliente necesita atención de una persona"),
+  }),
   weekly_summary: dg({
     version: "2026-10-18.1",
     subject: (c) => `Resumen semanal ${c.date} · ${c.venueName}`,

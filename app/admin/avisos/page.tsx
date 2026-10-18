@@ -22,6 +22,7 @@ const KIND_LABEL: Record<string, string> = {
   ops_daily: "Resumen de operación",
   lead_sla: "Lead sin respuesta",
   weekly_summary: "Resumen semanal",
+  agent_handoff: "Derivación del Recepcionista",
 };
 
 const STATUS: Record<string, { label: string; color: string }> = {

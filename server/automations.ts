@@ -419,5 +419,38 @@ export async function runWeekly(now = new Date()): Promise<RunReport> {
   return { job: "semanal", queued, ...(await deliverQueued()) };
 }
 
+/** Alerta inmediata al staff (p. ej. derivación del Recepcionista). Idempotente por clave. */
+export async function alertStaff(input: {
+  venueId: string;
+  venueName: string;
+  dedupeKey: string;
+  title: string;
+  lines: string[];
+  path: string;
+  leadId?: string | null;
+}) {
+  await withDb(ACTOR, async (sql) => {
+    const staff = await staffEmails(sql, ["admin", "ops"]);
+    const ctx: DigestCtx = {
+      venueName: input.venueName,
+      date: formatDate(limaToday(new Date())),
+      adminUrl: `${siteUrl()}${input.path}`,
+      items: [{ title: input.title, lines: input.lines }],
+    };
+    await enqueue(sql, {
+      venueId: input.venueId,
+      kind: "agent_handoff",
+      channel: "email",
+      template: "agent_handoff",
+      dedupeKey: input.dedupeKey,
+      leadId: input.leadId ?? undefined,
+      recipient: staff.length ? staff.join(", ") : null,
+      subject: TEMPLATES.agent_handoff.subject(ctx),
+      body: TEMPLATES.agent_handoff.email(ctx),
+    });
+  });
+  await deliverQueued(5);
+}
+
 export const JOBS = { diario: runDaily, sla: runSla, semanal: runWeekly } as const;
 export type JobName = keyof typeof JOBS;

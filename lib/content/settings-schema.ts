@@ -109,6 +109,20 @@ export const SETTINGS: SettingDef[] = [
     type: "number",
     help: "Días antes del vencimiento del saldo para el recordatorio automático",
   },
+  {
+    key: "agent_monthly_budget_usd",
+    label: "Tope mensual de IA (USD)",
+    group: "Comercial",
+    type: "number",
+    help: "Al alcanzarlo, el Recepcionista deriva a WhatsApp hasta el mes siguiente",
+  },
+  {
+    key: "agent_pricing_usd_per_mtok",
+    label: "Precio de la IA (USD por millón de tokens)",
+    group: "Comercial",
+    type: "json",
+    help: '{"input": 3, "output": 15}',
+  },
   { key: "business_hours", label: "Horario comercial", group: "Comercial", type: "json" },
   {
     key: "standard_event_costs",
