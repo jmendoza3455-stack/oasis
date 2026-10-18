@@ -30,6 +30,20 @@ export const SETTINGS: SettingDef[] = [
     type: "json",
     help: '{"cocktail": 150, "banquet": 100, "full_day": 60}',
   },
+  {
+    key: "day_boundary",
+    label: "Inicio del día comercial",
+    group: "Reservas",
+    type: "text",
+    help: "HH:MM (p. ej. 06:00)",
+  },
+  {
+    key: "checkout_time",
+    label: "Hora de salida del pernocte",
+    group: "Reservas",
+    type: "text",
+    help: "HH:MM (p. ej. 10:00)",
+  },
   { key: "hold_hours", label: "Horas de pre-reserva", group: "Reservas", type: "number" },
   {
     key: "high_season_months",

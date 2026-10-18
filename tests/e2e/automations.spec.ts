@@ -51,6 +51,12 @@ test.describe("avisos automáticos (serial, solo desktop)", () => {
     expect(rows.map((r) => r.channel)).toEqual(["email", "whatsapp"]);
     // Sin RESEND_API_KEY el correo queda registrado como no enviado; el WhatsApp, en cola manual
     expect(rows[1]).toMatchObject({ status: "queued", recipient: "987654321" });
+    // Encuesta NPS automática a eventos realizados sin respuesta
+    const nps = await db<{ body: string }>(
+      `select body from notifications where kind = 'nps_request' and channel = 'email'`,
+    );
+    expect(nps.length).toBeGreaterThan(0);
+    expect(nps[0].body).toMatch(/\/encuesta\/[0-9a-f-]{36}\./);
     const [digest] = await db<{ recipient: string }>(
       `select recipient from notifications where kind = 'ops_daily'`,
     );

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   Bell,
+  BookOpen,
   Bot,
   CalendarDays,
   Gauge,
@@ -22,6 +23,7 @@ const items = [
   { href: "/admin/finanzas", label: "Finanzas", icon: Wallet },
   { href: "/admin/avisos", label: "Avisos", icon: Bell },
   { href: "/admin/agentes", label: "Agentes", icon: Bot },
+  { href: "/admin/reclamos", label: "Reclamos", icon: BookOpen },
   { href: "/admin/configuracion", label: "Configuración", icon: Settings },
 ];
 

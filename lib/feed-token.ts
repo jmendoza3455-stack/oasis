@@ -1,8 +1,9 @@
+import { serverSecret } from "@/lib/secrets";
 import "server-only";
 import { createHmac, timingSafeEqual } from "node:crypto";
 
 // Token del feed iCal: HMAC del venue. Rotar ICAL_SECRET invalida los calendarios suscritos.
-const secret = () => process.env.ICAL_SECRET ?? process.env.RATE_LIMIT_SALT ?? "oasis-dev-ical";
+const secret = () => serverSecret("ICAL_SECRET", "oasis-dev-ical");
 
 export function icalToken(venueId: string): string {
   return createHmac("sha256", secret()).update(`ical:${venueId}`).digest("base64url").slice(0, 32);

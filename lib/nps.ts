@@ -1,8 +1,9 @@
+import { serverSecret } from "@/lib/secrets";
 import "server-only";
 import { createHmac, timingSafeEqual } from "node:crypto";
 
 // Enlace de encuesta NPS firmado: /encuesta/{bookingId}.{firma}. Sin login y sin adivinar ids.
-const secret = () => process.env.NPS_SECRET ?? process.env.RATE_LIMIT_SALT ?? "oasis-dev-nps";
+const secret = () => serverSecret("NPS_SECRET", "oasis-dev-nps");
 const sign = (id: string) =>
   createHmac("sha256", secret()).update(`nps:${id}`).digest("base64url").slice(0, 22);
 

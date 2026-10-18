@@ -1,5 +1,6 @@
 import "server-only";
 import { SITE_URL } from "@/lib/content/seo";
+import { npsToken } from "@/lib/nps";
 import { withDb, type Sql } from "@/lib/db";
 import {
   addDays,
@@ -150,7 +151,61 @@ type BookingRow = {
   plannerPhone: string | null;
 };
 
-/** Diario 08:00 Lima: recordatorios de saldo, avisos D-7/D-1 y resumen de operación. */
+const BOOKING_COLUMNS = `select b.id, b.status, b.event_type as "eventType", to_char(b.event_date, 'YYYY-MM-DD') as "eventDate",
+       to_char(b.balance_due_on, 'YYYY-MM-DD') as "balanceDueOn", b.rental_gross::float8 as "rentalGross",
+       public.booking_paid(b.id)::float8 as "paidValidated", b.guests,
+       c.full_name as "clientName", c.email as "clientEmail", c.phone as "clientPhone",
+       p.contact_name as "plannerName", p.email as "plannerEmail", p.phone as "plannerPhone"
+  from bookings b left join clients c on c.id = b.client_id left join planners p on p.id = b.planner_id`;
+
+/** Encola un aviso al cliente (o a su planner) por correo y WhatsApp. Devuelve cuántos son nuevos. */
+async function notifyCustomer(
+  sql: Sql,
+  venue: { id: string; name: string },
+  b: BookingRow,
+  kind: BookingTemplateId,
+  dedupeKey: string,
+  extra: Partial<BookingCtx> = {},
+): Promise<number> {
+  // En reservas de planner el contacto con el cliente lo lleva el planner (S29)
+  const viaPlanner = b.plannerName !== null;
+  const ctx: BookingCtx = {
+    venueName: venue.name,
+    recipientName: (viaPlanner ? b.plannerName : b.clientName)?.split(" ")[0] ?? "",
+    eventLabel: `${EVENT_TYPE_LABEL[b.eventType].toLowerCase()} del ${formatDate(b.eventDate)}`,
+    eventDate: formatDate(b.eventDate),
+    balance: formatPEN(balanceOf(b)),
+    balanceDueOn: b.balanceDueOn ? formatDate(b.balanceDueOn) : null,
+    guests: b.guests,
+    ...extra,
+  };
+  const t = TEMPLATES[kind];
+  const common = { venueId: venue.id, kind, template: kind, dedupeKey, bookingId: b.id };
+  let n = 0;
+  if (
+    await enqueue(sql, {
+      ...common,
+      channel: "email",
+      recipient: viaPlanner ? b.plannerEmail : b.clientEmail,
+      subject: t.subject(ctx),
+      body: t.email(ctx),
+    })
+  )
+    n += 1;
+  if (
+    await enqueue(sql, {
+      ...common,
+      channel: "whatsapp",
+      recipient: viaPlanner ? b.plannerPhone : b.clientPhone,
+      subject: null,
+      body: t.whatsapp(ctx),
+    })
+  )
+    n += 1;
+  return n;
+}
+
+/** Diario 08:00 Lima: saldos, D-7/D-1, encuesta NPS post-evento y resumen de operación. */
 export async function runDaily(now = new Date()): Promise<RunReport> {
   const venue = await activeVenue();
   const today = limaToday(now);
@@ -159,13 +214,7 @@ export async function runDaily(now = new Date()): Promise<RunReport> {
   await withDb(ACTOR, async (sql) => {
     const s = await settingsOf(sql, venue.id);
     const bookings = await sql<BookingRow>(
-      `select b.id, b.status, b.event_type as "eventType", to_char(b.event_date, 'YYYY-MM-DD') as "eventDate",
-              to_char(b.balance_due_on, 'YYYY-MM-DD') as "balanceDueOn", b.rental_gross::float8 as "rentalGross",
-              public.booking_paid(b.id)::float8 as "paidValidated", b.guests,
-              c.full_name as "clientName", c.email as "clientEmail", c.phone as "clientPhone",
-              p.contact_name as "plannerName", p.email as "plannerEmail", p.phone as "plannerPhone"
-         from bookings b left join clients c on c.id = b.client_id left join planners p on p.id = b.planner_id
-        where b.venue_id = $1 and b.status in ('reserved', 'confirmed') and b.event_date >= $2::date`,
+      `${BOOKING_COLUMNS} where b.venue_id = $1 and b.status in ('reserved', 'confirmed') and b.event_date >= $2::date`,
       [venue.id, today],
     );
     const byId = new Map(bookings.map((b) => [b.id, b]));
@@ -174,46 +223,20 @@ export async function runDaily(now = new Date()): Promise<RunReport> {
     });
 
     for (const r of reminders) {
-      const b = byId.get(r.bookingId)!;
-      // En reservas de planner el contacto con el cliente lo lleva el planner (S29)
-      const viaPlanner = b.plannerName !== null;
-      const ctx: BookingCtx = {
-        venueName: venue.name,
-        recipientName: (viaPlanner ? b.plannerName : b.clientName)?.split(" ")[0] ?? "",
-        eventLabel: `${EVENT_TYPE_LABEL[b.eventType].toLowerCase()} del ${formatDate(b.eventDate)}`,
-        eventDate: formatDate(b.eventDate),
-        balance: formatPEN(balanceOf(b)),
-        balanceDueOn: b.balanceDueOn ? formatDate(b.balanceDueOn) : null,
-        guests: b.guests,
-      };
-      const t = TEMPLATES[r.kind as BookingTemplateId];
-      const common = {
-        venueId: venue.id,
-        kind: r.kind,
-        template: r.kind,
-        dedupeKey: r.dedupeKey,
-        bookingId: b.id,
-      };
-      if (
-        await enqueue(sql, {
-          ...common,
-          channel: "email",
-          recipient: viaPlanner ? b.plannerEmail : b.clientEmail,
-          subject: t.subject(ctx),
-          body: t.email(ctx),
-        })
-      )
-        queued += 1;
-      if (
-        await enqueue(sql, {
-          ...common,
-          channel: "whatsapp",
-          recipient: viaPlanner ? b.plannerPhone : b.clientPhone,
-          subject: null,
-          body: t.whatsapp(ctx),
-        })
-      )
-        queued += 1;
+      queued += await notifyCustomer(sql, venue, byId.get(r.bookingId)!, r.kind, r.dedupeKey);
+    }
+
+    // Encuesta NPS a eventos realizados en los últimos 7 días sin respuesta
+    const done = await sql<BookingRow>(
+      `${BOOKING_COLUMNS} where b.venue_id = $1 and b.status in ('done', 'settled')
+          and b.done_at > now() - interval '7 days'
+          and not exists (select 1 from nps_responses n where n.booking_id = b.id)`,
+      [venue.id],
+    );
+    for (const b of done) {
+      queued += await notifyCustomer(sql, venue, b, "nps_request", `nps_request:${b.id}`, {
+        link: `${siteUrl()}/encuesta/${npsToken(b.id)}`,
+      });
     }
 
     // Resumen de operación para staff
@@ -225,6 +248,11 @@ export async function runDaily(now = new Date()): Promise<RunReport> {
          from bookings where venue_id = $1 and status = 'prebooked'
           and hold_expires_at between now() and now() + interval '24 hours' order by hold_expires_at`,
       [venue.id],
+    );
+    const complaints = await sql<{ code: string; kind: string; dueOn: string }>(
+      `select code, kind, to_char(due_on, 'YYYY-MM-DD') as "dueOn" from complaints
+        where venue_id = $1 and responded_at is null and due_on <= $2::date + 5 order by due_on`,
+      [venue.id, today],
     );
     const ctx: DigestCtx = {
       venueName: venue.name,
@@ -244,6 +272,10 @@ export async function runDaily(now = new Date()): Promise<RunReport> {
           lines: reminders
             .filter((r) => r.kind === "balance_overdue")
             .map((r) => line(byId.get(r.bookingId)!)),
+        },
+        {
+          title: "Libro de Reclamaciones: por responder (vence en 5 días o menos)",
+          lines: complaints.map((c) => `${c.code} · ${c.kind} · vence ${formatDate(c.dueOn)}`),
         },
         {
           title: "Pre-reservas que vencen en 24 h",

@@ -19,6 +19,7 @@ const KIND_LABEL: Record<string, string> = {
   balance_overdue: "Saldo vencido",
   event_d7: "Evento D-7",
   event_d1: "Evento D-1",
+  nps_request: "Encuesta NPS",
   ops_daily: "Resumen de operación",
   lead_sla: "Lead sin respuesta",
   weekly_summary: "Resumen semanal",

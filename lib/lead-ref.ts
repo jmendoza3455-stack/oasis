@@ -1,9 +1,10 @@
+import { serverSecret } from "@/lib/secrets";
 import "server-only";
 import { createHmac, timingSafeEqual } from "node:crypto";
 
 // Referencia firmada de la conversación del chat: {leadId}.{activityId}.{firma}. El navegador la
 // devuelve en cada turno para seguir el mismo lead sin poder apuntar a otro.
-const secret = () => process.env.NPS_SECRET ?? process.env.RATE_LIMIT_SALT ?? "oasis-dev-chat";
+const secret = () => serverSecret("NPS_SECRET", "oasis-dev-chat");
 const sign = (payload: string) =>
   createHmac("sha256", secret()).update(`chat:${payload}`).digest("base64url").slice(0, 22);
 const UUID = /^[0-9a-f-]{36}$/;

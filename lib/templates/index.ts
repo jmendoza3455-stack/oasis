@@ -10,6 +10,7 @@ export type BookingCtx = {
   balance: string; // "S/ 2,655.00"
   balanceDueOn: string | null;
   guests: number;
+  link?: string;
 };
 
 export type DigestCtx = {
@@ -78,6 +79,14 @@ export const TEMPLATES = {
     whatsapp: (c) =>
       `Hola ${c.recipientName}, ¡todo listo para tu ${c.eventLabel}! Al llegar firmamos el acta de entrega. Contacto en el local: ${ONSITE_CONTACT}.`,
   }),
+  nps_request: bk({
+    version: "2026-10-18.1",
+    subject: (c) => `¿Cómo te fue en tu ${c.eventLabel}?`,
+    email: (c) =>
+      `Hola ${c.recipientName}:\n\nGracias por celebrar tu ${c.eventLabel} con nosotros. ¿Nos ayudas con una encuesta de 1 minuto? Tu opinión nos ayuda a mejorar.\n\n${c.link ?? ""}${sign(c)}`,
+    whatsapp: (c) =>
+      `Hola ${c.recipientName}, gracias por celebrar tu ${c.eventLabel} en ${c.venueName}. ¿Nos ayudas con una encuesta de 1 minuto? ${c.link ?? ""}`,
+  }),
   ops_daily: dg({
     version: "2026-10-18.1",
     subject: (c) => `Operación del día ${c.date} · ${c.venueName}`,
@@ -102,7 +111,12 @@ export const TEMPLATES = {
 
 export type TemplateId = keyof typeof TEMPLATES;
 export type BookingTemplateId =
-  "balance_due_soon" | "balance_due_today" | "balance_overdue" | "event_d7" | "event_d1";
+  | "balance_due_soon"
+  | "balance_due_today"
+  | "balance_overdue"
+  | "event_d7"
+  | "event_d1"
+  | "nps_request";
 
 function digest(c: DigestCtx, intro: string) {
   const body = c.items

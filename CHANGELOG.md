@@ -4,6 +4,15 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Fase 13 — E2E pulido y endurecimiento (18/10/2026)
+- Criterios §13 cubiertos de punta a punta: lead con UTM → pre-reserva → adelanto validado → Separada → CAC por campaña y en el dashboard; montos con y sin IGV verificados dentro de los PDF de cotización y contrato.
+- Secretos obligatorios en Vercel (`NPS_SECRET`, `ICAL_SECRET`, `RATE_LIMIT_SALT`): sin valores por defecto falsificables en producción.
+- Bucket privado `documents` de Storage creado por migración (idempotente).
+- Backup diario: falla en rojo si faltan sus secretos (antes se omitía en verde).
+- Encuesta NPS automática post-evento en el aviso diario; reclamos por vencer en el resumen de operación.
+- `/admin/reclamos`: Libro de Reclamaciones con plazo, detalle y registro de la respuesta (staff).
+- `day_boundary` y `checkout_time` editables en Configuración. `.env.example` completo (`DATABASE_POOL_MAX`, secretos obligatorios, marca).
+
 ### Fase 12 — documentos de negocio (18/10/2026)
 - `docs/261018 …`: modelo operativo, roles y RACI, políticas, programa de planners, plan de pauta a 90 días, tarifario propuesto con benchmark, checklist legal ejecutivo, plan de lanzamiento 30-60-90, manual por rol y guía de puesta en producción. Todo como borrador para validación; lo legal "por validar con abogado o contador".
 - Modelo económico `docs/261018 Modelo economico Oasis.xlsx` (generado por `scripts/modelo-economico.py`): parámetros en amarillo, fórmulas vivas, CAPEX/OPEX, unit economics por segmento y canal, equilibrio, payback, sensibilidad ocupación × ticket y equilibrio pauta vs planner. Recalculado sin errores en LibreOffice.
