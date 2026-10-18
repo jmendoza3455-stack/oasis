@@ -1,6 +1,6 @@
 // Crea los usuarios iniciales (admins y ops) en Supabase Auth con su rol en app_metadata.
 // El trigger handle_new_user crea el perfil con ese rol. Idempotente.
-// Uso: node --env-file=.env.local scripts/create-users.ts
+// Uso: node --env-file=.env.local scripts/create-users.mts
 import { createClient } from "@supabase/supabase-js";
 
 const url = process.env.NEXT_PUBLIC_SUPABASE_URL;

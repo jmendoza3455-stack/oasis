@@ -14,7 +14,11 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
-    "test:db": "vitest run --config vitest.db.config.ts"
+    "test:db": "vitest run --config vitest.db.config.ts",
+    "db:push": "NODE_USE_ENV_PROXY=1 node --env-file-if-exists=.env.local scripts/db-push.mts",
+    "db:seed": "NODE_USE_ENV_PROXY=1 node --env-file-if-exists=.env.local scripts/db-push.mts --seed",
+    "db:reset-demo": "NODE_USE_ENV_PROXY=1 node --env-file-if-exists=.env.local scripts/db-push.mts --file scripts/reset-demo.sql",
+    "users:create": "node --env-file-if-exists=.env.local scripts/create-users.mts"
   },
   "dependencies": {
     "@date-fns/tz": "^1.5.0",
