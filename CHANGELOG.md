@@ -4,6 +4,10 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Fase 7c-1 — configuración y planners (18/10/2026)
+- `/admin/configuracion`: todos los parámetros de OASIS.md §3 editables por el admin con validación (ops en solo lectura), tarifario con precio y marca de «validado», feriados.
+- `/admin/planners`: listado con estado, contrato marco, eventos vendidos y comisión pendiente; solicitudes de la web; invitación al portal (Supabase Auth en producción) y suspensión.
+
 ### Fase 7b — pagos, garantías y PDFs (18/10/2026)
 - Pagos manuales (transferencia, Yape, Plin, efectivo, tarjeta) con voucher en Supabase Storage (bucket privado, URLs firmadas); ops registra y solo el admin valida o rechaza con motivo.
 - Garantía retenida al validar su pago; devolución registrada por el admin. Comisión del planner devengada automáticamente al quedar el evento realizado y cobrado al 100 % (trigger en BD) y pago marcado por el admin.
