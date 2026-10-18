@@ -14,20 +14,31 @@ let failed = false;
 
 for (const route of ["/", "/bodas", "/corporativo", "/full-day", "/planners"]) {
   const out = path.join(dir, `${route.replaceAll("/", "_") || "home"}.json`);
-  execFileSync(
-    "npx",
-    [
-      "--yes",
-      "lighthouse@12",
-      base + route,
-      "--quiet",
-      "--chrome-flags=--headless=new --no-sandbox",
-      "--only-categories=performance,accessibility,best-practices,seo",
-      "--output=json",
-      `--output-path=${out}`,
-    ],
-    { stdio: "ignore" },
-  );
+  try {
+    execFileSync(
+      "npx",
+      [
+        "--yes",
+        "lighthouse@12",
+        base + route,
+        "--quiet",
+        "--chrome-flags=--headless=new --no-sandbox",
+        "--only-categories=performance,accessibility,best-practices,seo",
+        "--output=json",
+        `--output-path=${out}`,
+      ],
+      { stdio: "pipe" },
+    );
+  } catch (error) {
+    const msg = String(error.stderr ?? error.message)
+      .slice(-600)
+      .replaceAll("\n", " ");
+    console.log(
+      `${process.env.GITHUB_ACTIONS ? "::error::" : ""}Lighthouse falló en ${route}: ${msg}`,
+    );
+    failed = true;
+    continue;
+  }
   const { categories: c } = JSON.parse(readFileSync(out, "utf8"));
   const s = Object.fromEntries(Object.entries(c).map(([k, v]) => [k, Math.round(v.score * 100)]));
   const ok = s.performance >= minPerf && s.accessibility >= minA11y;
