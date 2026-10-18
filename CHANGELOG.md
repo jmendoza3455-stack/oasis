@@ -4,6 +4,11 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Fase 7a — CRM (18/10/2026)
+- `/admin/crm`: tablero por etapas (Nuevo → Liquidado / Perdido), filtros por canal, campaña UTM, alerta de atribución a planner y reloj de minutos hábiles sin primera respuesta (SLA 15 min, `lib/domain/sla.ts`).
+- Ficha de lead: contacto, origen (UTM, gclid, fbclid, landing), etapa con motivo de pérdida obligatorio, actividades con próximo paso y creación de pre-reserva con precio del tarifario y tope de descuento.
+- BD: la etapa del lead sigue al estado de su reserva; la primera actividad de contacto registra la primera respuesta.
+
 ### Fase 6 — feat/portal-planners (18/10/2026)
 - Portal `/planners/portal` (solo rol planner): contrato marco obligatorio en el primer ingreso (versión, fecha, IP y navegador registrados).
 - Disponibilidad libre / pre-reservado / ocupado, pre-reserva en un toque con cliente propio, contador de holds activos (máx. 2).
