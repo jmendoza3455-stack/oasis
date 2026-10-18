@@ -4,6 +4,12 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Fase 12 — documentos de negocio (18/10/2026)
+- `docs/261018 …`: modelo operativo, roles y RACI, políticas, programa de planners, plan de pauta a 90 días, tarifario propuesto con benchmark, checklist legal ejecutivo, plan de lanzamiento 30-60-90, manual por rol y guía de puesta en producción. Todo como borrador para validación; lo legal "por validar con abogado o contador".
+- Modelo económico `docs/261018 Modelo economico Oasis.xlsx` (generado por `scripts/modelo-economico.py`): parámetros en amarillo, fórmulas vivas, CAPEX/OPEX, unit economics por segmento y canal, equilibrio, payback, sensibilidad ocupación × ticket y equilibrio pauta vs planner. Recalculado sin errores en LibreOffice.
+- Investigación renombrada con prefijo YYMMDD. Matrimonio.com.pe: el "cierre del 29/12/2025" no tiene respaldo (provenía del cierre de Matrimonios.cl); su vigencia queda por verificar a mano y sin presupuesto asignado.
+- `docs/agentes.md` alineado con lo implementado (S32, S35: los agentes por cadencia solo proponen).
+
 ### Fase 11 — agentes (18/10/2026)
 - Recepcionista con IA en la web pública: chat que consulta disponibilidad, da el rango del cotizador, registra el lead (UTM y atribución al planner incluidas) y agenda la llamada; deriva a una persona descuentos, excepciones y reclamos. Corre como actor `agent` y queda en `audit_log`.
 - Tope de gasto mensual de IA con registro por corrida (`agent_runs`); al alcanzarlo deriva a WhatsApp. Se activa solo con `ANTHROPIC_API_KEY` y `ANTHROPIC_MODEL`.

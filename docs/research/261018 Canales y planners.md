@@ -34,6 +34,8 @@
 | **InEventos.com (Perú)** | **Sí.** Dice tener más de 13,000 proveedores registrados y cubre bodas, quinceañeros y eventos corporativos | La home muestra "**Alta Empresa GRATIS**". No se encontró si existen planes de pago ni su precio | **Media-alta para el segmento corporativo**, porque es el único directorio que mezcla social y corporativo. Tiene [Locales para eventos en Lima](https://www.ineventos.com/pe/locales-para-eventos/lima) y [Eventos corporativos](https://www.ineventos.com/pe/eventos-corporativos) | [ineventos.com/pe](https://www.ineventos.com/pe/); [Quiénes somos](https://www.ineventos.com/pe/quienessomos) |
 | **Matrimonio.org.pe** | Activo. Publica guías por distrito, por ejemplo "Bodas en Cieneguilla 2026" | No encontrado | Baja. Sirve como contenido o PR, no como directorio | [matrimonio.org.pe](https://matrimonio.org.pe/distritos/bodas-cieneguilla-guia-campestres-rurales-2026) |
 
+> **Corrección 18/10/2026:** el "**Sí**" de la fila de Matrimonio.com.pe **no está verificado para 2026**: se basó en que sus fichas siguen indexadas, y una página indexada no prueba que el sitio esté activo hoy. El benchmark de competidores, por su parte, afirmaba que cerró el 29/12/2025; esa fecha solo aparece en fuentes sobre **Matrimonios.cl (Chile)**, no sobre Perú. Conclusión: **estado de Matrimonio.com.pe por verificar manualmente**. Mientras tanto, no se le asigna presupuesto (ni Premium ni escaparate pagado) y la prioridad pasa a los directorios con actividad verificable (Matrimonio.pe, InEventos, BodasPlanner, Nupcia, Tuboda), también por reconfirmar al darse de alta. Fuentes de la corrección (WebSearch, consultadas el 18/10/2026): [haymatrimonio.cl — «Por qué cerró Matrimonios.cl en Chile»](https://haymatrimonio.cl/blog/por-que-cerro-matrimonios-cl-en-chile-todo-lo-que-debes-saber) (blog de un competidor chileno; solo habla de Chile); [ficha de la app Matrimonio.com.pe en Google Play](https://play.google.com/store/apps/details?id=pe.com.matrimonio.launcher&hl=es_PE) (indexada, sin aviso de cierre en el extracto); [Uptodown — app Matrimonio.com.pe](https://matrimonio-com-pe.en.uptodown.com/android) (versión 8.27.0 del 15/06/2025); [theknotww.com/international](https://theknotww.com/international/) (no lista los dominios por país). No se pudo abrir matrimonio.com.pe: WebFetch respondió `ENOTFOUND` y curl `403` del proxy de la sesión.
+
 **Tráfico:** no se encontraron cifras públicas de visitas ni de parejas registradas en ninguno de estos directorios peruanos. Si se quiere comparar tráfico, el siguiente paso es revisar Similarweb a mano.
 
 ---
@@ -228,7 +230,7 @@ Todas las prácticas vienen de la ayuda oficial de Google, consultada el 18/10/2
 ### Fase 0: preapertura (sin pauta o con una pauta mínima)
 
 1. **Google Business Profile:** crear o verificar el perfil ya, porque la publicación puede tardar hasta un mes. Subir fotos y publicar un evento de "Reapertura 17/12".
-2. **Directorios gratuitos:** escaparate gratis en Matrimonio.com.pe (pedir la cotización de Premium por escrito, porque el precio no es público), alta gratis en InEventos (bodas y corporativo), y fichas en BodasPlanner (solo 2 proveedores en Pachacámac), Matrimonio.pe, Nupcia y Tuboda.
+2. **Directorios gratuitos:** escaparate gratis en Matrimonio.com.pe (pedir la cotización de Premium por escrito, porque el precio no es público) [Corrección 18/10/2026: solo si se confirma que el sitio sigue activo; ver la nota de la sección 1], alta gratis en InEventos (bodas y corporativo), y fichas en BodasPlanner (solo 2 proveedores en Pachacámac), Matrimonio.pe, Nupcia y Tuboda.
 3. **Programa de planners (5%):** contactar primero a la Prioridad A (13 contactos) y después a la Prioridad B. Hacer un open house o fam trip antes del 17/12. Validar si el 5% atrae a los planners (ver sección 4).
 4. **Agencias de team building (sección 2b):** ofrecer El Oasis como sede para full days de enero a marzo.
 
@@ -253,7 +255,7 @@ Todas las prácticas vienen de la ayuda oficial de Google, consultada el 18/10/2
 
 ## Pendientes de verificación manual (por las limitaciones de esta investigación)
 
-1. Precio de Matrimonio.com.pe Premium para venues en Lima (pedir cotización comercial).
+1. Precio de Matrimonio.com.pe Premium para venues en Lima (pedir cotización comercial). Corrección 18/10/2026: antes, confirmar que el sitio peruano sigue activo (ver la nota de la sección 1).
 2. Tarifas de comisión actuales de Joinnus para eventos de pago.
 3. Volumen de búsquedas y CPC real en Google Keyword Planner para las keywords de la sección 7, y la curva de Google Trends (Perú y Lima) para "full day", "team building" y "local para matrimonio".
 4. Instagram o web de los planners marcados "IG/web no encontrado", y vigencia de los nombres de la lista histórica de Zankyou.
