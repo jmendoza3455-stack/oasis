@@ -387,3 +387,10 @@ Fuente: "SAWA – Estrategia y pasos a seguir" y "SAWA – Manual de marca" (ref
 15.13 Marca sin respaldo (André, 19/10/2026)
 - La marca es **Oasis Pachacámac** a secas: sin "Un espacio SAWA" en logo, web, metadatos, imágenes para compartir, Reels, carruseles, correos, mensajes ni documentos de negocio.
 - SAWA – Gestión Comercial S.A.C. sigue como **empresa operadora** y aparece solo donde la ley lo pide (Libro de Reclamaciones, aviso de privacidad, contrato, cotización y comprobantes, pie con RUC). La razón social se lee de `settings.company_legal_name`, junto con `company_ruc` y `company_address`; nada hardcodeado.
+
+15.14 Plataforma multi-local y experiencias (André y Carlos, 19/10/2026)
+- Marca madre **nueva** (nombre por definir) con varios locales; Oasis Pachacámac es el primero y conserva su nombre. La empresa deja de ser "un local" y vende **experiencias**: paquetes de local + servicios de proveedores.
+- **Pasarela de pago:** un pago confirmado por la pasarela (webhook con firma verificada e idempotente) se **valida solo**, con actor "pasarela" en `audit_log`. Esto modifica la regla 6 solo para esos pagos: transferencias, Yape manual, devoluciones y ajustes siguen siendo exclusivos del admin.
+- **Login con Google** para equipo, planners y clientes; portal "Mi cuenta" del cliente, vinculado solo por correo verificado.
+- No se rehace: se construye por fases (F1 base multi-local, F2 cobros y cuentas, F3 experiencias) sin frenar el go-live del 26/10. Detalle: `docs/261019 Plataforma multi-local y experiencias.md`.
+

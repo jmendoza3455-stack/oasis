@@ -4,6 +4,9 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Plataforma multi-local y experiencias: especificación (19/10/2026)
+- Decisiones de André y Carlos (OASIS §15.14): marca madre nueva con varios locales, experiencias como paquetes con servicios, pasarela de pago con validación automática de pagos confirmados y login con Google para equipo, planners y clientes. Plan por fases sin frenar el go-live: `docs/261019 Plataforma multi-local y experiencias.md`.
+
 ### Web · SEO y medición (19/10/2026)
 - Datos estructurados tipados con `schema-dts`: el local (LocalBusiness + EventVenue, con aforo, rango de precios solo si son públicos, teléfono y redes desde Configuración), preguntas frecuentes en la portada y en cada segmento, y migas de pan. Escapados para que ningún texto rompa la página.
 - Velocidad real de los visitantes (LCP, INP, CLS, FCP, TTFB) hacia GA4 con el medidor integrado de Next (`web-vitals`), solo con consentimiento de cookies.

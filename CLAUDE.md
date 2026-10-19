@@ -62,7 +62,7 @@ assets/         logo y fotos (placeholders marcados si faltan)
 3. Un planner **nunca** ve datos de otro planner ni de clientes directos (RLS + tests).
 4. Comisión del planner: 5% sobre el alquiler sin IGV, se devenga solo con evento Realizado y cobrado al 100%.
 5. Atribución: protección del lead del planner por 90 días (match por teléfono, correo o RUC).
-6. Solo el admin cambia tarifas y parámetros, aprueba descuentos sobre el tope, valida pagos y paga comisiones. **Ningún agente automático hace estas acciones.**
+6. Solo el admin cambia tarifas y parámetros, aprueba descuentos sobre el tope, valida pagos y paga comisiones. **Ningún agente automático hace estas acciones.** Única excepción: un pago confirmado por la pasarela (webhook firmado e idempotente) se valida solo; devoluciones y pagos manuales siguen con el admin (OASIS.md §15.14).
 7. Todo parámetro de negocio vive en `settings`/`rate_cards`; nada hardcodeado.
 8. Todo lead conserva UTM y gclid/fbclid hasta la reserva.
 9. `lib/domain/booking.ts` es espejo de `transition_booking()` en SQL: si cambias una, cambia la otra (hay un test que lo verifica).
