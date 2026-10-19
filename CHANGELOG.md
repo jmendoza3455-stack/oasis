@@ -4,6 +4,14 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Equipo de marketing (19/10/2026)
+- Equipo de agentes con aprobación humana: estratega (Growth), redactor (Contenido), editor de video, diseñador y director creativo con rúbrica de 10 criterios. Manual en `docs/261019 Equipo de marketing.md`.
+- `pnpm reels:render`: motor de Reels con la marca (cortes, encuadre vertical, zoom, textos en zonas seguras, cierre con isotipo, portada, −14 LUFS) y control técnico automático.
+- `pnpm design:render`: carruseles (4:5), historias y publicaciones de Google Business con la marca; verifica en el render real que ningún texto se corte.
+- `/admin/marketing`: subir clips desde el celular (directo al bucket privado, hasta 50 MB), revisar piezas con puntajes, pedir cambios, aprobar, descargar, marcar publicada y cargar resultados. Tablas `marketing_clips` y `marketing_pieces` con transiciones validadas en la BD.
+- `pnpm marketing snapshot|fetch|submit` para los agentes; la entrega rechaza piezas bajo 80 o con errores técnicos.
+- Fuentes de la marca (OFL) en `assets/fonts`. CI instala ffmpeg y Chromium antes de las pruebas de unidad.
+
 ### Redes y organigrama (19/10/2026)
 - `docs/261019 Plan de contenido redes 30 dias.md`: posicionamiento, cuentas y bio con UTM, 12 guiones de Reels, calendario del 26/10 a la reapertura, lista de tomas para Carlos, roles y medición por embudo (no por seguidores).
 - Portadas de destacados de Instagram en `assets/redes/destacados/` (SVG y PNG, paleta Oasis).

@@ -13,3 +13,21 @@ Propón (tipo `budget` o `content`):
 - Ajustes a la landing si los motivos de pérdida lo sugieren.
 
 Los cambios de presupuesto requieren aprobación; los aplica una persona en Meta/Google.
+
+## Revisión semanal de marketing (aprendizajes)
+
+Con `pnpm marketing snapshot`, compara las piezas publicadas.
+
+**Métricas:**
+
+- Guardados y compartidos por cada 1,000 de alcance.
+- Clics al link.
+- Leads por `utm_source` de redes.
+
+**Qué registrar:** como máximo 3 aprendizajes con datos, con `node scripts/agent.mts propose growth aprendizaje "<título>" <archivo.md>`:
+
+- Qué formato, gancho u horario rinde sobre la mediana y cuál bajo.
+- Qué repetir y qué dejar de hacer.
+- El ganador de la prueba de ganchos de la semana.
+
+**Regla:** con menos de 3 piezas comparables no hay aprendizaje; se dice que falta muestra. El redactor, el editor y el diseñador leen estos aprendizajes antes de producir.

@@ -138,6 +138,13 @@ if (cmd === "snapshot") {
          from marketing_pieces where venue_id = ${venue} and status = 'published'
         order by published_at desc limit 30`,
     ),
+    // Plan de la semana y aprendizajes que dejaron Contenido y Growth (y los pedidos de tomas)
+    team_notes: await json(
+      `select agent, kind, title, body, status, to_char(created_at, 'YYYY-MM-DD') as created
+         from agent_proposals where venue_id = ${venue}
+          and agent in ('contenido', 'growth', 'editor', 'disenador') and kind in ('content', 'aprendizaje')
+        order by created_at desc limit 12`,
+    ),
     clips: await json(
       `select storage_key as key, filename, notes, round(size_bytes / 1048576.0, 1) as mb,
               to_char(created_at, 'YYYY-MM-DD') as uploaded

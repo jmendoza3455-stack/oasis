@@ -7,7 +7,7 @@ import { db, loginAs, shot } from "./helpers";
 test.describe("marketing (serial)", () => {
   test.describe.configure({ mode: "serial" });
 
-  const code = `r${Math.floor(Math.random() * 900 + 100)}`;
+  const code = `e2e${process.pid}`; // único por proceso de Playwright (desktop y móvil corren en paralelo)
   const piece = async (n: number) =>
     (
       await db<{ id: string }>(
@@ -16,7 +16,7 @@ test.describe("marketing (serial)", () => {
                 '{"score": 95, "ok": true, "checks": [{"id": "figures", "label": "Cifras en pantalla verificadas", "ok": false, "severity": "warning", "detail": "verificar: 17/12"}]}',
                 '{"score": 88, "verdict": "aprobar", "notes": ["Gancho claro en 1 s"]}', 'editor'
            from venues where slug = 'oasis-pachacamac' returning id`,
-        [code, n, `Estamos renovando (prueba E2E v${n})`],
+        [code, n, `Estamos renovando (prueba E2E ${code} v${n})`],
       )
     )[0].id;
 
@@ -27,9 +27,8 @@ test.describe("marketing (serial)", () => {
 
   test("operaciones sube clips desde el celular y no puede decidir piezas", async ({
     page,
-    isMobile,
   }, info) => {
-    if (!isMobile) await piece(1);
+    await piece(1);
     await loginAs(page, "ops@demo.oasis.test");
     await page.goto("/admin/marketing");
     await page.getByLabel("¿Qué muestran? (opcional)").fill(`E2E piscina ${info.project.name}`);
@@ -48,7 +47,7 @@ test.describe("marketing (serial)", () => {
       .setInputFiles({ name: "nota.txt", mimeType: "text/plain", buffer: Buffer.from("x") });
     await expect(page.getByText(/Formato no permitido/)).toBeVisible();
     // Ve la pieza pero sin botones de decisión
-    await expect(page.getByText(`Estamos renovando (prueba E2E v1)`)).toBeVisible();
+    await expect(page.getByText(`Estamos renovando (prueba E2E ${code} v1)`)).toBeVisible();
     await expect(page.getByRole("button", { name: "Aprobar" })).toHaveCount(0);
     await shot(page, info, "marketing-ops");
   });
@@ -63,7 +62,7 @@ test.describe("marketing (serial)", () => {
     );
     await loginAs(page, "admin@demo.oasis.test");
     await page.goto("/admin/marketing");
-    const v1 = page.getByRole("listitem").filter({ hasText: "prueba E2E v1" });
+    const v1 = page.getByRole("listitem").filter({ hasText: `${code} v1` });
     await expect(v1.getByText("Director creativo 88/100")).toBeVisible();
     await expect(v1.getByText("Técnico 95/100")).toBeVisible();
     await v1.getByText("Observaciones técnicas (1)").click();
@@ -83,10 +82,10 @@ test.describe("marketing (serial)", () => {
     );
     await piece(2);
     await page.reload();
-    const v2 = page.getByRole("listitem").filter({ hasText: "prueba E2E v2" });
+    const v2 = page.getByRole("listitem").filter({ hasText: `${code} v2` });
     await v2.getByRole("button", { name: "Aprobar" }).click();
     // Pasa a "Listas para publicar" con el formulario de publicación
-    const ready = page.getByRole("listitem").filter({ hasText: "prueba E2E v2" });
+    const ready = page.getByRole("listitem").filter({ hasText: `${code} v2` });
     await expect(ready.getByRole("button", { name: "Copiar caption" })).toBeVisible();
     await ready
       .getByLabel("Enlace en Instagram")
@@ -95,7 +94,7 @@ test.describe("marketing (serial)", () => {
     // Pasa a "Publicadas y resultados"
     const pub = page
       .getByRole("listitem")
-      .filter({ hasText: "prueba E2E v2" })
+      .filter({ hasText: `${code} v2` })
       .filter({ has: page.getByRole("link", { name: "instagram" }) });
     await pub.getByLabel("Alcance").fill("1200");
     await pub.getByLabel("Guardados").fill("40");

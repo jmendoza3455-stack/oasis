@@ -372,3 +372,8 @@ Fuente: "SAWA – Estrategia y pasos a seguir" y "SAWA – Manual de marca" (ref
 - El calendario mensual **reemplaza el campo fecha** del cotizador público. Cada día muestra Libre / **En espera** (pre-reserva vigente) / Ocupado, sin datos de terceros, leído en vivo de la BD (`public_availability`).
 - Con precios públicos activos, cada día libre muestra su precio "desde" (misma función que el rango del cotizador) y la tarifa L-J o promociones como "oferta".
 - Horizonte: `public_calendar_months` (18 meses, supuesto S44 hasta medir la anticipación real con el historial). Evidencia y pruebas en `docs/261019 Calendario vivo - evidencia.md`.
+
+15.11 Equipo de marketing (André, 19/10/2026)
+- "Nadie edita Reels": se crea un equipo de marketing de agentes con aprobación humana. Estratega (Growth), redactor (Contenido), **editor de video** y **diseñador** nuevos, y un **director creativo** que revisa cada pieza con una rúbrica (≥ 80 y veracidad 10/10). André aprueba y publica; Carlos graba.
+- Motores propios con la marca: `pnpm reels:render` (ffmpeg) y `pnpm design:render` (Chromium), ambos con control de calidad técnico. Flujo en `/admin/marketing` (tablas `marketing_clips` y `marketing_pieces`, bucket privado `marketing`).
+- Métrica norte: fechas consultadas y leads desde redes, no seguidores. Manual: `docs/261019 Equipo de marketing.md`.

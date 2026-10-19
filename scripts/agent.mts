@@ -10,7 +10,16 @@ import { readFileSync } from "node:fs";
 import pg from "pg";
 
 const [cmd, agent, ...rest] = process.argv.slice(2);
-const AGENTS = ["closer", "revenue", "growth", "planners", "controller", "contenido"];
+const AGENTS = [
+  "closer",
+  "revenue",
+  "growth",
+  "planners",
+  "controller",
+  "contenido",
+  "editor",
+  "disenador",
+];
 if (!["snapshot", "propose"].includes(cmd) || !AGENTS.includes(agent)) {
   console.error(`Uso: snapshot|propose <${AGENTS.join("|")}> …`);
   process.exit(1);
