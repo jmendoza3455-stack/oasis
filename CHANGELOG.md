@@ -4,6 +4,10 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Fase 2 · agentes programados y cierre (19/10/2026)
+- Los 6 agentes por cadencia quedaron creados como tareas programadas de Claude Code (desactivadas hasta el 01/12/2026, con recordatorio para activarlas si producción ya no tiene el demo).
+- `docs/261019 Cierre de construccion y backlog.md`: avance de la fase 2 y backlog restante.
+
 ### Fase 2 · respaldo de archivos (19/10/2026)
 - Backup diario cifrado de los archivos del bucket `documents` (job `storage` en `backup.yml`, `scripts/backup-storage.mts`): requiere los secretos de GitHub `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` y `BACKUP_PASSPHRASE`; falla en rojo si faltan.
 - Recorrido paginado y recursivo del bucket (`lib/backup/walk.ts`) con test.
@@ -40,7 +44,7 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 ### Fase 14 — despliegue y cierre (18/10/2026)
 - Producción en Vercel desde `main` con todas las migraciones aplicadas, crons registrados y secretos obligatorios cargados.
 - Node fijado a 22.x (`engines`) para evitar saltos de versión automáticos en Vercel.
-- `docs/261018 Cierre de construccion y backlog.md`: checklist §13 con evidencia, pendientes de André y Carlos con fecha límite y backlog de la fase 2 priorizado por impacto en ocupación.
+- `docs/261019 Cierre de construccion y backlog.md`: checklist §13 con evidencia, pendientes de André y Carlos con fecha límite y backlog de la fase 2 priorizado por impacto en ocupación.
 
 ### Fase 13 — E2E pulido y endurecimiento (18/10/2026)
 - Criterios §13 cubiertos de punta a punta: lead con UTM → pre-reserva → adelanto validado → Separada → CAC por campaña y en el dashboard; montos con y sin IGV verificados dentro de los PDF de cotización y contrato.

@@ -1,6 +1,6 @@
 # Cierre de construcción y backlog · Oasis Pachacámac · Un espacio SAWA
 
-- **Fecha:** 18/10/2026
+- **Fecha:** 19/10/2026 (actualizado con la fase 2)
 - **Estado:** Ola 1 y Ola 2 construidas (fases 1–14). Pendiente de lanzamiento comercial.
 - **Relacionados:** [Plan de lanzamiento 30-60-90](261018%20Plan%20de%20lanzamiento%2030-60-90.md) · [Guía de puesta en producción](261018%20Guia%20de%20puesta%20en%20produccion.md) · [Supuestos](supuestos.md) · [CHANGELOG](../CHANGELOG.md)
 
@@ -45,20 +45,27 @@ Suite al cierre: 70 unit (cobertura de dominio ≥ 90 %), 28 de BD y 77 E2E (des
 | 12  | Revisión legal y contable (checklist legal)                            | Licencias, ruido, piscina, contratos, facturación    | Antes de la reapertura |
 | 13  | ¿Repo privado?                                                         | Confidencialidad del código y documentos             | Cuando decidan         |
 
-## 4. Backlog de la fase 2 (priorizado por impacto en ocupación)
+## 4. Fase 2 · avance (19/10/2026)
 
-| Prioridad | Ítem                                                                                          | Impacto en ocupación                                | Esfuerzo                  |
-| --------- | --------------------------------------------------------------------------------------------- | --------------------------------------------------- | ------------------------- |
-| 1         | Recepcionista en WhatsApp (Cloud API)                                                         | Alto: es el canal principal en Perú; respuesta 24/7 | Medio                     |
-| 2         | Programar los agentes por cadencia (Closer, Revenue, Growth, Planners, Controller, Contenido) | Alto: seguimiento diario y promos para huecos       | Bajo (tareas programadas) |
-| 3         | Pre-reserva desde el chat con confirmación humana en un clic (S35)                            | Alto: acorta el ciclo lead → fecha                  | Medio                     |
-| 4         | Promos L-J y fechas libres en el cotizador público                                            | Medio–alto: ocupación entre semana                  | Medio                     |
-| 5         | Portal de planners: subir vouchers y compartir fechas libres                                  | Medio: menos fricción para el canal prioritario     | Bajo                      |
-| 6         | Flujo de reprogramación en el sistema                                                         | Medio: retiene ventas que hoy serían cancelaciones  | Medio                     |
-| 7         | Pedido automático de reseña en Google a promotores (NPS ≥ 9)                                  | Medio: SEO local y confianza                        | Bajo                      |
-| 8         | Hora de corte de música como parámetro (S39)                                                  | Medio: evita multas y conflictos                    | Bajo                      |
-| 9         | Temporadas por segmento y fechas especiales en el tarifario                                   | Medio: precio correcto en fechas pico               | Medio                     |
-| 10        | Alerta de SLA según `business_hours` (no fija en `vercel.json`)                               | Bajo–medio                                          | Bajo                      |
-| 11        | Garantía por segmento y tipo de día                                                           | Bajo                                                | Bajo                      |
-| 12        | Respaldo de archivos de Storage (S38)                                                         | Riesgo operativo, no ocupación                      | Bajo                      |
-| 13        | Integración de facturación electrónica                                                        | Eficiencia administrativa                           | Alto                      |
+| Ítem                                                                            | Estado                                                                                                                            |
+| ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Recepcionista en WhatsApp (Cloud API)                                           | Hecho. Inactivo hasta cargar las credenciales de Meta (guía §9)                                                                   |
+| Agentes por cadencia (Closer, Revenue, Growth, Planners, Controller, Contenido) | Programados como tareas de Claude Code, **desactivados hasta el 01/12/2026** (se activan solos si producción ya no tiene el demo) |
+| Pre-reserva desde el chat con confirmación humana en un clic                    | Hecho (`/admin/agentes`)                                                                                                          |
+| Promociones (p. ej. L-J corporativo) en cotizador, chat y pre-reservas          | Hecho (`/admin/promociones`)                                                                                                      |
+| Portal de planners: fechas libres para compartir y envío de vouchers            | Hecho                                                                                                                             |
+| Reprogramación con política y excepción del admin                               | Hecho                                                                                                                             |
+| Pedido de reseña en Google a promotores (NPS 9–10)                              | Hecho (falta `google_review_url`)                                                                                                 |
+| Hora de corte de música como parámetro (S39)                                    | Hecho (valor por validar con abogado)                                                                                             |
+| Alerta de SLA según `business_hours`                                            | Hecho                                                                                                                             |
+| Respaldo diario de archivos de Storage                                          | Hecho (faltan los secretos en GitHub)                                                                                             |
+| Encuesta NPS automática y Libro de Reclamaciones en el back-office              | Hecho                                                                                                                             |
+
+## 5. Backlog restante (priorizado por impacto en ocupación)
+
+| Prioridad | Ítem                                                                                    | Impacto                               | Esfuerzo                         |
+| --------- | --------------------------------------------------------------------------------------- | ------------------------------------- | -------------------------------- |
+| 1         | Plantillas de WhatsApp aprobadas en Meta para avisos proactivos (saldos, D-7, D-1, NPS) | Medio–alto: hoy salen en cola manual  | Bajo (tras verificar el negocio) |
+| 2         | Temporadas por segmento y recargos en fechas especiales                                 | Medio: precio correcto en fechas pico | Medio                            |
+| 3         | Garantía por segmento y tipo de día                                                     | Bajo                                  | Bajo                             |
+| 4         | Integración de facturación electrónica (SAWA)                                           | Eficiencia administrativa             | Alto (requiere proveedor)        |
