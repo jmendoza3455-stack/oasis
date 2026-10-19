@@ -73,6 +73,81 @@ describe("una sola reserva activa por fecha (OASIS.md §13)", () => {
     ).rejects.toThrow(/occupancy_no_overlap/);
   });
 
+  it("un bloqueo deja la fecha no disponible en la web, el portal y el calendario público", async () => {
+    const date = nextDate();
+    await as(pool, w.ops, (c) =>
+      c.query(
+        `insert into public.blocks (venue_id, starts_on, ends_on, reason) values ($1, $2, $2, 'Obra')`,
+        [w.venueId, date],
+      ),
+    );
+    const anon = await as(pool, "anon", async (c) => ({
+      available: (await c.query(`select public.is_date_available('bookings', $1) as ok`, [date]))
+        .rows[0].ok,
+      day: (
+        await c.query(`select status from public.public_availability('bookings', $1, $1)`, [date])
+      ).rows[0].status,
+    }));
+    expect(anon).toEqual({ available: false, day: "taken" });
+    const planner = await as(pool, w.plannerB, async (c) => {
+      const { rows } = await c.query(`select status from public.get_availability($1, $2, $2)`, [
+        w.venueId,
+        date,
+      ]);
+      return rows[0].status;
+    });
+    expect(planner).toBe("occupied");
+  });
+
+  it("calendario público: libre, en espera (pre-reserva vigente) y ocupado, sin datos de terceros", async () => {
+    const free = nextDate();
+    const held = nextDate();
+    const taken = nextDate();
+    await as(pool, w.plannerA, (c) =>
+      c.query(`select public.create_hold($1, $2, 'wedding', 80)`, [w.venueId, held]),
+    );
+    const b = await staffBooking(taken, { rental_list_net: 4000 });
+    await as(pool, w.admin, async (c) => {
+      await c.query(
+        `insert into public.payments (booking_id, kind, amount, method, status) values ($1, 'deposit', $2, 'transfer', 'validated')`,
+        [b.id, b.deposit_amount],
+      );
+      await c.query(`select public.transition_booking($1, 'reserved')`, [b.id]);
+    });
+    const rows = await as(pool, "anon", async (c) => {
+      const { rows } = await c.query(
+        `select to_char(day, 'YYYY-MM-DD') as day, status from public.public_availability('bookings', $1, $2)`,
+        [free, taken],
+      );
+      return Object.fromEntries(rows.map((r) => [r.day, r.status]));
+    });
+    expect(rows[free]).toBe("free");
+    expect(rows[held]).toBe("hold");
+    expect(rows[taken]).toBe("taken");
+    // Expira el hold → vuelve a libre sola
+    await as(pool, "service", (c) =>
+      c.query(
+        `update public.bookings set hold_expires_at = now() - interval '1 minute' where event_date = $1 and venue_id = $2`,
+        [held, w.venueId],
+      ),
+    );
+    const after = await as(
+      pool,
+      "anon",
+      async (c) =>
+        (await c.query(`select status from public.public_availability('bookings', $1, $1)`, [held]))
+          .rows[0].status,
+    );
+    expect(after).toBe("free");
+    await expect(
+      as(pool, "anon", (c) =>
+        c.query(
+          `select * from public.public_availability('bookings', current_date, current_date + 90)`,
+        ),
+      ),
+    ).rejects.toThrow(/invalid_range/);
+  });
+
   it("cancelar libera la fecha", async () => {
     const date = nextDate();
     const b = await staffBooking(date);

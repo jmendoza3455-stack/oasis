@@ -95,6 +95,7 @@ begin
     (v_venue, 'first_response_sla_minutes', '15', 'OASIS.md §5.3'),
     (v_venue, 'balance_notice_days', '3', 'Recordatorio de saldo: días antes del vencimiento'),
     (v_venue, 'public_prices_enabled', 'false', 'Publicar precios "desde" y la página /precios (validar tarifario antes, S24)'),
+    (v_venue, 'public_calendar_months', '18', 'Meses hacia adelante que muestra el calendario de la web'),
     (v_venue, 'company_ruc', '""', 'RUC de SAWA – Gestión Comercial S.A.C. para el pie de página'),
     (v_venue, 'company_address', '""', 'Domicilio fiscal de SAWA (Libro de Reclamaciones y aviso de privacidad)'),
     (v_venue, 'privacy_email', '""', 'Correo para derechos ARCO y datos personales'),

@@ -175,6 +175,13 @@ export const SETTINGS: SettingDef[] = [
     help: "Muestra precios «desde» y la página /precios. Actívalo solo con el tarifario validado (S24)",
   },
   {
+    key: "public_calendar_months",
+    label: "Meses del calendario web",
+    group: "Web",
+    type: "number",
+    help: "Cuántos meses hacia adelante puede navegar el cliente en el calendario",
+  },
+  {
     key: "company_ruc",
     label: "RUC de SAWA",
     group: "Web",
