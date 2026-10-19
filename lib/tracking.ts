@@ -5,15 +5,26 @@ import { writeStored } from "@/lib/use-stored";
 // Eventos de conversión (OASIS.md §6.1). Solo se envían si el visitante aceptó cookies de
 // medición y si los IDs están configurados (los scripts se cargan en <Analytics />).
 export type TrackEvent =
-  "lead_submit" | "whatsapp_click" | "availability_check" | "quote_view" | "chat_open";
+  | "lead_submit"
+  | "whatsapp_click"
+  | "availability_check"
+  | "quote_view"
+  | "chat_open"
+  // Embudo del calendario vivo: ve el calendario → elige fecha → deja datos → separa
+  | "calendar_view"
+  | "calendar_month"
+  | "calendar_day_select"
+  | "calendar_unavailable_tap";
 
 type Win = Window & {
   gtag?: (...args: unknown[]) => void;
   fbq?: (...args: unknown[]) => void;
+  clarity?: (...args: unknown[]) => void;
   dataLayer?: unknown[];
 };
 
-const META_EVENT: Record<TrackEvent, string> = {
+// Solo los eventos de conversión van a Meta; el detalle del calendario queda en GA4 y Clarity
+const META_EVENT: Partial<Record<TrackEvent, string>> = {
   lead_submit: "Lead",
   whatsapp_click: "Contact",
   availability_check: "Search",
@@ -24,7 +35,8 @@ const META_EVENT: Record<TrackEvent, string> = {
 export function track(event: TrackEvent, params: Record<string, string | number | undefined> = {}) {
   const w = window as Win;
   w.gtag?.("event", event, params);
-  w.fbq?.("track", META_EVENT[event], params);
+  if (META_EVENT[event]) w.fbq?.("track", META_EVENT[event], params);
+  w.clarity?.("event", event);
   const adsId = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID;
   const label = process.env.NEXT_PUBLIC_GOOGLE_ADS_LEAD_LABEL;
   if (event === "lead_submit" && adsId && label)

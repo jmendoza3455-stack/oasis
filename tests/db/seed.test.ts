@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import type pg from "pg";
+import { peruHolidays } from "@/lib/domain";
 import { as, createPool } from "./db";
 
 let pool: pg.Pool;
@@ -62,5 +63,18 @@ describe("seed de demo (OASIS.md §12)", () => {
     const r = await one(`select count(*)::int as n from audit_log
                           where entity = 'bookings' and action = 'update' and actor_type = 'system'`);
     expect(r.n).toBeGreaterThanOrEqual(12);
+  });
+
+  it("hay feriados cargados para todo el horizonte del calendario público (2026–2028)", async () => {
+    const rows = await as(pool, "service", async (c) =>
+      (
+        await c.query(
+          `select to_char(date, 'YYYY-MM-DD') as d from holidays where type = 'feriado' and date between '2026-01-01' and '2028-12-31'`,
+        )
+      ).rows.map((r) => r.d as string),
+    );
+    const loaded = new Set(rows);
+    const expected = [2026, 2027, 2028].flatMap((y) => peruHolidays(y).map((h) => h.date));
+    expect(expected.filter((d) => !loaded.has(d))).toEqual([]);
   });
 });

@@ -11,10 +11,14 @@ const CONSENT_KEY = "oasis_consent";
 const GA4 = process.env.NEXT_PUBLIC_GA4_ID;
 const PIXEL = process.env.NEXT_PUBLIC_META_PIXEL_ID;
 const ADS = process.env.NEXT_PUBLIC_GOOGLE_ADS_ID;
+const CLARITY = process.env.NEXT_PUBLIC_CLARITY_ID;
 
 type Consent = "granted" | "denied" | null;
 
-/** Banner de cookies (Ley 29733) + carga diferida de GA4, Meta Pixel y Google Ads. */
+/**
+ * Banner de cookies (Ley 29733) + carga diferida de GA4, Meta Pixel, Google Ads y Microsoft
+ * Clarity (mapas de calor y grabaciones anónimas, para medir el embudo del calendario).
+ */
 export function Analytics() {
   const stored = useStored(CONSENT_KEY);
   const ready = stored !== undefined;
@@ -26,7 +30,7 @@ export function Analytics() {
 
   const decide = (value: "granted" | "denied") => writeStored(CONSENT_KEY, value);
 
-  const hasTrackers = Boolean(GA4 || PIXEL || ADS);
+  const hasTrackers = Boolean(GA4 || PIXEL || ADS || CLARITY);
 
   return (
     <>
@@ -44,6 +48,11 @@ export function Analytics() {
       {consent === "granted" && PIXEL && (
         <Script id="meta-pixel" strategy="afterInteractive">
           {`!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','${PIXEL}');fbq('track','PageView');`}
+        </Script>
+      )}
+      {consent === "granted" && CLARITY && (
+        <Script id="ms-clarity" strategy="afterInteractive">
+          {`(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","${CLARITY}");`}
         </Script>
       )}
       {ready && hasTrackers && consent === null && (

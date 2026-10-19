@@ -1,7 +1,11 @@
+import fc from "fast-check";
 import { describe, expect, it } from "vitest";
 import {
   addMonths,
+  bestPromotion,
   buildPublicMonth,
+  estimateRange,
+  quote,
   isMonth,
   monthBounds,
   monthGrid,
@@ -116,5 +120,102 @@ describe("buildPublicMonth", () => {
       pricing: { cards, promotions: [], settings, eventType: "corporate", guests: 400 },
     });
     expect(days.every((d) => d.from === null && !d.offer)).toBe(true);
+  });
+});
+
+describe("precio del calendario = rango del cotizador ⊇ precio de la cotización (propiedad)", () => {
+  // Misma fuente de verdad: el "desde" de cada día es el mínimo de estimateRange (lo que muestra
+  // el cotizador al tocar el día), y quote() —el precio que se guarda en la pre-reserva y sale en
+  // el PDF— cae siempre dentro de ese rango.
+  const dayTypes = ["mon_thu", "fri", "sat", "sun_holiday"] as const;
+  const seasons = ["low", "high"] as const;
+  const arbCards = fc
+    .tuple(
+      ...dayTypes.flatMap(() => seasons.map(() => fc.integer({ min: 500, max: 12_000 }))),
+      fc.integer({ min: 0, max: 60 }),
+    )
+    .map((prices) =>
+      dayTypes.flatMap((dayType, i) =>
+        seasons.map((s, j): RateCard => ({
+          id: `${dayType}-${s}`,
+          eventType: "wedding",
+          slot: "full_day",
+          dayType,
+          season: s,
+          guestsMin: 1,
+          guestsMax: 150,
+          priceNet: prices[i * 2 + j],
+          pricePerGuestNet: prices[8],
+          validFrom: "2026-01-01",
+          validTo: null,
+        })),
+      ),
+    );
+  const arbPromo = fc.option(
+    fc.record({
+      discountPct: fc.integer({ min: 1, max: 10 }),
+      dayTypes: fc.subarray([...dayTypes], { minLength: 1 }),
+    }),
+    { nil: null },
+  );
+
+  it("para cualquier tarifario, día, aforo y promoción", () => {
+    fc.assert(
+      fc.property(
+        arbCards,
+        arbPromo,
+        fc.integer({ min: 0, max: 17 }),
+        fc.integer({ min: 1, max: 150 }),
+        (cards, promo, monthOffset, guests) => {
+          const month = addMonths("2026-11", monthOffset);
+          const promotions: Promotion[] = promo
+            ? [
+                {
+                  id: "p",
+                  name: "Promo",
+                  eventTypes: ["wedding"],
+                  dayTypes: promo.dayTypes,
+                  startsOn: "2026-01-01",
+                  endsOn: "2028-12-31",
+                  discountPct: promo.discountPct,
+                },
+              ]
+            : [];
+          const s = { ...settings, quoteRangeSpread: 0.1 };
+          const holidays = new Set(["2026-12-25", "2027-07-28"]);
+          const days = buildPublicMonth({
+            month,
+            today: "2026-10-19",
+            occupancy: {},
+            holidays,
+            highSeasonMonths: s.highSeasonMonths,
+            pricing: { cards, promotions, settings: s, eventType: "wedding", guests },
+          });
+          for (const d of days) {
+            const promotion = bestPromotion(
+              promotions,
+              { eventType: "wedding", date: d.date },
+              holidays,
+            );
+            const range = estimateRange(
+              cards,
+              { eventType: "wedding", date: d.date, guests, promotion },
+              holidays,
+              s,
+            );
+            const exact = quote(
+              cards,
+              { eventType: "wedding", date: d.date, guests, promotion },
+              holidays,
+              s,
+            );
+            expect(d.from).toBe(range.min);
+            expect(exact.rental.gross).toBeGreaterThanOrEqual(range.min);
+            expect(exact.rental.gross).toBeLessThanOrEqual(range.max);
+          }
+        },
+      ),
+      { numRuns: 200 },
+    );
   });
 });

@@ -8,6 +8,8 @@ export type PricingContext = {
   holidays: Set<string>;
   /** Precios visibles al público (cotizador y chat). Off hasta validar el tarifario (S24). */
   publicPricesEnabled: boolean;
+  /** Meses hacia adelante del calendario público. */
+  publicCalendarMonths: number;
   settings: PricingSettings;
 };
 
@@ -42,6 +44,7 @@ export async function loadPricingContext(venueId: string): Promise<PricingContex
       promotions,
       holidays: new Set(holidays.map((h) => h.d)),
       publicPricesEnabled: s.public_prices_enabled === true,
+      publicCalendarMonths: Number(s.public_calendar_months ?? 18),
       settings: {
         igvRate: Number(s.igv_rate ?? 0.18),
         highSeasonMonths: (s.high_season_months as number[]) ?? [12, 1, 2, 3],

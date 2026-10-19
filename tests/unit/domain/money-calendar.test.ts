@@ -96,3 +96,23 @@ describe("calendar", () => {
     expect(() => formatDate("17/12/2026")).toThrow("invalid_date");
   });
 });
+
+describe("feriados", () => {
+  it("calcula la Pascua (valores publicados) y la Semana Santa", async () => {
+    const { easterSunday, peruHolidays } = await import("@/lib/domain");
+    // Pascua: 2024-03-31, 2025-04-20, 2026-04-05, 2027-03-28, 2028-04-16, 2038-04-25
+    expect([2024, 2025, 2026, 2027, 2028, 2038].map(easterSunday)).toEqual([
+      "2024-03-31",
+      "2025-04-20",
+      "2026-04-05",
+      "2027-03-28",
+      "2028-04-16",
+      "2038-04-25",
+    ]);
+    const h2028 = peruHolidays(2028);
+    expect(h2028).toHaveLength(16);
+    expect(h2028.filter((h) => /^(Jueves|Viernes) Santo$/.test(h.name)).map((h) => h.date)).toEqual(
+      ["2028-04-13", "2028-04-14"],
+    );
+  });
+});

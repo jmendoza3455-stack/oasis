@@ -21,6 +21,7 @@
     "users:create": "node --env-file-if-exists=.env.local scripts/create-users.mts",
     "agent": "node --env-file-if-exists=.env.local scripts/agent.mts",
     "db:local": "node scripts/db-local.mts",
+    "analisis:anticipacion": "tsx --env-file-if-exists=.env.local scripts/lead-time.mts",
     "lighthouse": "node scripts/lighthouse.mjs",
     "verify": "pnpm format && pnpm typecheck && pnpm lint && pnpm test:coverage && pnpm test:db"
   },
@@ -46,6 +47,7 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.14.0",
     "@playwright/test": "^1.64.1",
     "@tailwindcss/turbopack": "^4",
     "@types/node": "^20",
@@ -55,6 +57,7 @@
     "@vitest/coverage-v8": "^5.0.5",
     "eslint": "^9",
     "eslint-config-next": "16.4.2",
+    "fast-check": "^4.10.2",
     "pdfjs-dist": "6.4.299",
     "pg": "^8.23.1",
     "prettier": "^3.9.10",

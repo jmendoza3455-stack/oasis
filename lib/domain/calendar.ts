@@ -64,3 +64,51 @@ export function formatDate(date: ISODate): string {
   toUTC(date);
   return `${d}/${m}/${y}`;
 }
+
+/** Domingo de Pascua (algoritmo gregoriano anónimo de Meeus/Jones/Butcher). */
+export function easterSunday(year: number): ISODate {
+  const a = year % 19;
+  const b = Math.floor(year / 100);
+  const c = year % 100;
+  const d = Math.floor(b / 4);
+  const e = b % 4;
+  const f = Math.floor((b + 8) / 25);
+  const g = Math.floor((b - f + 1) / 3);
+  const h = (19 * a + b - d - g + 15) % 30;
+  const i = Math.floor(c / 4);
+  const k = c % 4;
+  const l = (32 + 2 * e + 2 * i - h - k) % 7;
+  const m = Math.floor((a + 11 * h + 22 * l) / 451);
+  const month = Math.floor((h + l - 7 * m + 114) / 31);
+  const day = ((h + l - 7 * m + 114) % 31) + 1;
+  return `${year}-${String(month).padStart(2, "0")}-${String(day).padStart(2, "0")}`;
+}
+
+// Feriados nacionales del D.L. 713, art. 6, con sus modificatorias (Leyes 31530, 31788 y 31822).
+// Fuente y estado: docs/research/261018 Feriados Peru 2026-2027.md (por validar con El Peruano).
+const FIXED_HOLIDAYS: readonly [string, string][] = [
+  ["01-01", "Año Nuevo"],
+  ["05-01", "Día del Trabajo"],
+  ["06-07", "Batalla de Arica y Día de la Bandera"],
+  ["06-29", "San Pedro y San Pablo"],
+  ["07-23", "Día de la Fuerza Aérea del Perú"],
+  ["07-28", "Fiestas Patrias"],
+  ["07-29", "Fiestas Patrias"],
+  ["08-06", "Batalla de Junín"],
+  ["08-30", "Santa Rosa de Lima"],
+  ["10-08", "Combate de Angamos"],
+  ["11-01", "Día de Todos los Santos"],
+  ["12-08", "Inmaculada Concepción"],
+  ["12-09", "Batalla de Ayacucho"],
+  ["12-25", "Navidad"],
+];
+
+/** Feriados nacionales de un año (fijos + Jueves y Viernes Santo según la Pascua). */
+export function peruHolidays(year: number): { date: ISODate; name: string }[] {
+  const easter = easterSunday(year);
+  return [
+    ...FIXED_HOLIDAYS.map(([md, name]) => ({ date: `${year}-${md}`, name })),
+    { date: addDays(easter, -3), name: "Jueves Santo" },
+    { date: addDays(easter, -2), name: "Viernes Santo" },
+  ].sort((x, y) => x.date.localeCompare(y.date));
+}

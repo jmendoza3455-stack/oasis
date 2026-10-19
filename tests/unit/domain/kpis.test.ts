@@ -125,3 +125,27 @@ describe("NPS y metas", () => {
     expect(occupancyTarget(9, t).weekday).toBe(0.15);
   });
 });
+
+describe("anticipación de compra", () => {
+  it("calcula percentiles por segmento y el horizonte recomendado", async () => {
+    const { leadTimeStats, recommendedHorizonMonths } = await import("@/lib/domain");
+    const rows = [
+      ...[30, 60, 90, 120, 150, 180, 210, 240, 270, 400].map((d) => ({
+        segment: "wedding",
+        inquiry: "2025-01-01",
+        event: new Date(Date.UTC(2025, 0, 1 + d)).toISOString().slice(0, 10),
+      })),
+      { segment: "corporate", inquiry: "2025-03-01", event: "2025-03-15" },
+      { segment: "corporate", inquiry: "2025-03-01", event: "2025-04-10" },
+      { segment: "corporate", inquiry: "2025-05-01", event: "2025-04-01" }, // inválido: se descarta
+    ];
+    const stats = leadTimeStats(rows);
+    expect(stats).toEqual([
+      { segment: "corporate", n: 2, p50: 14, p80: 40, p95: 40 },
+      { segment: "wedding", n: 10, p50: 150, p80: 240, p95: 400 },
+    ]);
+    // 400 días ≈ 13,1 meses → 14 + 1 de margen
+    expect(recommendedHorizonMonths(stats)).toBe(15);
+    expect(recommendedHorizonMonths([])).toBe(6);
+  });
+});

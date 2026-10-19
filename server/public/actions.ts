@@ -4,7 +4,18 @@ import { cookies } from "next/headers";
 import { z } from "zod";
 import { ATTRIBUTION_COOKIE, parseAttributionCookie } from "@/lib/attribution-cookie";
 import { withDb } from "@/lib/db";
-import { bestPromotion, estimateRange, PricingError } from "@/lib/domain";
+import {
+  addMonths,
+  bestPromotion,
+  buildPublicMonth,
+  estimateRange,
+  isMonth,
+  monthBounds,
+  monthOf,
+  monthsBetween,
+  PricingError,
+  type PublicDay,
+} from "@/lib/domain";
 import { loadPricingContext } from "@/server/pricing-context";
 import { activeVenue } from "@/server/venue";
 import { verifyTurnstile, withinRateLimit } from "./antispam";
@@ -94,6 +105,67 @@ export async function checkQuote(input: z.input<typeof quoteSchema>): Promise<Ch
     }
     throw error;
   }
+}
+
+// ---------------------------------------------------------------------------
+// Calendario vivo: estado de cada día del mes (libre / en espera / ocupado) y precio "desde"
+// con la misma función que el rango del cotizador (estimateRange). Sin caché: lee la BD siempre.
+// ---------------------------------------------------------------------------
+const calendarSchema = z.object({
+  eventType,
+  month: z.string().refine(isMonth, "Mes inválido."),
+  guests: z.coerce.number().int().min(1, "Indica el número de invitados.").max(500),
+});
+
+export type MonthCalendarResult =
+  | {
+      ok: true;
+      month: string;
+      days: PublicDay[];
+      /** Primer y último mes navegables (horizonte en settings.public_calendar_months). */
+      minMonth: string;
+      maxMonth: string;
+      pricesEnabled: boolean;
+    }
+  | { ok: false; error: string };
+
+export async function monthCalendar(
+  input: z.input<typeof calendarSchema>,
+): Promise<MonthCalendarResult> {
+  const parsed = calendarSchema.safeParse(input);
+  if (!parsed.success) return { ok: false, error: parsed.error.issues[0].message };
+  if (!(await withinRateLimit("calendar", 120))) {
+    return { ok: false, error: "Demasiadas consultas. Intenta en unos minutos." };
+  }
+  const today = todayLima();
+  const venue = await activeVenue();
+  const ctx = await loadPricingContext(venue.id);
+  const minMonth = monthOf(today);
+  const maxMonth = addMonths(minMonth, ctx.publicCalendarMonths);
+  const { month, eventType, guests } = parsed.data;
+  if (monthsBetween(minMonth, month) < 0 || monthsBetween(month, maxMonth) < 0) {
+    return { ok: false, error: "Ese mes está fuera del calendario." };
+  }
+  const { first, last } = monthBounds(month);
+  const rows = await withDb({ kind: "anon" }, (sql) =>
+    sql<{ day: string; status: "free" | "hold" | "taken" }>(
+      `select to_char(day, 'YYYY-MM-DD') as day, status from public.public_availability($1, $2, $3)`,
+      [venue.slug, first, last],
+    ),
+  );
+  const occupancy: Record<string, "hold" | "taken"> = {};
+  for (const r of rows) if (r.status !== "free") occupancy[r.day] = r.status;
+  const days = buildPublicMonth({
+    month,
+    today,
+    occupancy,
+    holidays: ctx.holidays,
+    highSeasonMonths: ctx.settings.highSeasonMonths,
+    pricing: ctx.publicPricesEnabled
+      ? { cards: ctx.cards, promotions: ctx.promotions, settings: ctx.settings, eventType, guests }
+      : null,
+  });
+  return { ok: true, month, days, minMonth, maxMonth, pricesEnabled: ctx.publicPricesEnabled };
 }
 
 // ---------------------------------------------------------------------------

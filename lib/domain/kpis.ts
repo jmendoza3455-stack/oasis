@@ -1,4 +1,4 @@
-import { eachDay, isWeekendOrHoliday, type ISODate } from "./calendar";
+import { daysBetween, eachDay, isWeekendOrHoliday, type ISODate } from "./calendar";
 import { SOLD_STATUSES, type BookingStatus } from "./booking";
 import { round2 } from "./money";
 
@@ -131,4 +131,43 @@ export function monthsSince(reopening: string, month: string): number {
   const [ry, rm] = reopening.split("-").map(Number);
   const [y, m] = month.split("-").map(Number);
   return (y - ry) * 12 + (m - rm) + 1;
+}
+
+// ---------------------------------------------------------------------------
+// Anticipación de compra: días entre la primera consulta y el evento, por segmento. Define el
+// horizonte del calendario público (que cubra al 95 % de los clientes de cada segmento).
+// ---------------------------------------------------------------------------
+export type LeadTimeRow = { segment: string; inquiry: ISODate; event: ISODate };
+export type LeadTimeStats = { segment: string; n: number; p50: number; p80: number; p95: number };
+
+/** Percentil por rango más cercano (sobre una lista ordenada ascendente). */
+function nearestRank(sorted: number[], p: number): number {
+  return sorted[Math.max(0, Math.ceil((p / 100) * sorted.length) - 1)];
+}
+
+export function leadTimeStats(rows: readonly LeadTimeRow[]): LeadTimeStats[] {
+  const bySegment = new Map<string, number[]>();
+  for (const r of rows) {
+    const days = daysBetween(r.inquiry, r.event);
+    if (days < 0) continue; // consulta posterior al evento: dato inválido
+    bySegment.set(r.segment, [...(bySegment.get(r.segment) ?? []), days]);
+  }
+  return [...bySegment.entries()]
+    .map(([segment, list]) => {
+      const sorted = [...list].sort((a, b) => a - b);
+      return {
+        segment,
+        n: sorted.length,
+        p50: nearestRank(sorted, 50),
+        p80: nearestRank(sorted, 80),
+        p95: nearestRank(sorted, 95),
+      };
+    })
+    .sort((a, b) => a.segment.localeCompare(b.segment));
+}
+
+/** Meses de calendario para cubrir el p95 del segmento con más anticipación, más 1 de margen. */
+export function recommendedHorizonMonths(stats: readonly LeadTimeStats[], minMonths = 6): number {
+  const maxP95 = Math.max(0, ...stats.map((s) => s.p95));
+  return Math.max(minMonths, Math.ceil(maxP95 / 30.44) + 1);
 }

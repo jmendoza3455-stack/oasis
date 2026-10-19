@@ -83,6 +83,29 @@ async function chooseEvent(page: Page, type = "wedding") {
   await chooser.getByRole("button", { name: CARD_FOR_TYPE[type] }).click();
 }
 
+/** Calendario vivo ya cargado (sin consultas pendientes). */
+export async function calendarReady(page: Page) {
+  const cal = page.locator("[data-calendar]").first();
+  await expect(cal).toHaveAttribute("aria-busy", "false", { timeout: 10_000 });
+  return cal;
+}
+
+/** Navega el calendario hasta el mes de `date` y toca ese día. */
+export async function pickDate(page: Page, date: string) {
+  const target = date.slice(0, 7);
+  for (let i = 0; i < 24; i++) {
+    const cal = await calendarReady(page);
+    const shown = await cal.getByRole("grid").getAttribute("data-month");
+    if (shown === target) break;
+    await cal
+      .getByRole("button", { name: shown! < target ? "Mes siguiente" : "Mes anterior" })
+      .click();
+  }
+  const cal = await calendarReady(page);
+  await expect(cal.getByRole("grid")).toHaveAttribute("data-month", target);
+  await cal.locator(`button[data-date="${date}"]`).click();
+}
+
 export async function consultDate(
   page: Page,
   input: { date: string; type?: string; guests?: number },
@@ -92,9 +115,8 @@ export async function consultDate(
   await expect(form).toHaveAttribute("data-ready", ""); // hidratado: si no, React descarta lo escrito
   const select = form.getByLabel("Tipo de evento");
   if (input.type && (await select.count())) await select.selectOption(input.type);
-  await form.getByLabel("Fecha", { exact: true }).fill(input.date);
   if (input.guests) await form.getByLabel("Invitados", { exact: true }).fill(String(input.guests));
-  await form.getByRole("button", { name: "Ver disponibilidad y precio" }).click();
+  await pickDate(page, input.date);
 }
 
 /** Abre el paso de datos de contacto sin fecha ("¿Aún sin fecha?"). */

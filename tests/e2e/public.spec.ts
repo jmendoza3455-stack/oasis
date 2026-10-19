@@ -14,25 +14,6 @@ test.describe("web pública", () => {
     await shot(page, info, "home");
   });
 
-  test("flujo único: fecha ocupada sugiere fechas libres cercanas", async ({ page }) => {
-    await page.goto("/");
-    // Otros tests mutan reservas en paralelo: se re-consulta la fecha ocupada en cada intento
-    await expect(async () => {
-      const [taken] = await db<{ d: string }>(
-        `select to_char(event_date, 'YYYY-MM-DD') as d from bookings where status in ('reserved','confirmed') order by event_date desc limit 1`,
-      );
-      await consultDate(page, { date: taken.d });
-      await expect(page.getByText(/no está disponible/)).toBeVisible({ timeout: 3000 });
-    }).toPass({ timeout: 20_000 });
-    await expect(page.getByText("Fechas libres cercanas:")).toBeVisible();
-    const alternative = page
-      .locator("#cotizar")
-      .getByRole("button", { name: /\d{2}\/\d{2}\/\d{4}/ })
-      .first();
-    await alternative.click();
-    await expect(page.getByText(/está libre!/)).toBeVisible();
-  });
-
   test("flujo único: rango con IGV y datos de contacto con la fecha ya cargada", async ({
     page,
   }, info) => {
@@ -40,6 +21,10 @@ test.describe("web pública", () => {
     await consultDate(page, { date: "2027-01-17", guests: 40 });
     await expect(page.getByText("¡El domingo 17/01/2027 está libre!")).toBeVisible();
     await expect(page.getByText(/S\/\s?2,950\.00 – S\/\s?3,650\.00/)).toBeVisible();
+    // El precio del día en el calendario es el mínimo del rango del cotizador
+    await expect(page.locator('button[data-date="2027-01-17"]')).toHaveAccessibleName(
+      /domingo 17 de enero de 2027, libre, desde S\/ 2,950/,
+    );
     await shot(page, info, "full-day");
     await page.getByRole("button", { name: "Separar o cotizar esta fecha" }).click();
     await expect(

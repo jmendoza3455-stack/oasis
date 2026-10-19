@@ -4,6 +4,16 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Web · calendario vivo (19/10/2026)
+- Calendario mensual en lugar del campo fecha: Libre / En espera / Ocupado en vivo, precio "desde" por día (si los precios son públicos), ofertas L-J y promociones, feriados, temporada y "Sábados libres: X de Y". Tocar un día vuelve a verificarlo; si se ocupó, avisa, refresca y sugiere fechas cercanas.
+- Accesible: patrón grid de WAI-ARIA (teclado completo), estado sin depender del color, nombres accesibles con el texto visible; axe-core sin violaciones.
+- **Fix:** las fechas bloqueadas aparecían libres en el cotizador público, las fechas libres del portal y el calendario de planners (NULL en el filtro de holds vencidos). La doble reserva nunca fue posible (exclusion constraint).
+- Feriados 2028 cargados (el horizonte llega a abril de 2028); `easterSunday` y `peruHolidays` en el dominio.
+- Revisión diaria: `availability_mismatches()` recalcula cada día desde reservas y bloqueos y avisa en el correo del staff si la web muestra otra cosa; también avisa si faltan feriados del horizonte.
+- Medición del embudo: eventos `calendar_*` en GA4 y Microsoft Clarity (con consentimiento, `NEXT_PUBLIC_CLARITY_ID`).
+- `pnpm analisis:anticipacion` (CSV del historial o `--db`): anticipación por segmento y horizonte recomendado.
+- Evidencia: pruebas de propiedad (calendario vs BD; precio del calendario = rango del cotizador ⊇ cotización), E2E de carrera, estados, teclado y accesibilidad, INP de laboratorio 136–152 ms y Lighthouse móvil 92–96. Ver `docs/261019 Calendario vivo - evidencia.md`.
+
 ### Web · portada simple (19/10/2026)
 - Un solo llamado a la acción, "Ver fechas disponibles", en portada, menú, barra móvil, cierre y 404. Sale "Ver precios" de la portada y "Soy planner" pasa a link de texto.
 - "¿Qué quieres celebrar?" justo debajo de la portada: elegir Bodas, Empresas o Full day despliega la consulta de fecha con el tipo ya cargado (Bodas permite "Otra celebración").

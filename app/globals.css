@@ -166,3 +166,12 @@
     --viz-grid: rgb(255 255 255 / 0.1);
   }
 }
+
+/* Calendario vivo: fecha "en espera" (pre-reserva vigente). Rayado = señal que no depende del color */
+.hold-stripes {
+  background-image: repeating-linear-gradient(
+    135deg,
+    color-mix(in oklab, var(--muted-foreground) 18%, transparent) 0 2px,
+    transparent 2px 7px
+  );
+}

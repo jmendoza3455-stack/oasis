@@ -9,6 +9,7 @@ import {
   formatDate,
   formatPEN,
   isBusinessTime,
+  peruHolidays,
   slaBreaches,
   STATUS_LABEL,
   weekKey,
@@ -265,11 +266,61 @@ export async function runDaily(now = new Date()): Promise<RunReport> {
         where venue_id = $1 and responded_at is null and due_on <= $2::date + 5 order by due_on`,
       [venue.id, today],
     );
+    // Calendario público vs reservas reales, en tramos de 60 días por todo el horizonte
+    const horizonMonths = Number(s.public_calendar_months ?? 18);
+    const horizonEnd = addDays(today, horizonMonths * 31);
+    const mismatches: { day: string; expected: string; shown: string }[] = [];
+    for (let from = today; from <= horizonEnd; from = addDays(from, 61)) {
+      const to = addDays(from, 60) < horizonEnd ? addDays(from, 60) : horizonEnd;
+      mismatches.push(
+        ...(await sql<{ day: string; expected: string; shown: string }>(
+          `select to_char(day, 'YYYY-MM-DD') as day, expected, shown
+             from public.availability_mismatches($1, $2, $3)`,
+          [venue.slug, from, to],
+        )),
+      );
+    }
+    if (mismatches.length) console.error("Calendario público con diferencias", mismatches);
+    // Feriados del horizonte: sin ellos el calendario muestra días comunes y otra tarifa
+    const years = Array.from(
+      { length: Number(horizonEnd.slice(0, 4)) - Number(today.slice(0, 4)) + 1 },
+      (_, i) => Number(today.slice(0, 4)) + i,
+    );
+    const expectedHolidays = years
+      .flatMap((y) => peruHolidays(y))
+      .filter((h) => h.date >= today && h.date <= horizonEnd);
+    const loadedHolidays = new Set(
+      (
+        await sql<{ d: string }>(
+          `select to_char(date, 'YYYY-MM-DD') as d from holidays where date between $1 and $2`,
+          [today, horizonEnd],
+        )
+      ).map((r) => r.d),
+    );
+    const missingHolidays = expectedHolidays.filter((h) => !loadedHolidays.has(h.date));
     const ctx: DigestCtx = {
       venueName: venue.name,
       date: formatDate(today),
       adminUrl: `${siteUrl()}/admin/calendario`,
       items: [
+        ...(missingHolidays.length
+          ? [
+              {
+                title: "Feriados sin cargar en el horizonte del calendario (agregar migración)",
+                lines: missingHolidays.map((h) => `${formatDate(h.date)} · ${h.name}`),
+              },
+            ]
+          : []),
+        ...(mismatches.length
+          ? [
+              {
+                title: "⚠ La web muestra una disponibilidad distinta a las reservas (revisar ya)",
+                lines: mismatches.map(
+                  (m) => `${formatDate(m.day)} · debería verse ${m.expected} · se ve ${m.shown}`,
+                ),
+              },
+            ]
+          : []),
         {
           title: "Eventos de mañana (D-1)",
           lines: bookings.filter((b) => b.eventDate === addDays(today, 1)).map(line),

@@ -367,3 +367,8 @@ Fuente: "SAWA – Estrategia y pasos a seguir" y "SAWA – Manual de marca" (ref
 15.9 Salida en vivo (André, 19/10/2026)
 - **Go-live el lunes 26/10/2026**, adelantado desde la ventana 18/11–17/12 del plan 30-60-90. Plan, criterio go/no-go y plan B en `docs/261019 Plan de salida en vivo D-7.md`.
 - Los agentes por cadencia y el Recepcionista se encienden en D0 (después del `reset-demo`), no el 01/12.
+
+15.10 Calendario vivo en la web (André, 19/10/2026)
+- El calendario mensual **reemplaza el campo fecha** del cotizador público. Cada día muestra Libre / **En espera** (pre-reserva vigente) / Ocupado, sin datos de terceros, leído en vivo de la BD (`public_availability`).
+- Con precios públicos activos, cada día libre muestra su precio "desde" (misma función que el rango del cotizador) y la tarifa L-J o promociones como "oferta".
+- Horizonte: `public_calendar_months` (18 meses, supuesto S44 hasta medir la anticipación real con el historial). Evidencia y pruebas en `docs/261019 Calendario vivo - evidencia.md`.
