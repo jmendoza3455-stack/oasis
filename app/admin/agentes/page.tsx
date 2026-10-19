@@ -10,6 +10,7 @@ import { requireStaff } from "@/lib/auth/session";
 import { withDb } from "@/lib/db";
 import { recepcionistaEnabled } from "@/server/agents/recepcionista";
 import { activeVenue } from "@/server/venue";
+import { HoldProposalButton } from "@/components/admin/hold-proposal-button";
 import { decideProposal } from "./actions";
 
 export const metadata: Metadata = { title: "Agentes" };
@@ -38,11 +39,12 @@ async function Agents() {
         title: string;
         body: string;
         status: string;
+        kind: string;
         leadId: string | null;
         createdAt: Date;
         decisionNote: string | null;
       }>(
-        `select id, agent, title, body, status, lead_id as "leadId", created_at as "createdAt",
+        `select id, agent, title, body, status, kind, lead_id as "leadId", created_at as "createdAt",
               decision_note as "decisionNote"
          from agent_proposals where venue_id = $1
         order by (status = 'proposed') desc, created_at desc limit 50`,
@@ -131,6 +133,9 @@ async function Agents() {
                   )}
                   {p.decisionNote && (
                     <p className="text-muted-foreground text-xs">Nota: {p.decisionNote}</p>
+                  )}
+                  {p.status === "proposed" && p.kind === "hold" && (
+                    <HoldProposalButton id={p.id} title={p.title} />
                   )}
                   {p.status === "proposed" && user.role === "admin" && (
                     <form

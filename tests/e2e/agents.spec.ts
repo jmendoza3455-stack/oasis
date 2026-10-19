@@ -87,6 +87,36 @@ test.describe("Recepcionista (serial, solo desktop)", () => {
     expect(Number(runs.cost)).toBeGreaterThan(0);
   });
 
+  test("pide una pre-reserva por el chat y operaciones la confirma con un clic", async ({
+    page,
+  }) => {
+    await page.goto("/");
+    await page.getByRole("button", { name: "Chatea con nosotros" }).click();
+    await say(page, "Me llamo Beto Hold, mi celular es 987333444 2030-04-13");
+    const chat = await say(page, "Quiero separar la fecha 2030-04-13");
+    await expect(
+      chat.getByText("Pedí la pre-reserva: el equipo la confirma en breve."),
+    ).toBeVisible();
+
+    await loginAs(page, "ops@demo.oasis.test");
+    await page.goto("/admin/agentes");
+    const form = page.getByRole("form", { name: /Confirmar: Pre-reserva pedida: 13\/04\/2030/ });
+    await form.getByRole("button", { name: "Crear pre-reserva (72 h)" }).click();
+    await expect(page).toHaveURL(/\/admin\/reservas\//);
+    const [b] = await db<{ status: string; date: string; guests: number; proposal: string }>(
+      `select b.status, to_char(b.event_date, 'YYYY-MM-DD') as date, b.guests, p.status as proposal
+         from bookings b join leads l on l.id = b.lead_id join clients c on c.id = l.client_id
+         join agent_proposals p on p.booking_id = b.id
+        where c.full_name = 'Beto Hold'`,
+    );
+    expect(b).toEqual({
+      status: "prebooked",
+      date: "2030-04-13",
+      guests: 100,
+      proposal: "approved",
+    });
+  });
+
   test("deriva a una persona y el admin decide la propuesta", async ({ page }, info) => {
     await page.goto("/");
     await page.getByRole("button", { name: "Chatea con nosotros" }).click();

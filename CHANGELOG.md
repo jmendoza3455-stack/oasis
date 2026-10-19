@@ -4,6 +4,10 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Fase 2 · pre-reserva desde el chat (19/10/2026)
+- El Recepcionista puede pedir una pre-reserva de 72 h para una fecha disponible (herramienta `solicitar_pre_reserva`, solo con el lead ya registrado). Queda como propuesta "hold" en `/admin/agentes` con alerta por correo al staff.
+- Operaciones o el admin la confirman con un clic: se crea la pre-reserva con precio del tarifario (misma lógica que el CRM, ahora en `server/prebooking.ts`). S35 actualizado: el agente pide, una persona confirma.
+
 ### Fase 2 · ajustes de operación (19/10/2026)
 - Alerta de leads sin respuesta: el cron corre cada 15 min y respeta `business_hours` de Configuración (antes el horario estaba fijo en `vercel.json`). La ejecución manual desde `/admin/avisos` corre siempre.
 - Parámetro `music_cutoff_time` (S39, por validar con abogado) incluido en los avisos D-7 y D-1 (plantillas v2026-10-19.1).

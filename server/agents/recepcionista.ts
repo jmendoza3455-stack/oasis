@@ -13,6 +13,7 @@ import {
   type TokenPricing,
 } from "@/lib/domain";
 import { FAQ, SEGMENTS } from "@/lib/content/segments";
+import { EVENT_TYPE_LABEL } from "@/lib/ui/status";
 import { leadRef, verifyLeadRef } from "@/lib/lead-ref";
 import type { NewLead } from "@/server/public/leads";
 import { alertStaff } from "@/server/automations";
@@ -92,6 +93,20 @@ const TOOLS: Anthropic.Messages.Tool[] = [
     },
   },
   {
+    name: "solicitar_pre_reserva",
+    description:
+      "Pide al equipo separar una fecha DISPONIBLE como pre-reserva de 72 h. Solo después de registrar_lead. Una persona la confirma y el cliente recibe la cotización.",
+    input_schema: {
+      type: "object",
+      properties: {
+        fecha: { type: "string", description: "AAAA-MM-DD" },
+        tipo_evento: { type: "string", enum: [...EVENT_TYPES] },
+        invitados: { type: "integer", minimum: 1, maximum: 500 },
+      },
+      required: ["fecha", "tipo_evento", "invitados"],
+    },
+  },
+  {
     name: "derivar_a_persona",
     description:
       "Deriva a una persona del equipo: descuentos, excepciones al reglamento, reclamos, temas legales o cualquier cosa que no sepas.",
@@ -122,7 +137,7 @@ async function systemPrompt(venue: Venue, settings: Record<string, unknown>) {
     "Reglas:",
     "1. Para disponibilidad usa siempre consultar_disponibilidad; nunca la supongas.",
     "2. Precios: solo el rango de estimar_precio, aclarando que es referencial, con IGV, solo por el alquiler del local y que la cotización formal la envía el equipo. Nunca ofrezcas descuentos ni inventes montos.",
-    "3. No confirmas ni separas fechas: la separación se hace con el adelanto y la gestiona el equipo.",
+    "3. No confirmas fechas tú: si el cliente quiere separar una fecha disponible y ya registraste sus datos, usa solicitar_pre_reserva y explica que una persona la confirma (pre-reserva de 72 h) y que la fecha queda separada con el adelanto.",
     "4. Pide nombre y celular para que el equipo lo contacte y llama a registrar_lead una sola vez. Si pide visitar el local, márcalo.",
     "5. Descuentos, excepciones, reclamos, temas legales o lo que no sepas: derivar_a_persona.",
     "6. No pidas datos sensibles (DNI, tarjetas). No hables de otros clientes ni de otros locales.",
@@ -226,6 +241,53 @@ async function runTool(
       });
       ctx.lead = { leadId, activityId };
       return { ok: true };
+    }
+    case "solicitar_pre_reserva": {
+      const lead = ctx.lead;
+      if (!lead) return { error: "primero_registrar_lead" };
+      const fecha = date("fecha");
+      const tipo = type("tipo_evento");
+      const invitados = Number(input.invitados);
+      if (!fecha || !tipo || !(Number.isInteger(invitados) && invitados > 0 && invitados <= 500)) {
+        return { error: "datos_incompletos" };
+      }
+      const [row] = await withDb({ kind: "anon" }, (sql) =>
+        sql<{ ok: boolean }>(`select public.is_date_available($1, $2) as ok`, [
+          ctx.venue.slug,
+          fecha,
+        ]),
+      );
+      if (!row.ok) return { error: "fecha_no_disponible" };
+      const [proposal] = await withDb(ACTOR, (sql) =>
+        sql<{ id: string }>(
+          `insert into agent_proposals (venue_id, agent, kind, title, body, payload, lead_id)
+           values ($1, $2, 'hold', $3, $4, $5, $6) returning id`,
+          [
+            ctx.venue.id,
+            AGENT,
+            `Pre-reserva pedida: ${formatDate(fecha)} · ${EVENT_TYPE_LABEL[tipo]} · ${invitados} inv.`,
+            transcriptText(ctx.transcript),
+            JSON.stringify({ eventDate: fecha, eventType: tipo, guests: invitados }),
+            lead.leadId,
+          ],
+        ),
+      );
+      await alertStaff({
+        venueId: ctx.venue.id,
+        venueName: ctx.venue.name,
+        dedupeKey: `agent_hold:${proposal.id}`,
+        title: `Pre-reserva pedida por el chat: ${formatDate(fecha)} · ${EVENT_TYPE_LABEL[tipo]}`,
+        lines: [
+          `${invitados} invitados`,
+          "Confírmala en /admin/agentes con un clic (vence en 72 h).",
+        ],
+        path: "/admin/agentes",
+        leadId: lead.leadId,
+      });
+      return {
+        ok: true,
+        nota: "El equipo confirmará la pre-reserva de 72 h y enviará la cotización.",
+      };
     }
     case "derivar_a_persona": {
       const [proposal] = await withDb(ACTOR, (sql) =>
@@ -418,6 +480,12 @@ const fakeProvider: Provider = {
         return text(`El alquiler va de ${data.desde} a ${data.hasta} (referencial, con IGV).`);
       if (result?.tool_use_id === "tu_registrar_lead")
         return text("¡Listo! El equipo te llamará pronto.");
+      if (result?.tool_use_id === "tu_solicitar_pre_reserva")
+        return text(
+          data.ok
+            ? "Pedí la pre-reserva: el equipo la confirma en breve."
+            : `No pude: ${String(data.error)}`,
+        );
       return text("Una persona del equipo continuará la conversación.");
     }
     const t = String(last.content);
@@ -434,6 +502,8 @@ const fakeProvider: Provider = {
       });
     if (/descuento/i.test(t))
       return tool("derivar_a_persona", { motivo: "Pide descuento", resumen: t });
+    if (iso && /separar/i.test(t))
+      return tool("solicitar_pre_reserva", { fecha: iso, tipo_evento: "wedding", invitados: 100 });
     if (iso && /precio|cu[aá]nto/i.test(t))
       return tool("estimar_precio", { tipo_evento: "wedding", fecha: iso, invitados: 100 });
     if (iso) return tool("consultar_disponibilidad", { fecha: iso });
