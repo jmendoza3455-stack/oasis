@@ -28,6 +28,7 @@ jobs:
       DATABASE_URL: postgres://oasis_app:oasis_local@localhost:5432/oasis_dev
       OASIS_DEV_AUTH: "1"
       OASIS_AGENT_FAKE: "1"
+      OASIS_WHATSAPP_FAKE: "1"
     steps:
       - uses: actions/checkout@v4
       - uses: pnpm/action-setup@v4

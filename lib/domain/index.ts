@@ -11,3 +11,4 @@ export * from "./imports";
 export * from "./reminders";
 export * from "./ical";
 export * from "./agents";
+export * from "./whatsapp";

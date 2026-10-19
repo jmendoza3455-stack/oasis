@@ -10,7 +10,7 @@
 
 - **Vercel:** equipo Sawa, proyecto `oasis`, región `pdx1`, Pro Trial hasta ~01/11/2026. Producción en https://oasis-seven-lemon.vercel.app, protegida con login de Vercel. Cargadas solo las variables de Supabase.
 - **Supabase:** proyecto `oasis-pachacamac` (us-west-2, plan Free) con las migraciones aplicadas y **el seed de demo cargado**.
-- **Pendiente:** dominio, Resend, Turnstile, tracking, WhatsApp, Recepcionista, usuarios reales, backups con secretos.
+- **Pendiente:** dominio, Resend, Turnstile, tracking, credenciales de WhatsApp (ya implementado), clave del Recepcionista, usuarios reales, backups con secretos.
 
 **Reglas:**
 
@@ -209,11 +209,17 @@ Vercel > proyecto `oasis` > Settings > Environment Variables. **Prod** = entorno
 3. **Tope de gasto en dos niveles:** límite en la consola de Anthropic (opciones vigentes: por verificar) y `agent_monthly_budget_usd` en Configuración (S34: USD 30, por validar). Ajustar `agent_pricing_usd_per_mtok` al precio vigente del modelo elegido para que el tope se calcule bien.
 4. [ ] Prueba: abrir el chat de la web, consultar una fecha y registrar un lead de prueba; revisar la derivación en `/admin/agentes` y el registro en `audit_log`.
 
-## 9. WhatsApp Business Cloud API (pendiente, Ola 2)
+## 9. WhatsApp Business Cloud API (Recepcionista por WhatsApp)
 
-- Aprobada pero **no implementada**. Hoy los avisos de WhatsApp quedan en cola con enlace wa.me para envío manual (S31) y el botón usa `NEXT_PUBLIC_WHATSAPP_NUMBER`.
-- Pasos previos que puede adelantar André: verificación del negocio en Meta con datos de SAWA, número dedicado que no esté en uso en la app de WhatsApp y plantillas de mensajes en español. Plazos y costos de Meta: por verificar.
-- La integración (webhook, envío de plantillas, variables nuevas en `.env.example`) se hará en una fase propia.
+- **Implementado (19/10/2026)**, inactivo hasta cargar las credenciales. El Recepcionista responde por WhatsApp con las mismas reglas que el chat web; los avisos proactivos (saldos, D-7, D-1) siguen en cola con enlace wa.me hasta aprobar plantillas en Meta (S40).
+- Pasos (André, con datos de SAWA):
+  1. Meta Business Suite: verificar el negocio. Número dedicado que no esté en uso en la app de WhatsApp.
+  2. Meta for Developers: crear la app, agregar WhatsApp y registrar el número.
+  3. Crear un usuario del sistema con permiso `whatsapp_business_messaging` y generar un token permanente.
+  4. Cargar en Vercel (Production): `WHATSAPP_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`, `WHATSAPP_APP_SECRET` y `WHATSAPP_VERIFY_TOKEN` (un texto que tú eliges). Nunca pegarlos en un chat.
+  5. Configurar el webhook: URL `https://<dominio>/api/whatsapp`, el mismo verify token, suscribir el campo `messages`. Requiere el dominio público (la protección de Vercel bloquea a Meta).
+  6. Probar escribiendo al número: la conversación aparece en el lead del CRM (actividad "chat") y el gasto en `/admin/agentes`.
+- Costos y plazos de Meta: por verificar.
 
 ## 10. Checklist de go-live (verificable)
 

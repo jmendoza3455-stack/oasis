@@ -35,6 +35,7 @@ export default defineConfig({
           OASIS_DEV_AUTH: "1",
           CRON_SECRET: "e2e-cron-secret",
           OASIS_AGENT_FAKE: "1",
+          OASIS_WHATSAPP_FAKE: "1",
           ICAL_SECRET: "e2e-ical-secret",
         },
         url: baseURL,

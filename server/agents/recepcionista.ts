@@ -145,7 +145,11 @@ async function systemPrompt(venue: Venue, settings: Record<string, unknown>) {
   ].join("\n");
 }
 
+export type ChatChannel =
+  { kind: "web" } | { kind: "whatsapp"; phone: string; name: string | null };
+
 type ToolContext = {
+  channel: ChatChannel;
   venue: Venue;
   attribution: Partial<NewLead>;
   transcript: ChatMessage[];
@@ -202,7 +206,8 @@ async function runTool(
     case "registrar_lead": {
       if (ctx.lead) return { ok: true, nota: "El lead ya estaba registrado en esta conversación." };
       const tipo = type("tipo_evento");
-      if (!str("nombre") || str("celular").replace(/\D/g, "").length < 9 || !tipo) {
+      const celular = str("celular") || (ctx.channel.kind === "whatsapp" ? ctx.channel.phone : "");
+      if (!str("nombre") || celular.replace(/\D/g, "").length < 9 || !tipo) {
         return { error: "faltan_nombre_celular_o_tipo" };
       }
       const invitados = Number(input.invitados);
@@ -210,7 +215,7 @@ async function runTool(
         {
           ...ctx.attribution,
           fullName: str("nombre").slice(0, 120),
-          phone: str("celular").slice(0, 20),
+          phone: celular.slice(0, 20),
           email: /^\S+@\S+\.\S+$/.test(str("correo")) ? str("correo") : null,
           eventType: tipo,
           eventDate: date("fecha"),
@@ -218,7 +223,7 @@ async function runTool(
             Number.isInteger(invitados) && invitados > 0 && invitados <= 500 ? invitados : null,
           message: str("resumen").slice(0, 1000),
           marketing: false,
-          sourceForm: "chat",
+          sourceForm: ctx.channel.kind === "whatsapp" ? "whatsapp" : "chat",
         },
         ACTOR,
       );
@@ -331,6 +336,7 @@ export async function recepcionistaReply(
   messages: ChatMessage[],
   ref: unknown,
   attribution: Partial<NewLead>,
+  channel: ChatChannel = { kind: "web" },
 ): Promise<ChatReply> {
   const venue = await activeVenue();
   const lead = verifyLeadRef(ref);
@@ -370,7 +376,7 @@ export async function recepcionistaReply(
       ),
     );
 
-  const ctx: ToolContext = { venue, attribution, transcript: messages, lead };
+  const ctx: ToolContext = { channel, venue, attribution, transcript: messages, lead };
   if (!withinBudget(spent, Number(settings.agent_monthly_budget_usd ?? 0))) {
     await record("budget_exceeded", { input: 0, output: 0 });
     return { reply: FALLBACK, leadRef: lead ? leadRef(lead.leadId, lead.activityId) : null };
@@ -381,7 +387,12 @@ export async function recepcionistaReply(
     role: m.role,
     content: m.content,
   }));
-  const system = await systemPrompt(venue, settings);
+  const system = [
+    await systemPrompt(venue, settings),
+    channel.kind === "whatsapp"
+      ? `\nCanal: WhatsApp. El cliente escribe desde el celular ${channel.phone}${channel.name ? ` (perfil: ${channel.name})` : ""}: no le pidas el celular, úsalo en registrar_lead. Respuestas aún más breves.`
+      : "",
+  ].join("");
   let reply = "";
   try {
     const llm = provider();

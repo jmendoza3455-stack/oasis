@@ -4,6 +4,12 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Fase 2 · Recepcionista por WhatsApp (19/10/2026)
+- Webhook de WhatsApp Business Cloud API (`/api/whatsapp`): verificación de Meta, firma `X-Hub-Signature-256`, respuesta inmediata y procesamiento con `after()`.
+- El mismo Recepcionista (herramientas, límites, tope de gasto y auditoría como agente) responde por WhatsApp; usa el número del cliente para registrar el lead y lee el código de campaña que agrega el botón de la web (UTM hasta la reserva, regla 8).
+- Conversación por número (`whatsapp_conversations`), deduplicación de reintentos (`whatsapp_inbound`) y límite de mensajes por número. Sin credenciales de Meta queda inactivo.
+- Dominio `whatsapp` (parseo del webhook, campaña, historial) con tests.
+
 ### Fase 2 · portal de planners (19/10/2026)
 - `/planners/portal/fechas`: fechas libres de los próximos 90 días (V-S-D y feriados resaltados) con texto listo para copiar o compartir por WhatsApp. Función `free_dates()` que solo expone disponible / no disponible.
 - El planner envía el voucher de sus reservas desde "Mis reservas": queda pendiente hasta que el admin lo valide. RLS: solo inserta pagos pendientes de reservas propias y sigue sin leer pagos.
