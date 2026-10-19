@@ -30,7 +30,7 @@ test.describe("voucher desde el portal (serial, solo desktop)", () => {
     page,
   }) => {
     // Pre-reserva del planner 1 (dueño del cliente) en una fecha libre lejana
-    const [b] = await db<{ id: string }>(
+    await db(
       `with p as (select planner_id as id from profiles where email = 'usuario.planner1@demo.oasis.test'),
             c as (insert into clients (full_name, phone, created_by_planner_id)
                   select 'Cliente Voucher E2E', '944555666', id from p returning id, created_by_planner_id)
