@@ -12,7 +12,7 @@ import { SETTINGS } from "@/lib/content/settings-schema";
 import { withDb } from "@/lib/db";
 import { formatDate, type EventType } from "@/lib/domain";
 import { EVENT_TYPE_LABEL } from "@/lib/ui/status";
-import { activeVenue } from "@/server/venue";
+import { staffVenue } from "@/server/venue";
 
 export const metadata: Metadata = { title: "Configuración" };
 
@@ -25,7 +25,7 @@ const DAY = {
 
 async function Config() {
   const user = await requireStaff();
-  const venue = await activeVenue();
+  const venue = await staffVenue(user.id);
   const canEdit = user.role === "admin";
   const { settings, rates, holidays } = await withDb(
     { kind: "user", userId: user.id },

@@ -4,7 +4,7 @@ import { refresh } from "next/cache";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/auth/session";
 import { dbErrorCode, withDb } from "@/lib/db";
-import { activeVenue } from "@/server/venue";
+import { staffVenue } from "@/server/venue";
 
 export type PromoResult = { ok: boolean; message: string };
 
@@ -34,7 +34,7 @@ export async function createPromotion(
     });
   if (!parsed.success) return { ok: false, message: parsed.error.issues[0].message };
   const d = parsed.data;
-  const venue = await activeVenue();
+  const venue = await staffVenue(user.id);
   try {
     await withDb({ kind: "user", userId: user.id }, (sql) =>
       sql(

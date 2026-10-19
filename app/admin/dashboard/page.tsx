@@ -11,7 +11,7 @@ import { requireStaff } from "@/lib/auth/session";
 import { conversion, formatPEN, STATUS_LABEL, trafficLight, type EventType } from "@/lib/domain";
 import { CHANNEL_LABEL, EVENT_TYPE_LABEL } from "@/lib/ui/status";
 import { dashboardData, type DashboardFilters } from "@/server/queries/dashboard";
-import { activeVenue } from "@/server/venue";
+import { staffVenue } from "@/server/venue";
 
 export const metadata: Metadata = { title: "Dashboard" };
 
@@ -97,7 +97,7 @@ async function Dashboard({
   searchParams: PageProps<"/admin/dashboard">["searchParams"];
 }) {
   const user = await requireStaff();
-  const venue = await activeVenue();
+  const venue = await staffVenue(user.id);
   const f = parseFilters(await searchParams);
   const d = await dashboardData({ kind: "user", userId: user.id }, venue.id, f);
   const filtered = Boolean(f.eventType || f.channel);

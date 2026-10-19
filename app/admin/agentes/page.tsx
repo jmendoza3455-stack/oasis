@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireStaff } from "@/lib/auth/session";
 import { withDb } from "@/lib/db";
 import { recepcionistaEnabled } from "@/server/agents/recepcionista";
-import { activeVenue } from "@/server/venue";
+import { staffVenue } from "@/server/venue";
 import { HoldProposalButton } from "@/components/admin/hold-proposal-button";
 import { decideProposal } from "./actions";
 
@@ -29,7 +29,7 @@ const STATUS: Record<string, { label: string; color: string }> = {
 
 async function Agents() {
   const user = await requireStaff();
-  const venue = await activeVenue();
+  const venue = await staffVenue(user.id);
   const { proposals, month, budget } = await withDb(
     { kind: "user", userId: user.id },
     async (sql) => ({

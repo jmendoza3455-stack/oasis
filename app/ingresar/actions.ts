@@ -56,6 +56,20 @@ export async function sendMagicLink(_: LoginState, formData: FormData): Promise<
   return { sent: true };
 }
 
+/** Google (Supabase Auth, PKCE). Una cuenta nueva no tiene rol: el admin le da acceso. */
+export async function signInWithGoogle() {
+  if (process.env.NEXT_PUBLIC_AUTH_GOOGLE !== "1") redirect("/ingresar");
+  const { createClient } = await import("@/lib/supabase/server");
+  const supabase = await createClient();
+  const site = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: "google",
+    options: { redirectTo: `${site}/auth/callback`, queryParams: { prompt: "select_account" } },
+  });
+  if (error || !data.url) redirect("/ingresar?error=google");
+  redirect(data.url);
+}
+
 export async function signOut() {
   const jar = await cookies();
   jar.delete(DEV_AUTH_COOKIE);

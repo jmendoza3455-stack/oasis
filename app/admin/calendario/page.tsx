@@ -4,13 +4,13 @@ import { MasterCalendar } from "@/components/admin/master-calendar";
 import { requireStaff } from "@/lib/auth/session";
 import { addDays } from "@/lib/domain";
 import { calendarData } from "@/server/queries/calendar";
-import { activeVenue } from "@/server/venue";
+import { staffVenue } from "@/server/venue";
 
 export const metadata: Metadata = { title: "Calendario" };
 
 async function CalendarSection() {
   const user = await requireStaff();
-  const venue = await activeVenue();
+  const venue = await staffVenue(user.id);
   const today = new Intl.DateTimeFormat("en-CA", { timeZone: venue.timezone }).format(new Date());
   const { bookings, blocks } = await calendarData(
     user.id,

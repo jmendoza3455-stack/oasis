@@ -17,7 +17,7 @@ import { formatDate } from "@/lib/domain";
 import { pieceLinks } from "@/lib/marketing/links";
 import { calibration, hookTests, performance, type AbResult } from "@/lib/marketing/stats";
 import { marketingFileUrl } from "@/lib/storage";
-import { activeVenue } from "@/server/venue";
+import { staffVenue } from "@/server/venue";
 
 export const metadata: Metadata = { title: "Marketing" };
 
@@ -230,7 +230,7 @@ function PieceCard({
 async function Marketing() {
   const user = await requireStaff();
   const admin = user.role === "admin";
-  const venue = await activeVenue();
+  const venue = await staffVenue(user.id);
   const { pieces, clips, counts, attribution, history } = await withDb(
     { kind: "user", userId: user.id },
     async (sql) => ({

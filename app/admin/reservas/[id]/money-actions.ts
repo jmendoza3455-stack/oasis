@@ -6,7 +6,7 @@ import { z } from "zod";
 import { requireAdmin, requireStaff } from "@/lib/auth/session";
 import { withDb } from "@/lib/db";
 import { ALLOWED_TYPES, putFile, validateUpload } from "@/lib/storage";
-import { activeVenue } from "@/server/venue";
+import { bookingVenueId } from "@/server/venue";
 
 export type MoneyResult = { ok: true } | { ok: false; error: string };
 
@@ -37,7 +37,7 @@ export async function registerPayment(
       voucher,
     );
   }
-  const venue = await activeVenue();
+  const venueId = await bookingVenueId(user.id, d.bookingId);
   await withDb({ kind: "user", userId: user.id }, async (sql) => {
     await sql(
       `insert into payments (booking_id, kind, amount, method, operation_code, paid_on, voucher_path)
@@ -47,7 +47,7 @@ export async function registerPayment(
     if (voucherKey) {
       await sql(
         `insert into documents (venue_id, booking_id, kind, storage_path) values ($1, $2, 'voucher', $3)`,
-        [venue.id, d.bookingId, voucherKey],
+        [venueId, d.bookingId, voucherKey],
       );
     }
   });

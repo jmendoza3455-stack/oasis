@@ -63,6 +63,10 @@ export async function buildWorld(pool: pg.Pool, slug = "oasis-pachacamac"): Prom
 
     const admin = await createUser(c, `admin@${slug}.test`, "admin");
     const ops = await createUser(c, `ops@${slug}.test`, "ops");
+    await c.query(`insert into public.venue_members (venue_id, user_id) values ($1, $2)`, [
+      venueId,
+      ops,
+    ]);
     const pa = await createUser(c, `pa@${slug}.test`, "planner", planners[0]);
     const pb = await createUser(c, `pb@${slug}.test`, "planner", planners[1]);
 

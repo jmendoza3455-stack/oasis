@@ -11,7 +11,7 @@ import {
   MARKETING_TYPES,
   validateMarketingUpload,
 } from "@/lib/storage";
-import { activeVenue } from "@/server/venue";
+import { staffVenue } from "@/server/venue";
 
 export type MarketingResult = { ok: boolean; message: string };
 
@@ -62,7 +62,7 @@ export async function confirmClipUpload(
   const d = parsed.data;
   if (!(await marketingFileExists(d.key)))
     return { ok: false, message: "El archivo no llegó. Revisa tu conexión e inténtalo de nuevo." };
-  const venue = await activeVenue();
+  const venue = await staffVenue(user.id);
   await withDb({ kind: "user", userId: user.id }, (sql) =>
     sql(
       `insert into marketing_clips (venue_id, storage_key, filename, content_type, size_bytes, notes, uploaded_by)

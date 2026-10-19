@@ -4,6 +4,12 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### F1 · Base multi-local (19/10/2026)
+- Marca madre como dato (`brands`, provisional hasta elegir el nombre) y cada local con su marca.
+- **Personal por local:** `venue_members`, 32 políticas y 3 funciones de reservas verifican el local. Operaciones solo ve y opera sus locales; el admin, todos. Sin cambios para un solo local (el personal existente quedó asignado).
+- Back-office: selector de local, 17 pantallas sobre el local elegido y `/admin/equipo` para dar rol y locales (incluye a quien entra con Google por primera vez).
+- Login con Google (Supabase Auth), oculto hasta configurar el proveedor (`NEXT_PUBLIC_AUTH_GOOGLE`).
+
 ### Plataforma multi-local y experiencias: especificación (19/10/2026)
 - Decisiones de André y Carlos (OASIS §15.14): marca madre nueva con varios locales, experiencias como paquetes con servicios, pasarela de pago con validación automática de pagos confirmados y login con Google para equipo, planners y clientes. Plan por fases sin frenar el go-live: `docs/261019 Plataforma multi-local y experiencias.md`.
 

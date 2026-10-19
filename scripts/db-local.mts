@@ -37,6 +37,10 @@ await db.query(`
   insert into auth.users (email, raw_app_meta_data)
   select replace(email, 'planner', 'usuario.planner'), jsonb_build_object('role', 'planner', 'planner_id', id)
     from public.planners where email like '%@demo.oasis.test';
+  -- Operaciones trabaja en el local demo (personal por local, OASIS.md §15.14)
+  insert into public.venue_members (venue_id, user_id)
+  select v.id, p.id from public.profiles p, public.venues v
+   where p.email = 'ops@demo.oasis.test' and v.slug = 'oasis-pachacamac';
   insert into public.planner_agreements (planner_id, version, accepted_by)
   select p.planner_id, '2026-10', p.id from public.profiles p
    where p.role = 'planner' and p.planner_id = (select id from public.planners order by business_name limit 1);

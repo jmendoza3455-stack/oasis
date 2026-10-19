@@ -8,7 +8,7 @@ import { requireStaff } from "@/lib/auth/session";
 import { withDb } from "@/lib/db";
 import { formatDate } from "@/lib/domain";
 import { EVENT_TYPE_LABEL } from "@/lib/ui/status";
-import { activeVenue } from "@/server/venue";
+import { staffVenue } from "@/server/venue";
 import { deactivatePromotion } from "./actions";
 
 export const metadata: Metadata = { title: "Promociones" };
@@ -22,7 +22,7 @@ const DAY_LABEL: Record<string, string> = {
 
 async function Promotions() {
   const user = await requireStaff();
-  const venue = await activeVenue();
+  const venue = await staffVenue(user.id);
   const { rows, cap, used } = await withDb({ kind: "user", userId: user.id }, async (sql) => ({
     rows: await sql<{
       id: string;

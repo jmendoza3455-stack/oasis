@@ -1,5 +1,7 @@
 // Crea los usuarios iniciales (admins y ops) en Supabase Auth con su rol en app_metadata.
 // El trigger handle_new_user crea el perfil con ese rol. Idempotente.
+// Operaciones queda asignado a los locales de OPS_VENUES (slugs separados por coma; por defecto el
+// local del despliegue). Los admin ven todos los locales. Luego se ajusta en /admin/equipo.
 // Uso: node --env-file=.env.local scripts/create-users.mts
 import { createClient } from "@supabase/supabase-js";
 
@@ -50,4 +52,28 @@ for (const { email, role } of wanted) {
     .eq("id", created.id);
   if (profileError) throw profileError;
   console.log(`✓ ${email} invitado con rol ${role}`);
+}
+
+// Personal de operaciones → sus locales
+const opsVenues = emails(
+  process.env.OPS_VENUES ?? process.env.OASIS_VENUE_SLUG ?? "oasis-pachacamac",
+);
+const { data: venueRows, error: venueError } = await supabase
+  .from("venues")
+  .select("id, slug")
+  .in("slug", opsVenues);
+if (venueError) throw venueError;
+const { data: finalUsers } = await supabase.auth.admin.listUsers({ perPage: 1000 });
+for (const { email } of wanted.filter((w) => w.role === "ops")) {
+  const u = finalUsers.users.find((x) => x.email?.toLowerCase() === email);
+  if (!u) continue;
+  for (const v of venueRows ?? []) {
+    const { error } = await supabase
+      .from("venue_members")
+      .upsert({ venue_id: v.id, user_id: u.id }, { onConflict: "venue_id,user_id" });
+    if (error) throw error;
+  }
+  console.log(
+    `✓ ${email} → locales: ${(venueRows ?? []).map((v) => v.slug).join(", ") || "ninguno"}`,
+  );
 }

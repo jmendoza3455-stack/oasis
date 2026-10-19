@@ -5,7 +5,7 @@ import { z } from "zod";
 import { requireAdmin } from "@/lib/auth/session";
 import { withDb } from "@/lib/db";
 import { SETTINGS } from "@/lib/content/settings-schema";
-import { activeVenue } from "@/server/venue";
+import { staffVenue } from "@/server/venue";
 
 export type ConfigResult = { ok: true } | { ok: false; error: string };
 
@@ -38,7 +38,7 @@ export async function saveSetting(key: string, raw: string): Promise<ConfigResul
   if (key === "booking_mode" && !["one_per_day", "slots"].includes(String(value))) {
     return { ok: false, error: "El modo debe ser one_per_day o slots." };
   }
-  const venue = await activeVenue();
+  const venue = await staffVenue(user.id);
   await withDb({ kind: "user", userId: user.id }, (sql) =>
     sql(
       `insert into settings (venue_id, key, value, updated_by) values ($1, $2, $3, $4)

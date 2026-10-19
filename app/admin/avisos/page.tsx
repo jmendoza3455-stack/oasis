@@ -9,7 +9,7 @@ import { SITE_URL } from "@/lib/content/seo";
 import { withDb } from "@/lib/db";
 import { icalToken } from "@/lib/feed-token";
 import { whatsappLink } from "@/lib/templates";
-import { activeVenue } from "@/server/venue";
+import { staffVenue } from "@/server/venue";
 
 export const metadata: Metadata = { title: "Avisos" };
 
@@ -54,7 +54,7 @@ type Row = {
 
 async function Outbox() {
   const user = await requireStaff();
-  const venue = await activeVenue();
+  const venue = await staffVenue(user.id);
   const rows = await withDb({ kind: "user", userId: user.id }, (sql) =>
     sql<Row>(
       `select id, kind, channel, recipient, subject, body, status, error,

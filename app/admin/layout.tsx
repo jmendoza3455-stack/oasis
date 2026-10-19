@@ -3,14 +3,32 @@ import { Suspense } from "react";
 import { LogOut } from "lucide-react";
 import { Isotipo } from "@/components/brand/logo";
 import { AdminNav } from "@/components/admin/nav";
+import { VenueSwitcher } from "@/components/admin/venue-switcher";
 import { Button } from "@/components/ui/button";
 import { requireStaff } from "@/lib/auth/session";
 import { signOut } from "@/app/ingresar/actions";
+import { staffVenue, staffVenues } from "@/server/venue";
 
 export const metadata: Metadata = {
   title: { default: "Back-office", template: "%s · Back-office Oasis" },
   robots: { index: false },
 };
+
+async function Nav() {
+  const user = await requireStaff();
+  return <AdminNav admin={user.role === "admin"} />;
+}
+
+async function CurrentVenue() {
+  const user = await requireStaff();
+  const [venues, current] = await Promise.all([staffVenues(user.id), staffVenue(user.id)]);
+  return (
+    <VenueSwitcher
+      venues={venues.map((v) => ({ slug: v.slug, name: v.name }))}
+      current={current.slug}
+    />
+  );
+}
 
 async function UserBox() {
   const user = await requireStaff();
@@ -38,13 +56,15 @@ export default function AdminLayout({ children }: LayoutProps<"/admin">) {
       <aside className="bg-brand-green text-brand-sand flex shrink-0 flex-col gap-4 p-3 md:w-56 md:p-4">
         <div className="flex items-center gap-2">
           <Isotipo tone="light" className="size-8" />
-          <div className="leading-tight">
-            <p className="font-display text-sm tracking-[0.12em] uppercase">Oasis Pachacámac</p>
+          <div className="min-w-0 flex-1 leading-tight">
+            <Suspense fallback={<div className="h-5" />}>
+              <CurrentVenue />
+            </Suspense>
             <p className="text-brand-sand/70 text-[11px]">Back-office</p>
           </div>
         </div>
         <Suspense fallback={<div className="h-9 md:h-48" />}>
-          <AdminNav />
+          <Nav />
         </Suspense>
         <div className="md:mt-auto">
           <Suspense fallback={null}>

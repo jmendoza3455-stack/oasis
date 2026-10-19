@@ -5,7 +5,7 @@ import { z } from "zod";
 import { requireAdmin, requireStaff } from "@/lib/auth/session";
 import { withDb } from "@/lib/db";
 import { aggregateCampaignSpend, csvRecords, parseHistoricalEvents, round2 } from "@/lib/domain";
-import { activeVenue } from "@/server/venue";
+import { staffVenue } from "@/server/venue";
 
 export type FinanceResult = { ok: boolean; message?: string; errors?: string[] };
 
@@ -30,7 +30,7 @@ export async function addCampaign(
     })
     .safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { ok: false, message: parsed.error.issues[0].message };
-  const venue = await activeVenue();
+  const venue = await staffVenue(user.id);
   try {
     await withDb({ kind: "user", userId: user.id }, (sql) =>
       sql(
@@ -87,7 +87,7 @@ export async function importSpendCsv(
   if (file.size > 2_000_000) return { ok: false, message: "El archivo supera 2 MB." };
   const { rows, errors } = aggregateCampaignSpend(csvRecords(await file.text()));
   if (rows.length === 0) return { ok: false, message: "No se encontraron filas válidas.", errors };
-  const venue = await activeVenue();
+  const venue = await staffVenue(user.id);
   await withDb({ kind: "user", userId: user.id }, async (sql) => {
     for (const r of rows) {
       const code = r.campaign
@@ -140,7 +140,7 @@ export async function addFixedCost(
     })
     .safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { ok: false, message: parsed.error.issues[0].message };
-  const venue = await activeVenue();
+  const venue = await staffVenue(user.id);
   await withDb({ kind: "user", userId: user.id }, (sql) =>
     sql(
       `insert into fixed_costs (venue_id, month, category, amount, notes) values ($1, $2, $3, $4, $5)
@@ -171,7 +171,7 @@ export async function addCapex(
     })
     .safeParse(Object.fromEntries(formData));
   if (!parsed.success) return { ok: false, message: parsed.error.issues[0].message };
-  const venue = await activeVenue();
+  const venue = await staffVenue(user.id);
   await withDb({ kind: "user", userId: user.id }, (sql) =>
     sql(
       `insert into capex_items (venue_id, description, amount, spent_on) values ($1, $2, $3, $4)`,
@@ -193,7 +193,7 @@ export async function importHistorical(
     return { ok: false, message: "Elige el archivo CSV." };
   const today = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Lima" }).format(new Date());
   const { ok, errors } = parseHistoricalEvents(csvRecords(await file.text()), today);
-  const venue = await activeVenue();
+  const venue = await staffVenue(user.id);
   let imported = 0;
   for (const e of ok) {
     try {

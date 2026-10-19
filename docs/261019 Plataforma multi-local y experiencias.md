@@ -113,3 +113,31 @@ Cada fase cumple la Definition of Done del proyecto: pruebas unitarias, de base 
 | Contracargos                                    | 3-D Secure de la pasarela y contrato firmado antes del cobro del saldo         |
 | IGV mal calculado en paquetes                   | Precio en el dominio con pruebas y criterio del contador antes de F3           |
 | Perder posicionamiento al cambiar de dominio    | Redirecciones 301 y el dominio definitivo antes de empezar a invertir en pauta |
+
+## 6. F1 construida (rama `feat/f1-multi-local`)
+
+- **Marca:** tabla `brands` con una marca provisional ("Marca por definir", no se muestra al público) y `venues.brand_id`.
+- **Personal por local:**
+  - `venue_members` y `is_staff_of(local)`.
+  - **32 políticas** de seguridad pasan de "ser staff" a "ser staff de ese local"; `transition_booking`, `reschedule_booking` y `get_availability` verifican el local.
+  - Quedan a nivel de marca: clientes, planners y su programa, perfiles, feriados y auditoría.
+  - El personal de operaciones que ya existía quedó asignado a los locales actuales: nada cambia para un solo local.
+- **Back-office:**
+  - Selector de local (aparece con 2 o más locales).
+  - Las 17 pantallas trabajan sobre el local elegido, y la base de datos vuelve a verificarlo.
+  - Los archivos de una reserva se guardan en el local de esa reserva.
+- **/admin/equipo** (solo admin): dar rol (sin acceso, operaciones, admin) y locales a cada persona. Quien entra por primera vez con Google aparece en "Pendientes de acceso". Nadie puede quitarse su propio admin.
+- **Login con Google:** botón "Continuar con Google" en /ingresar, oculto hasta activar `NEXT_PUBLIC_AUTH_GOOGLE=1`. Una cuenta nueva no tiene acceso hasta que el admin le da un rol. Una cuenta invitada por correo se une a su Google si el correo coincide.
+- **Pruebas:** 5 de base de datos de aislamiento entre locales (lectura, escritura, máquina de estados, disponibilidad y asignación), 2 unitarias y 3 E2E (selector, equipo y botón de Google).
+
+### Encender Google (André, 15 minutos)
+
+1. **Google Cloud Console** → APIs y servicios:
+   - **Pantalla de consentimiento OAuth:** tipo externo, nombre de la app, correo de soporte y dominio.
+   - **Credenciales** → Crear ID de cliente OAuth → Aplicación web.
+   - **URI de redireccionamiento autorizado:** `https://jpfwiusqvuvqhispcfag.supabase.co/auth/v1/callback`.
+2. **Supabase** → Authentication:
+   - **Providers** → Google: pegar el ID y el secreto del cliente. Se pegan en el panel, nunca en el chat.
+   - **URL Configuration:** Site URL = la URL de producción; en Redirect URLs agregar `https://<dominio>/auth/callback`.
+3. **Vercel** → Environment Variables: `NEXT_PUBLIC_AUTH_GOOGLE=1` y volver a desplegar.
+4. Entrar con Google y verificar que llegas al back-office.

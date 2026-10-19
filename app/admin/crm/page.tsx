@@ -8,13 +8,13 @@ import { firstResponseSla, formatDate } from "@/lib/domain";
 import { CHANNEL_LABEL, EVENT_TYPE_LABEL } from "@/lib/ui/status";
 import { cn } from "@/lib/utils";
 import { leadBoard, STAGES } from "@/server/queries/crm";
-import { activeVenue } from "@/server/venue";
+import { staffVenue } from "@/server/venue";
 
 export const metadata: Metadata = { title: "CRM" };
 
 async function Board({ searchParams }: { searchParams: PageProps<"/admin/crm">["searchParams"] }) {
   const user = await requireStaff();
-  const venue = await activeVenue();
+  const venue = await staffVenue(user.id);
   const sp = await searchParams;
   const channel = typeof sp.canal === "string" ? sp.canal : undefined;
   const eventType = typeof sp.tipo === "string" ? sp.tipo : undefined;

@@ -6,7 +6,7 @@ import { z } from "zod";
 import { requireStaff } from "@/lib/auth/session";
 import { withDb } from "@/lib/db";
 import { ALLOWED_TYPES, putFile, validateUpload } from "@/lib/storage";
-import { activeVenue } from "@/server/venue";
+import { bookingVenueId } from "@/server/venue";
 
 export type OpsResult = { ok: true } | { ok: false; error: string };
 
@@ -42,8 +42,14 @@ export async function saveChecklist(input: {
   return { ok: true };
 }
 
-async function uploadPhotos(bookingId: string, files: File[], folder: string, docKind: string) {
-  const venue = await activeVenue();
+async function uploadPhotos(
+  userId: string,
+  bookingId: string,
+  files: File[],
+  folder: string,
+  docKind: string,
+) {
+  const venueId = await bookingVenueId(userId, bookingId);
   const keys: string[] = [];
   for (const file of files) {
     const invalid = validateUpload(file);
@@ -59,7 +65,7 @@ async function uploadPhotos(bookingId: string, files: File[], folder: string, do
       for (const k of keys) {
         await sql(
           `insert into documents (venue_id, booking_id, kind, storage_path) values ($1, $2, $3, $4)`,
-          [venue.id, bookingId, docKind, k],
+          [venueId, bookingId, docKind, k],
         );
       }
     });
@@ -68,12 +74,12 @@ async function uploadPhotos(bookingId: string, files: File[], folder: string, do
 }
 
 export async function addActaPhotos(_: OpsResult | null, formData: FormData): Promise<OpsResult> {
-  await requireStaff();
+  const user = await requireStaff();
   const bookingId = z.uuid().parse(formData.get("bookingId"));
   const files = formData.getAll("photos").filter((f): f is File => f instanceof File && f.size > 0);
   if (files.length === 0) return { ok: false, error: "Elige al menos una foto." };
   try {
-    await uploadPhotos(bookingId, files, "actas", "handover_photo");
+    await uploadPhotos(user.id, bookingId, files, "actas", "handover_photo");
   } catch (error) {
     return { ok: false, error: (error as Error).message };
   }
@@ -95,7 +101,13 @@ export async function addIncident(_: OpsResult | null, formData: FormData): Prom
   const files = formData.getAll("photos").filter((f): f is File => f instanceof File && f.size > 0);
   let photos: string[] = [];
   try {
-    photos = await uploadPhotos(parsed.data.bookingId, files, "incidencias", "incident_photo");
+    photos = await uploadPhotos(
+      user.id,
+      parsed.data.bookingId,
+      files,
+      "incidencias",
+      "incident_photo",
+    );
   } catch (error) {
     return { ok: false, error: (error as Error).message };
   }

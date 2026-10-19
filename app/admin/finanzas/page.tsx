@@ -12,7 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireStaff } from "@/lib/auth/session";
 import { withDb } from "@/lib/db";
 import { formatDate, formatPEN } from "@/lib/domain";
-import { activeVenue } from "@/server/venue";
+import { staffVenue } from "@/server/venue";
 
 export const metadata: Metadata = { title: "Finanzas" };
 
@@ -39,7 +39,7 @@ const PLATFORM = {
 
 async function Finance() {
   const user = await requireStaff();
-  const venue = await activeVenue();
+  const venue = await staffVenue(user.id);
   const isAdmin = user.role === "admin";
   const d = await withDb({ kind: "user", userId: user.id }, async (sql) => ({
     commissions: await sql<{

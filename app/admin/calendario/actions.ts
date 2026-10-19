@@ -4,7 +4,7 @@ import { refresh } from "next/cache";
 import { z } from "zod";
 import { requireStaff } from "@/lib/auth/session";
 import { dbErrorCode, withDb } from "@/lib/db";
-import { activeVenue } from "@/server/venue";
+import { staffVenue } from "@/server/venue";
 
 export type ActionResult = { ok: true } | { ok: false; error: string };
 
@@ -26,7 +26,7 @@ export async function createBlock(input: z.input<typeof blockSchema>): Promise<A
   const user = await requireStaff();
   const parsed = blockSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0].message };
-  const venue = await activeVenue();
+  const venue = await staffVenue(user.id);
   try {
     await withDb({ kind: "user", userId: user.id }, (sql) =>
       sql(

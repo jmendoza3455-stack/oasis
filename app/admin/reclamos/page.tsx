@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireStaff } from "@/lib/auth/session";
 import { withDb } from "@/lib/db";
 import { daysBetween, formatDate, formatPEN } from "@/lib/domain";
-import { activeVenue } from "@/server/venue";
+import { staffVenue } from "@/server/venue";
 
 export const metadata: Metadata = { title: "Libro de Reclamaciones" };
 
@@ -29,7 +29,7 @@ type Row = {
 
 async function Complaints() {
   const user = await requireStaff();
-  const venue = await activeVenue();
+  const venue = await staffVenue(user.id);
   const today = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Lima" }).format(new Date());
   const rows = await withDb({ kind: "user", userId: user.id }, (sql) =>
     sql<Row>(
