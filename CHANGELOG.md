@@ -4,6 +4,11 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Fase 2 · promociones (19/10/2026)
+- `/admin/promociones`: el admin crea promociones por fechas, segmentos y tipos de día (p. ej. corporativo L-J), siempre dentro del tope de descuento (garantizado en la BD). Operaciones las ve; nadie más las crea.
+- Se aplican solas en el cotizador público ("Incluye la promoción…"), en las respuestas del Recepcionista y en las pre-reservas del CRM y del chat (`bookings.promotion_id`). No se suman al descuento manual: gana el mayor.
+- Dominio `bestPromotion` y `quote` con promoción, con tests.
+
 ### Fase 2 · Recepcionista por WhatsApp (19/10/2026)
 - Webhook de WhatsApp Business Cloud API (`/api/whatsapp`): verificación de Meta, firma `X-Hub-Signature-256`, respuesta inmediata y procesamiento con `after()`.
 - El mismo Recepcionista (herramientas, límites, tope de gasto y auditoría como agente) responde por WhatsApp; usa el número del cliente para registrar el lead y lee el código de campaña que agrega el botón de la web (UTM hasta la reserva, regla 8).

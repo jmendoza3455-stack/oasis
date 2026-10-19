@@ -1,9 +1,10 @@
 import "server-only";
 import { withDb } from "@/lib/db";
-import type { PricingSettings, RateCard } from "@/lib/domain";
+import type { PricingSettings, Promotion, RateCard } from "@/lib/domain";
 
 export type PricingContext = {
   cards: RateCard[];
+  promotions: Promotion[];
   holidays: Set<string>;
   settings: PricingSettings;
 };
@@ -18,6 +19,14 @@ export async function loadPricingContext(venueId: string): Promise<PricingContex
          from rate_cards where venue_id = $1`,
       [venueId],
     );
+    const promotions = await sql<Promotion>(
+      `select id, name, event_types::text[] as "eventTypes", day_types as "dayTypes",
+              to_char(starts_on, 'YYYY-MM-DD') as "startsOn", to_char(ends_on, 'YYYY-MM-DD') as "endsOn",
+              discount_pct::float8 as "discountPct"
+         from promotions
+        where venue_id = $1 and is_active and ends_on >= (now() at time zone 'America/Lima')::date`,
+      [venueId],
+    );
     const holidays = await sql<{ d: string }>(
       `select to_char(date, 'YYYY-MM-DD') as d from holidays where type = 'feriado'`,
     );
@@ -28,6 +37,7 @@ export async function loadPricingContext(venueId: string): Promise<PricingContex
     const s = Object.fromEntries(rows.map((r) => [r.key, r.value])) as Record<string, unknown>;
     return {
       cards,
+      promotions,
       holidays: new Set(holidays.map((h) => h.d)),
       settings: {
         igvRate: Number(s.igv_rate ?? 0.18),

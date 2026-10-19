@@ -1,10 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
+  bestPromotion,
   estimateRange,
   findRateCard,
   PricingError,
   quote,
   type PricingSettings,
+  type Promotion,
   type RateCard,
 } from "@/lib/domain";
 
@@ -203,5 +205,76 @@ describe("pricing", () => {
       { ...settings, quoteRangeSpread: 0.2 },
     );
     expect(wide.min).toBe(2650);
+  });
+});
+
+describe("promociones", () => {
+  // 2026-06-09 es martes (L-J), temporada baja
+  const ljCorp: Promotion = {
+    id: "p1",
+    name: "Corporativo L-J",
+    eventTypes: ["corporate"],
+    dayTypes: ["mon_thu"],
+    startsOn: "2026-06-01",
+    endsOn: "2026-06-30",
+    discountPct: 8,
+  };
+  const all: Promotion = {
+    ...ljCorp,
+    id: "p2",
+    name: "Todo junio",
+    eventTypes: null,
+    dayTypes: null,
+    discountPct: 5,
+  };
+  const holidays = new Set<string>();
+
+  it("elige la promoción aplicable con mayor descuento", () => {
+    expect(
+      bestPromotion([all, ljCorp], { eventType: "corporate", date: "2026-06-09" }, holidays)?.id,
+    ).toBe("p1");
+    expect(
+      bestPromotion([all, ljCorp], { eventType: "wedding", date: "2026-06-09" }, holidays)?.id,
+    ).toBe("p2");
+    expect(
+      bestPromotion([ljCorp], { eventType: "corporate", date: "2026-06-13" }, holidays),
+    ).toBeNull(); // sábado
+    expect(
+      bestPromotion([ljCorp], { eventType: "corporate", date: "2026-07-07" }, holidays),
+    ).toBeNull(); // fuera de rango
+    expect(
+      bestPromotion(
+        [{ ...all, discountPct: 0 }],
+        { eventType: "wedding", date: "2026-06-09" },
+        holidays,
+      ),
+    ).toBeNull();
+  });
+
+  it("aplica la promoción sin pedir aprobación, gana el mayor descuento y nunca pasa el tope", () => {
+    const input = { eventType: "corporate" as const, date: "2026-06-09", guests: 40 };
+    const q = quote(cards, { ...input, promotion: ljCorp }, holidays, settings);
+    expect(q.discountPct).toBe(8);
+    expect(q.promotion?.id).toBe("p1");
+    expect(q.rental.net).toBe(5520); // 6,000 − 8 %
+    expect(q.requiresApproval).toBe(false);
+    // El descuento manual mayor gana y la promoción no se suma
+    const manual = quote(
+      cards,
+      { ...input, promotion: ljCorp, discountPct: 9 },
+      holidays,
+      settings,
+    );
+    expect(manual.discountPct).toBe(9);
+    expect(manual.promotion).toBeNull();
+    // Una promoción por encima del tope se recorta al tope
+    const capped = quote(
+      cards,
+      { ...input, promotion: { ...ljCorp, discountPct: 30 } },
+      holidays,
+      settings,
+    );
+    expect(capped.discountPct).toBe(settings.discountCapPct);
+    expect(capped.requiresApproval).toBe(false);
   });
 });

@@ -181,6 +181,22 @@ describe("aislamiento de planners (OASIS.md §13)", () => {
     ).rejects.toThrow(/permission denied/);
   });
 
+  it("solo el admin crea promociones y siempre dentro del tope de descuento", async () => {
+    const insert = (actor: Parameters<typeof as>[1], pct: number) =>
+      as(pool, actor, (c) =>
+        c.query(
+          `insert into public.promotions (venue_id, name, starts_on, ends_on, discount_pct)
+           values ($1, 'Promo test', current_date, current_date + 30, $2)`,
+          [w.venueId, pct],
+        ),
+      );
+    await expect(insert(w.ops, 5)).rejects.toThrow(/row-level security/);
+    await expect(insert(w.plannerA, 5)).rejects.toThrow(/row-level security/);
+    await expect(insert(w.admin, 50)).rejects.toThrow(/promotion_over_cap/);
+    await insert(w.admin, 8);
+    expect(await count(w.plannerA, `select 1 from public.promotions`)).toBeGreaterThan(0);
+  });
+
   it("la disponibilidad del planner no expone datos de terceros", async () => {
     const rows = await as(
       pool,

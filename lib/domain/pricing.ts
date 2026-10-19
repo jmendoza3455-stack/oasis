@@ -36,7 +36,39 @@ export type QuoteInput = {
   guests: number;
   discountPct?: number;
   discountApprovedByAdmin?: boolean;
+  /** Promoción vigente (creada por el admin, siempre dentro del tope de descuento). */
+  promotion?: Promotion | null;
 };
+
+/** Promoción creada por el admin: % de descuento por fechas, segmentos y tipos de día. */
+export type Promotion = {
+  id: string;
+  name: string;
+  eventTypes: readonly EventType[] | null; // null = todos
+  dayTypes: readonly DayType[] | null; // null = todos
+  startsOn: ISODate;
+  endsOn: ISODate;
+  discountPct: number;
+};
+
+/** La promoción aplicable con mayor descuento para un tipo de evento y fecha. */
+export function bestPromotion(
+  promotions: readonly Promotion[],
+  input: { eventType: EventType; date: ISODate },
+  holidays: ReadonlySet<ISODate>,
+): Promotion | null {
+  const dt = dayType(input.date, holidays);
+  const applicable = promotions.filter(
+    (p) =>
+      p.discountPct > 0 &&
+      p.startsOn <= input.date &&
+      p.endsOn >= input.date &&
+      (p.eventTypes === null || p.eventTypes.includes(input.eventType)) &&
+      (p.dayTypes === null || p.dayTypes.includes(dt)),
+  );
+  applicable.sort((a, b) => b.discountPct - a.discountPct);
+  return applicable[0] ?? null;
+}
 
 export type Quote = {
   rateCardId: string;
@@ -44,6 +76,8 @@ export type Quote = {
   season: Season;
   list: Amounts;
   discountPct: number;
+  /** Promoción aplicada (si dio el mayor descuento). */
+  promotion: Promotion | null;
   rental: Amounts;
   requiresApproval: boolean;
   deposit: number;
@@ -96,11 +130,15 @@ export function quote(
   const card = findRateCard(cards, { ...input, slot }, holidays, settings.highSeasonMonths);
   if (!card) throw new PricingError("no_rate_card");
 
-  const discountPct = input.discountPct ?? 0;
-  const requiresApproval = discountPct > settings.discountCapPct;
+  const manualPct = input.discountPct ?? 0;
+  const requiresApproval = manualPct > settings.discountCapPct;
   if (requiresApproval && !input.discountApprovedByAdmin) {
     throw new PricingError("discount_requires_approval");
   }
+  // La promoción no se suma al descuento manual: gana el mayor, y nunca pasa el tope
+  const promoPct = Math.min(input.promotion?.discountPct ?? 0, settings.discountCapPct);
+  const promotion = input.promotion && promoPct > manualPct ? input.promotion : null;
+  const discountPct = promotion ? promoPct : manualPct;
 
   const listNet = round2(card.priceNet + card.pricePerGuestNet * input.guests);
   const list = fromNet(listNet, settings.igvRate);
@@ -112,8 +150,9 @@ export function quote(
     season: card.season,
     list,
     discountPct,
+    promotion,
     rental,
-    requiresApproval,
+    requiresApproval: requiresApproval && !promotion,
     deposit: round2(rental.gross * settings.depositPct),
     guarantee: settings.guaranteeAmounts[input.eventType] ?? 0,
   };

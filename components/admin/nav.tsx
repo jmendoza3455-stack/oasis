@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  BadgePercent,
   Bell,
   BookOpen,
   Bot,
@@ -21,6 +22,7 @@ const items = [
   { href: "/admin/planners", label: "Planners", icon: Users },
   { href: "/admin/dashboard", label: "Dashboard", icon: Gauge },
   { href: "/admin/finanzas", label: "Finanzas", icon: Wallet },
+  { href: "/admin/promociones", label: "Promociones", icon: BadgePercent },
   { href: "/admin/avisos", label: "Avisos", icon: Bell },
   { href: "/admin/agentes", label: "Agentes", icon: Bot },
   { href: "/admin/reclamos", label: "Reclamos", icon: BookOpen },

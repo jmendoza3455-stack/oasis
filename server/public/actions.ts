@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { z } from "zod";
 import { ATTRIBUTION_COOKIE, parseAttributionCookie } from "@/lib/attribution-cookie";
 import { withDb } from "@/lib/db";
-import { estimateRange, PricingError } from "@/lib/domain";
+import { bestPromotion, estimateRange, PricingError } from "@/lib/domain";
 import { loadPricingContext } from "@/server/pricing-context";
 import { activeVenue } from "@/server/venue";
 import { verifyTurnstile, withinRateLimit } from "./antispam";
@@ -49,7 +49,15 @@ const quoteSchema = z.object({
 });
 
 export type QuoteResult =
-  | { ok: true; min: number; max: number; deposit: number; guarantee: number; isPlaceholder: true }
+  | {
+      ok: true;
+      min: number;
+      max: number;
+      deposit: number;
+      guarantee: number;
+      isPlaceholder: true;
+      promotion: { name: string; discountPct: number } | null;
+    }
   | { ok: false; error: string };
 
 export async function estimateQuote(input: z.input<typeof quoteSchema>): Promise<QuoteResult> {
@@ -61,7 +69,8 @@ export async function estimateQuote(input: z.input<typeof quoteSchema>): Promise
   const venue = await activeVenue();
   const ctx = await loadPricingContext(venue.id);
   try {
-    const r = estimateRange(ctx.cards, parsed.data, ctx.holidays, ctx.settings);
+    const promotion = bestPromotion(ctx.promotions, parsed.data, ctx.holidays);
+    const r = estimateRange(ctx.cards, { ...parsed.data, promotion }, ctx.holidays, ctx.settings);
     return {
       ok: true,
       min: r.min,
@@ -69,6 +78,9 @@ export async function estimateQuote(input: z.input<typeof quoteSchema>): Promise
       deposit: r.base.deposit,
       guarantee: r.base.guarantee,
       isPlaceholder: true,
+      promotion: r.base.promotion
+        ? { name: r.base.promotion.name, discountPct: r.base.discountPct }
+        : null,
     };
   } catch (error) {
     if (error instanceof PricingError && error.code === "no_rate_card") {

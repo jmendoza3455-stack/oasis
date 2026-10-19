@@ -2,6 +2,7 @@ import "server-only";
 import Anthropic from "@anthropic-ai/sdk";
 import { withDb } from "@/lib/db";
 import {
+  bestPromotion,
   estimateRange,
   formatDate,
   formatPEN,
@@ -185,9 +186,14 @@ async function runTool(
       if (!fecha || !tipo || !(invitados > 0)) return { error: "datos_incompletos" };
       const pc = await loadPricingContext(ctx.venue.id);
       try {
+        const promotion = bestPromotion(
+          pc.promotions,
+          { eventType: tipo, date: fecha },
+          pc.holidays,
+        );
         const r = estimateRange(
           pc.cards,
-          { eventType: tipo, date: fecha, guests: invitados },
+          { eventType: tipo, date: fecha, guests: invitados, promotion },
           pc.holidays,
           pc.settings,
         );
@@ -196,6 +202,9 @@ async function runTool(
           hasta: formatPEN(r.max),
           adelanto: formatPEN(r.base.deposit),
           garantia_reembolsable: formatPEN(r.base.guarantee),
+          promocion: r.base.promotion
+            ? `${r.base.promotion.name} (−${r.base.discountPct} %)`
+            : null,
           nota: "Referencial, con IGV, solo alquiler del local. Tarifario por validar.",
         };
       } catch (error) {

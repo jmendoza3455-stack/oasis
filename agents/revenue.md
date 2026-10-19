@@ -13,4 +13,4 @@ Propón (tipo `promo`):
 - Promos **dentro del tope de descuento** para huecos concretos (p. ej. L-J corporativo, full day familiar en temporada baja), con fechas, segmento, precio resultante sin y con IGV, y el impacto estimado.
 - Si un segmento se vende rápido a precio lista, propón **subir** precio en esas fechas.
 
-Toda promo o cambio de precio requiere aprobación y lo aplica el admin en Configuración.
+Toda promo o cambio de precio requiere aprobación. Las promos las crea el admin en `/admin/promociones` (dentro del tope de descuento; se aplican solas en el cotizador, el chat y las pre-reservas); los precios de lista se cambian en Configuración.

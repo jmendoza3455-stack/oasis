@@ -2,7 +2,7 @@ import "server-only";
 import { z } from "zod";
 import type { SessionUser } from "@/lib/auth/session";
 import { dbErrorCode, withDb } from "@/lib/db";
-import { PricingError, quote } from "@/lib/domain";
+import { bestPromotion, PricingError, quote } from "@/lib/domain";
 import { loadPricingContext } from "@/server/pricing-context";
 import { activeVenue } from "@/server/venue";
 
@@ -31,9 +31,9 @@ export async function createPrebooking(
 ): Promise<{ ok: true; bookingId: string } | { ok: false; error: string }> {
   const venue = await activeVenue();
   const ctx = await loadPricingContext(venue.id);
-  let listNet: number;
+  let priced: ReturnType<typeof quote>;
   try {
-    listNet = quote(
+    priced = quote(
       ctx.cards,
       {
         eventType: d.eventType,
@@ -41,10 +41,15 @@ export async function createPrebooking(
         guests: d.guests,
         discountPct: d.discountPct,
         discountApprovedByAdmin: user.role === "admin",
+        promotion: bestPromotion(
+          ctx.promotions,
+          { eventType: d.eventType, date: d.eventDate },
+          ctx.holidays,
+        ),
       },
       ctx.holidays,
       ctx.settings,
-    ).list.net;
+    );
   } catch (error) {
     if (error instanceof PricingError) {
       const code =
@@ -59,8 +64,8 @@ export async function createPrebooking(
     const [b] = await withDb({ kind: "user", userId: user.id }, (sql) =>
       sql<{ id: string }>(
         `insert into bookings (venue_id, lead_id, client_id, planner_id, channel, event_type, event_date, guests,
-                               rental_list_net, discount_pct, discount_approved_by)
-         select $1, l.id, l.client_id, l.planner_id, l.channel, $3, $4, $5, $6, $7, $8
+                               rental_list_net, discount_pct, discount_approved_by, promotion_id)
+         select $1, l.id, l.client_id, l.planner_id, l.channel, $3, $4, $5, $6, $7, $8, $9
            from leads l where l.id = $2
          returning id`,
         [
@@ -69,9 +74,12 @@ export async function createPrebooking(
           d.eventType,
           d.eventDate,
           d.guests,
-          listNet,
-          d.discountPct,
-          d.discountPct > ctx.settings.discountCapPct && user.role === "admin" ? user.id : null,
+          priced.list.net,
+          priced.discountPct,
+          priced.discountPct > ctx.settings.discountCapPct && user.role === "admin"
+            ? user.id
+            : null,
+          priced.promotion?.id ?? null,
         ],
       ),
     );

@@ -72,6 +72,11 @@ export function QuoteWidget({ defaultEventType = "wedding" }: { defaultEventType
             <p className="font-display text-brand-green dark:text-brand-sand text-3xl">
               {formatPEN(result.min)} – {formatPEN(result.max)}
             </p>
+            {result.promotion && (
+              <p className="mt-1 text-sm font-medium">
+                Incluye la promoción «{result.promotion.name}» (−{result.promotion.discountPct} %)
+              </p>
+            )}
             <p className="text-muted-foreground mt-2 text-xs">
               Referencial: la cotización final depende del horario y los servicios. Para separar la
               fecha se paga un adelanto; la garantía es reembolsable.
