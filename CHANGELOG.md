@@ -4,6 +4,10 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Fase 2 · respaldo de archivos (19/10/2026)
+- Backup diario cifrado de los archivos del bucket `documents` (job `storage` en `backup.yml`, `scripts/backup-storage.mts`): requiere los secretos de GitHub `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` y `BACKUP_PASSPHRASE`; falla en rojo si faltan.
+- Recorrido paginado y recursivo del bucket (`lib/backup/walk.ts`) con test.
+
 ### Fase 2 · reprogramación (19/10/2026)
 - Reprogramar reservas Separadas o Confirmadas desde la ficha (`reschedule_booking()`): operaciones dentro de la política (`reschedules_allowed`, `reschedule_free_min_days`); fuera de ella solo el admin. La nueva fecha la valida la exclusion constraint, se recalcula el vencimiento del saldo, se mantiene el precio pactado (S41) y queda nota y auditoría.
 - Espejo `checkReschedule` en el dominio, con tests de unidad, BD y E2E.

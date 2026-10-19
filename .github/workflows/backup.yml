@@ -3,7 +3,7 @@ name: Backup BD
 # Respaldo diario de la BD de Supabase (el plan Free no incluye backups automáticos).
 # El dump se cifra con BACKUP_PASSPHRASE antes de subirse: el repo podría ser público.
 # Falla (en rojo) si faltan los secretos, para que la falta de backup sea visible.
-# Alcance: esquemas public y auth. Los archivos de Storage no se incluyen (ver guía de producción).
+# Alcance: esquemas public y auth (job dump) y archivos del bucket "documents" (job storage).
 on:
   schedule:
     - cron: "17 8 * * *" # 03:17 America/Lima
@@ -38,4 +38,40 @@ jobs:
         with:
           name: backup-${{ github.run_id }}
           path: "*.dump.gpg"
+          retention-days: 30
+
+  storage:
+    # Archivos del bucket privado "documents" (vouchers, fotos de actas, PDFs), cifrados.
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      BACKUP_PASSPHRASE: ${{ secrets.BACKUP_PASSPHRASE }}
+    steps:
+      - name: Verificar secretos
+        run: |
+          if [ -z "$NEXT_PUBLIC_SUPABASE_URL" ] || [ -z "$SUPABASE_SERVICE_ROLE_KEY" ] || [ -z "$BACKUP_PASSPHRASE" ]; then
+            echo "::error::Faltan NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY y/o BACKUP_PASSPHRASE: NO hay backup de archivos."
+            exit 1
+          fi
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Descarga y cifrado
+        run: |
+          STAMP=$(date -u +%Y%m%d-%H%M)
+          node scripts/backup-storage.mts storage-backup
+          tar czf "storage-$STAMP.tar.gz" storage-backup
+          gpg --batch --yes --pinentry-mode loopback --passphrase "$BACKUP_PASSPHRASE" \
+            --symmetric --cipher-algo AES256 -o "storage-$STAMP.tar.gz.gpg" "storage-$STAMP.tar.gz"
+          rm -rf storage-backup "storage-$STAMP.tar.gz"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: storage-${{ github.run_id }}
+          path: "*.tar.gz.gpg"
           retention-days: 30

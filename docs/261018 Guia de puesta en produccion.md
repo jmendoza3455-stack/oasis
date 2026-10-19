@@ -258,3 +258,7 @@ Vercel > proyecto `oasis` > Settings > Environment Variables. **Prod** = entorno
 5. **Recepcionista da respuestas incorrectas o gasta de más:** poner `agent_monthly_budget_usd` en 0 en Configuración para que derive a WhatsApp (comportamiento a confirmar en una prueba) o quitar `ANTHROPIC_API_KEY` y volver a desplegar.
 6. **Migración con problemas:** las migraciones no se revierten solas. Escribir una **migración correctiva** nueva y aplicarla con `pnpm db:push`. Un rollback de Vercel no deshace cambios de esquema: si el código anterior no es compatible con el esquema nuevo, primero la migración correctiva.
 7. **Pérdida o corrupción de datos:** congelar la operación (punto 2), restaurar el último backup en una BD aparte (§1.9) y decidir con André qué se recupera. Avisar a los clientes afectados si hubo reservas o pagos en juego.
+
+## Anexo · Respaldo de archivos (19/10/2026)
+
+El workflow `Backup BD` tiene dos jobs diarios: `dump` (base de datos) y `storage` (archivos del bucket `documents`). Secretos de GitHub (Settings → Secrets and variables → Actions): `SUPABASE_DB_URL`, `BACKUP_PASSPHRASE`, `NEXT_PUBLIC_SUPABASE_URL` y `SUPABASE_SERVICE_ROLE_KEY`. Restauración de archivos: descargar el artefacto `storage-…`, `gpg -d` con la passphrase, descomprimir y subir con el panel de Supabase o un script. Hacer un simulacro antes de la reapertura.
