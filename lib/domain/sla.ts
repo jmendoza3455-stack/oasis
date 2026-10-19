@@ -44,3 +44,11 @@ export function firstResponseSla(
   const minutes = businessMinutesBetween(createdAt, firstResponseAt ?? now, hours);
   return { minutes, overdue: minutes > slaMinutes, answered: firstResponseAt !== null };
 }
+
+/** true si el instante cae dentro del horario comercial (hora de Lima). */
+export function isBusinessTime(at: Date, hours: BusinessHours): boolean {
+  const local = new Date(at.getTime() + LIMA_OFFSET_MIN * 60_000);
+  if (!hours.days.includes(local.getUTCDay())) return false;
+  const minutes = local.getUTCHours() * 60 + local.getUTCMinutes();
+  return minutes >= toMin(hours.start) && minutes < toMin(hours.end);
+}

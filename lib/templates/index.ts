@@ -11,6 +11,7 @@ export type BookingCtx = {
   balanceDueOn: string | null;
   guests: number;
   link?: string;
+  musicCutoff?: string | null;
 };
 
 export type DigestCtx = {
@@ -23,6 +24,8 @@ export type DigestCtx = {
 const PAYMENT_INFO =
   "Datos de pago: [COMPLETAR cuenta bancaria de SAWA – Gestión Comercial S.A.C. y número de Yape/Plin]. " +
   "Envía tu voucher por este medio para validarlo.";
+const music = (c: BookingCtx) =>
+  c.musicCutoff ? ` La música con volumen alto termina a las ${c.musicCutoff}.` : "";
 const ONSITE_CONTACT = "[COMPLETAR nombre y celular de la persona encargada en el local]";
 
 type Template<C> = {
@@ -64,20 +67,20 @@ export const TEMPLATES = {
       `Hola ${c.recipientName}, el saldo de ${c.balance} de tu ${c.eventLabel} venció el ${c.balanceDueOn}. Para confirmar tu fecha necesitamos el pago completo. ¿Coordinamos?`,
   }),
   event_d7: bk({
-    version: "2026-10-18.1",
+    version: "2026-10-19.1",
     subject: (c) => `Falta una semana · ${c.eventLabel}`,
     email: (c) =>
-      `Hola ${c.recipientName}:\n\nFalta una semana para tu ${c.eventLabel} (${c.guests} invitados). Esta semana coordinamos horario de ingreso de proveedores, lista final de invitados y el acta de entrega del local.\n\nContacto en el local: ${ONSITE_CONTACT}.${sign(c)}`,
+      `Hola ${c.recipientName}:\n\nFalta una semana para tu ${c.eventLabel} (${c.guests} invitados). Esta semana coordinamos horario de ingreso de proveedores, lista final de invitados y el acta de entrega del local.\n\nContacto en el local: ${ONSITE_CONTACT}.${music(c)}${sign(c)}`,
     whatsapp: (c) =>
-      `Hola ${c.recipientName}, falta una semana para tu ${c.eventLabel}. ¿Coordinamos horario de ingreso de proveedores y lista final de invitados? Contacto en el local: ${ONSITE_CONTACT}.`,
+      `Hola ${c.recipientName}, falta una semana para tu ${c.eventLabel}. ¿Coordinamos horario de ingreso de proveedores y lista final de invitados? Contacto en el local: ${ONSITE_CONTACT}.${music(c)}`,
   }),
   event_d1: bk({
-    version: "2026-10-18.1",
+    version: "2026-10-19.1",
     subject: (c) => `Mañana es tu evento · ${c.eventLabel}`,
     email: (c) =>
-      `Hola ${c.recipientName}:\n\n¡Todo listo para tu ${c.eventLabel}! Al llegar firmamos juntos el acta de entrega del local. Recuerda la garantía y los horarios acordados.\n\nContacto en el local: ${ONSITE_CONTACT}.${sign(c)}`,
+      `Hola ${c.recipientName}:\n\n¡Todo listo para tu ${c.eventLabel}! Al llegar firmamos juntos el acta de entrega del local. Recuerda la garantía y los horarios acordados.\n\nContacto en el local: ${ONSITE_CONTACT}.${music(c)}${sign(c)}`,
     whatsapp: (c) =>
-      `Hola ${c.recipientName}, ¡todo listo para tu ${c.eventLabel}! Al llegar firmamos el acta de entrega. Contacto en el local: ${ONSITE_CONTACT}.`,
+      `Hola ${c.recipientName}, ¡todo listo para tu ${c.eventLabel}! Al llegar firmamos el acta de entrega. Contacto en el local: ${ONSITE_CONTACT}.${music(c)}`,
   }),
   nps_request: bk({
     version: "2026-10-18.1",

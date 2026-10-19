@@ -52,12 +52,20 @@ test.describe("operación del evento y NPS (serial, solo desktop)", () => {
     await page.goto(`/admin/reservas/${doneId}/operacion`);
     const link = await page.locator("code").filter({ hasText: "/encuesta/" }).innerText();
     const path = new URL(link).pathname;
+    await db(
+      `update settings set value = '"https://g.page/r/oasis-e2e/review"' where key = 'google_review_url'`,
+    );
     await page.context().clearCookies();
     await page.goto(path);
     await page.getByText("9", { exact: true }).click();
     await page.getByLabel(/podríamos mejorar/).fill("Todo excelente (E2E)");
     await page.getByRole("button", { name: "Enviar" }).click();
     await expect(page.getByText("¡Gracias por tu opinión!")).toBeVisible();
+    // Promotor (9–10): se le ofrece dejar una reseña en Google
+    await expect(page.getByRole("link", { name: "Dejar una reseña" })).toHaveAttribute(
+      "href",
+      "https://g.page/r/oasis-e2e/review",
+    );
     const [n] = await db<{ score: number }>(
       `select score from nps_responses where booking_id = $1`,
       [doneId],

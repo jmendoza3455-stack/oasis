@@ -4,6 +4,11 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Fase 2 · ajustes de operación (19/10/2026)
+- Alerta de leads sin respuesta: el cron corre cada 15 min y respeta `business_hours` de Configuración (antes el horario estaba fijo en `vercel.json`). La ejecución manual desde `/admin/avisos` corre siempre.
+- Parámetro `music_cutoff_time` (S39, por validar con abogado) incluido en los avisos D-7 y D-1 (plantillas v2026-10-19.1).
+- Encuesta NPS: a los promotores (9–10) se les ofrece dejar una reseña en Google si `google_review_url` está configurado.
+
 ### Fase 14 — despliegue y cierre (18/10/2026)
 - Producción en Vercel desde `main` con todas las migraciones aplicadas, crons registrados y secretos obligatorios cargados.
 - Node fijado a 22.x (`engines`) para evitar saltos de versión automáticos en Vercel.

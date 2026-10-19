@@ -17,7 +17,9 @@ export async function runJobNow(_: RunResult | null, formData: FormData): Promis
   const job = z.enum(["diario", "sla", "semanal"]).safeParse(formData.get("job"));
   if (!job.success) return { ok: false, message: "Proceso desconocido." };
   try {
-    const report = await JOBS[job.data]();
+    // A demanda se ejecuta aunque sea fuera del horario comercial
+    const report =
+      job.data === "sla" ? await JOBS.sla(new Date(), { force: true }) : await JOBS[job.data]();
     refresh();
     return { ok: true, message: describe(report) };
   } catch (error) {

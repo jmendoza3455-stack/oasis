@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { businessMinutesBetween, firstResponseSla, type BusinessHours } from "@/lib/domain";
+import {
+  businessMinutesBetween,
+  firstResponseSla,
+  isBusinessTime,
+  type BusinessHours,
+} from "@/lib/domain";
 
 const hours: BusinessHours = { days: [1, 2, 3, 4, 5, 6], start: "09:00", end: "19:00" };
 // 2026-12-17 es jueves. 14:00Z = 09:00 en Lima.
@@ -52,5 +57,15 @@ describe("SLA de primera respuesta (minutos hábiles)", () => {
       overdue: false,
       answered: true,
     });
+  });
+});
+
+describe("isBusinessTime", () => {
+  const hours = { days: [1, 2, 3, 4, 5, 6], start: "09:00", end: "19:00" };
+  it("respeta días y horas de Lima", () => {
+    expect(isBusinessTime(new Date("2027-01-18T14:00:00Z"), hours)).toBe(true); // lun 09:00
+    expect(isBusinessTime(new Date("2027-01-18T13:59:00Z"), hours)).toBe(false); // lun 08:59
+    expect(isBusinessTime(new Date("2027-01-19T00:00:00Z"), hours)).toBe(false); // lun 19:00
+    expect(isBusinessTime(new Date("2027-01-17T15:00:00Z"), hours)).toBe(false); // domingo
   });
 });

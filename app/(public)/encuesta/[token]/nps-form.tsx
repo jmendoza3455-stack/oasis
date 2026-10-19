@@ -10,9 +10,23 @@ export function NpsForm({ token }: { token: string }) {
   const [state, action, pending] = useActionState<NpsState, FormData>(submitNps, {});
   if (state.ok)
     return (
-      <p role="status" className="bg-secondary rounded-xl p-5">
-        ¡Gracias por tu opinión! Nos ayuda a mejorar.
-      </p>
+      <div role="status" className="bg-secondary grid gap-3 rounded-xl p-5">
+        <p>¡Gracias por tu opinión! Nos ayuda a mejorar.</p>
+        {state.reviewUrl && (
+          <p>
+            ¿Nos ayudas con una reseña en Google? Le sirve a otras familias y empresas a
+            encontrarnos.{" "}
+            <a
+              href={state.reviewUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="font-medium underline"
+            >
+              Dejar una reseña
+            </a>
+          </p>
+        )}
+      </div>
     );
   return (
     <form action={action} className="grid gap-5">

@@ -31,6 +31,13 @@ export const SETTINGS: SettingDef[] = [
     help: '{"cocktail": 150, "banquet": 100, "full_day": 60}',
   },
   {
+    key: "music_cutoff_time",
+    label: "Hora de corte de la música",
+    group: "Reservas",
+    type: "text",
+    help: "HH:MM. Por validar con abogado (ruido nocturno desde 22:01, S39)",
+  },
+  {
     key: "day_boundary",
     label: "Inicio del día comercial",
     group: "Reservas",
@@ -122,6 +129,13 @@ export const SETTINGS: SettingDef[] = [
     group: "Dinero",
     type: "number",
     help: "Días antes del vencimiento del saldo para el recordatorio automático",
+  },
+  {
+    key: "google_review_url",
+    label: "Enlace de reseñas de Google",
+    group: "Comercial",
+    type: "text",
+    help: "Se ofrece a quien califica 9 o 10 en la encuesta NPS. Vacío = no se pide",
   },
   {
     key: "agent_monthly_budget_usd",

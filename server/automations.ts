@@ -8,6 +8,7 @@ import {
   dueReminders,
   formatDate,
   formatPEN,
+  isBusinessTime,
   slaBreaches,
   STATUS_LABEL,
   weekKey,
@@ -166,6 +167,7 @@ async function notifyCustomer(
   kind: BookingTemplateId,
   dedupeKey: string,
   extra: Partial<BookingCtx> = {},
+  settings: Record<string, unknown> = {},
 ): Promise<number> {
   // En reservas de planner el contacto con el cliente lo lleva el planner (S29)
   const viaPlanner = b.plannerName !== null;
@@ -177,6 +179,7 @@ async function notifyCustomer(
     balance: formatPEN(balanceOf(b)),
     balanceDueOn: b.balanceDueOn ? formatDate(b.balanceDueOn) : null,
     guests: b.guests,
+    musicCutoff: typeof settings.music_cutoff_time === "string" ? settings.music_cutoff_time : null,
     ...extra,
   };
   const t = TEMPLATES[kind];
@@ -223,7 +226,15 @@ export async function runDaily(now = new Date()): Promise<RunReport> {
     });
 
     for (const r of reminders) {
-      queued += await notifyCustomer(sql, venue, byId.get(r.bookingId)!, r.kind, r.dedupeKey);
+      queued += await notifyCustomer(
+        sql,
+        venue,
+        byId.get(r.bookingId)!,
+        r.kind,
+        r.dedupeKey,
+        {},
+        s,
+      );
     }
 
     // Encuesta NPS a eventos realizados en los últimos 7 días sin respuesta
@@ -306,7 +317,7 @@ export async function runDaily(now = new Date()): Promise<RunReport> {
 }
 
 /** Cada 15 min en horario comercial: leads nuevos que superaron el SLA de primera respuesta. */
-export async function runSla(now = new Date()): Promise<RunReport> {
+export async function runSla(now = new Date(), opts: { force?: boolean } = {}): Promise<RunReport> {
   const venue = await activeVenue();
   let queued = 0;
   await withDb(ACTOR, async (sql) => {
@@ -316,6 +327,8 @@ export async function runSla(now = new Date()): Promise<RunReport> {
       start: "09:00",
       end: "19:00",
     };
+    // El cron corre cada 15 min todo el día; fuera del horario comercial no hay alertas (S30)
+    if (!opts.force && !isBusinessTime(now, hours)) return;
     const leads = await sql<{
       id: string;
       stage: string;
