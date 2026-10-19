@@ -4,6 +4,11 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Redes y organigrama (19/10/2026)
+- `docs/261019 Plan de contenido redes 30 dias.md`: posicionamiento, cuentas y bio con UTM, 12 guiones de Reels, calendario del 26/10 a la reapertura, lista de tomas para Carlos, roles y medición por embudo (no por seguidores).
+- Portadas de destacados de Instagram en `assets/redes/destacados/` (SVG y PNG, paleta Oasis).
+- `docs/261019 Organigrama.html`: estructura con socios, encargado en sitio, agentes de IA, automatizaciones, externos y puestos por cubrir.
+
 ### Web · calendario vivo (19/10/2026)
 - Calendario mensual en lugar del campo fecha: Libre / En espera / Ocupado en vivo, precio "desde" por día (si los precios son públicos), ofertas L-J y promociones, feriados, temporada y "Sábados libres: X de Y". Tocar un día vuelve a verificarlo; si se ocupó, avisa, refresca y sugiere fechas cercanas.
 - Accesible: patrón grid de WAI-ARIA (teclado completo), estado sin depender del color, nombres accesibles con el texto visible; axe-core sin violaciones.

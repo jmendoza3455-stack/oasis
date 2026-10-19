@@ -1,0 +1,636 @@
+<title>Organigrama Oasis Pachacámac</title>
+<meta name="claude:viewport-fit-sides" content="cover" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  rel="stylesheet"
+  href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Figtree:wght@400;500;600&display=swap"
+/>
+<style>
+  /* Árbol de dos ramas (comercial / local) bajo SAWA; apoyo externo al costado; leyenda y vacantes al pie */
+  :root {
+    --bg: #f7f5f0;
+    --fg: #2b2f2a;
+    --muted: #5d5f58;
+    --card: #ffffff;
+    --line: #cdc4b1;
+    --brand: #2e3b2b;
+    --on-brand: #f1ebdf;
+    --camel: #c9a46c;
+    --camel-ink: #6b4f22;
+    --slate: #5f707a;
+    --sand: #e6dccb;
+    --display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --body: "Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #171c16;
+      --fg: #ece6da;
+      --muted: #b5ad9f;
+      --card: #212820;
+      --line: #46503f;
+      --brand: #2a3527;
+      --on-brand: #ece6da;
+      --camel: #c9a46c;
+      --camel-ink: #e2c48f;
+      --slate: #a7b6be;
+      --sand: #2f3a2d;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #171c16;
+    --fg: #ece6da;
+    --muted: #b5ad9f;
+    --card: #212820;
+    --line: #46503f;
+    --brand: #2a3527;
+    --on-brand: #ece6da;
+    --camel: #c9a46c;
+    --camel-ink: #e2c48f;
+    --slate: #a7b6be;
+    --sand: #2f3a2d;
+    color-scheme: dark;
+  }
+  * {
+    box-sizing: border-box;
+  }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font: 15px/1.5 var(--body);
+  }
+  .wrap {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+  }
+  header.band {
+    background: var(--brand);
+    color: var(--on-brand);
+  }
+  header.band .wrap {
+    padding-block: 36px 30px;
+  }
+  .eyebrow {
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    opacity: 0.75;
+    margin: 0;
+  }
+  h1 {
+    font: 600 clamp(32px, 5vw, 46px)/1.05 var(--display);
+    margin: 6px 0 8px;
+    text-wrap: balance;
+  }
+  header p.lead {
+    margin: 0;
+    max-width: 62ch;
+    opacity: 0.9;
+  }
+  main .wrap {
+    padding-block: 28px 48px;
+    display: grid;
+    gap: 28px;
+  }
+
+  .rule {
+    border-left: 3px solid var(--camel);
+    background: var(--card);
+    padding: 14px 16px;
+    border-radius: 0 10px 10px 0;
+  }
+  .rule strong {
+    font-weight: 600;
+  }
+
+  /* Árbol */
+  .tree {
+    display: grid;
+    gap: 0;
+  }
+  .root {
+    justify-self: center;
+    width: min(520px, 100%);
+    text-align: center;
+  }
+  .stem {
+    width: 2px;
+    height: 22px;
+    background: var(--line);
+    justify-self: center;
+  }
+  .branches {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+    position: relative;
+    padding-top: 22px;
+  }
+  .branches::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 25%;
+    right: 25%;
+    height: 2px;
+    background: var(--line);
+  }
+  .branch {
+    display: grid;
+    gap: 14px;
+    align-content: start;
+    position: relative;
+  }
+  .branch::before {
+    content: "";
+    position: absolute;
+    top: -22px;
+    left: 50%;
+    width: 2px;
+    height: 22px;
+    background: var(--line);
+  }
+  .area {
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: center;
+    margin: 0;
+  }
+  .children {
+    display: grid;
+    gap: 10px;
+    padding-left: 18px;
+    border-left: 2px solid var(--line);
+    margin-left: 18px;
+  }
+  .children > .node {
+    position: relative;
+  }
+  .children > .node::before {
+    content: "";
+    position: absolute;
+    left: -20px;
+    top: 22px;
+    width: 18px;
+    height: 2px;
+    background: var(--line);
+  }
+
+  .node {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 12px 14px;
+    min-width: 0;
+  }
+  .node.lead {
+    border-color: var(--brand);
+    border-width: 2px;
+  }
+  .root.node {
+    background: var(--brand);
+    color: var(--on-brand);
+    border-color: var(--brand);
+  }
+  .node.vacante {
+    border-style: dashed;
+    border-width: 2px;
+  }
+  .node h2,
+  .node h3 {
+    margin: 0;
+    text-wrap: balance;
+  }
+  .node h2 {
+    font: 600 24px/1.15 var(--display);
+  }
+  .node h3 {
+    font: 600 15px/1.3 var(--body);
+  }
+  .who {
+    margin: 2px 0 0;
+    color: var(--muted);
+    font-size: 13.5px;
+  }
+  .root .who {
+    color: var(--on-brand);
+    opacity: 0.85;
+  }
+  .node ul {
+    margin: 8px 0 0;
+    padding-left: 18px;
+    display: grid;
+    gap: 2px;
+    font-size: 13.5px;
+  }
+  .head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 6px 10px;
+  }
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .tag {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 2px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--line);
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .tag.ia {
+    background: var(--camel);
+    border-color: var(--camel);
+    color: #2a2418;
+  }
+  .tag.auto {
+    border-color: var(--camel);
+    color: var(--camel-ink);
+  }
+  .tag.ext {
+    border-color: var(--slate);
+    color: var(--slate);
+  }
+  .tag.vac {
+    border-style: dashed;
+    border-color: var(--fg);
+    color: var(--fg);
+  }
+  code {
+    font:
+      12px ui-monospace,
+      SFMono-Regular,
+      Menlo,
+      monospace;
+    background: var(--sand);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+
+  .agents {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px 14px;
+    margin: 8px 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 13.5px;
+  }
+  .agents b {
+    font-weight: 600;
+  }
+  .agents span {
+    color: var(--muted);
+  }
+
+  .side {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+  }
+  section h2.sec {
+    font: 600 26px/1.2 var(--display);
+    margin: 0 0 10px;
+  }
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+    font-size: 13.5px;
+    color: var(--muted);
+    padding: 0;
+    margin: 0;
+    list-style: none;
+  }
+  .legend li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .sw {
+    width: 22px;
+    height: 14px;
+    border-radius: 4px;
+    border: 1px solid var(--line);
+    background: var(--card);
+  }
+  .sw.lead {
+    border: 2px solid var(--brand);
+  }
+  .sw.vac {
+    border: 2px dashed var(--fg);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 14px;
+    background: var(--card);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  th,
+  td {
+    text-align: left;
+    padding: 10px 12px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: top;
+  }
+  th {
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  tr:last-child td {
+    border-bottom: 0;
+  }
+  .tablebox {
+    overflow-x: auto;
+  }
+  footer {
+    color: var(--muted);
+    font-size: 12.5px;
+  }
+
+  @media (max-width: 760px) {
+    .branches {
+      grid-template-columns: 1fr;
+      padding-top: 0;
+      gap: 22px;
+    }
+    .branches::before,
+    .branch::before {
+      display: none;
+    }
+    .side,
+    .agents {
+      grid-template-columns: 1fr;
+    }
+    .stem {
+      height: 16px;
+    }
+  }
+</style>
+
+<header class="band">
+  <div class="wrap">
+    <p class="eyebrow">Oasis Pachacámac · Un espacio SAWA</p>
+    <h1>Organigrama</h1>
+    <p class="lead">
+      Quién decide, quién opera y qué hacen los agentes de IA. Basado en Roles y RACI (18/10/2026),
+      el equipo de agentes y el plan de redes. Borrador para validar con André y Carlos.
+    </p>
+  </div>
+</header>
+
+<main>
+  <div class="wrap">
+    <p class="rule">
+      <strong>Regla de oro.</strong> Solo los admins cambian tarifas y parámetros, aprueban
+      descuentos sobre el tope, validan pagos y pagan comisiones. Ningún agente lo hace: la base de
+      datos lo impide con permisos, no solo la pantalla.
+    </p>
+
+    <div class="tree" aria-label="Estructura">
+      <div class="root node">
+        <h2>SAWA – Gestión Comercial S.A.C.</h2>
+        <p class="who">Propietaria del 100 % del local · firma contratos y emite las facturas</p>
+      </div>
+      <div class="stem" aria-hidden="true"></div>
+
+      <div class="branches">
+        <!-- Rama comercial -->
+        <div class="branch">
+          <p class="area">Comercial y crecimiento</p>
+          <div class="node lead">
+            <div class="head">
+              <h3>André Mendoza</h3>
+              <div class="tags"><span class="tag">admin</span></div>
+            </div>
+            <p class="who">Socio · Admin comercial</p>
+            <ul>
+              <li>Venta, visitas y cotizaciones</li>
+              <li>Tarifas, promociones y descuentos sobre el tope</li>
+              <li>Validación de pagos y pago de comisiones</li>
+              <li>Pauta, redes y respuesta a reseñas</li>
+              <li>Aprueba las propuestas de los agentes</li>
+            </ul>
+          </div>
+          <div class="children">
+            <div class="node">
+              <div class="head">
+                <h3>Recepcionista</h3>
+                <div class="tags"><span class="tag ia">IA</span><span class="tag">24/7</span></div>
+              </div>
+              <p class="who">Chat de la web y WhatsApp</p>
+              <ul>
+                <li>Responde, califica, consulta fechas y da el rango</li>
+                <li>Registra el lead y deriva a una persona</li>
+                <li>No negocia precios ni crea reservas</li>
+              </ul>
+            </div>
+            <div class="node">
+              <div class="head">
+                <h3>Agentes por cadencia</h3>
+                <div class="tags">
+                  <span class="tag ia">IA</span><span class="tag">solo proponen</span>
+                </div>
+              </div>
+              <p class="who">Dejan borradores en <code>/admin/agentes</code>; André decide</p>
+              <ul class="agents">
+                <li><b>Closer</b> <span>· diario: seguimientos</span></li>
+                <li><b>Revenue</b> <span>· lunes: fechas libres y promos</span></li>
+                <li><b>Growth</b> <span>· semanal: pauta y CAC</span></li>
+                <li><b>Planners</b> <span>· semanal: captación</span></li>
+                <li><b>Contenido</b> <span>· semanal: posts y reseñas</span></li>
+                <li><b>Controller</b> <span>· viernes: conciliación</span></li>
+              </ul>
+            </div>
+            <div class="node">
+              <div class="head">
+                <h3>Red de planners aliadas</h3>
+                <div class="tags">
+                  <span class="tag ext">Externo</span><span class="tag">planner</span>
+                </div>
+              </div>
+              <p class="who">Traen y atienden a su cliente desde el portal</p>
+              <ul>
+                <li>5 % de comisión sobre el alquiler, al cobrar</li>
+                <li>Cliente protegido 90 días</li>
+              </ul>
+            </div>
+            <div class="node vacante">
+              <div class="head">
+                <h3>Edición de video para redes</h3>
+                <div class="tags"><span class="tag vac">Por definir</span></div>
+              </div>
+              <p class="who">Interno o externo · edita los Reels del plan de 30 días</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rama local -->
+        <div class="branch">
+          <p class="area">Local y operación</p>
+          <div class="node lead">
+            <div class="head">
+              <h3>Carlos</h3>
+              <div class="tags"><span class="tag">admin</span></div>
+            </div>
+            <p class="who">Socio · Admin del activo físico</p>
+            <ul>
+              <li>Mantenimiento, mejoras y CAPEX</li>
+              <li>Seguridad del local y emergencias</li>
+              <li>Responde por la operación de cada evento</li>
+              <li>Respaldo en validación de pagos</li>
+              <li>Graba el contenido de la obra (plan de redes)</li>
+            </ul>
+          </div>
+          <div class="children">
+            <div class="node vacante">
+              <div class="head">
+                <h3>Encargado de operaciones en sitio</h3>
+                <div class="tags">
+                  <span class="tag vac">Por contratar</span><span class="tag">ops</span>
+                </div>
+              </div>
+              <p class="who">Supuesto S18 · indispensable para salir en vivo</p>
+              <ul>
+                <li>Abre y cierra el local; visitas</li>
+                <li>Checklists D-7 y D-1; actas con fotos</li>
+                <li>Incidencias, daños y costos del evento</li>
+                <li>No valida pagos ni toca tarifas</li>
+              </ul>
+            </div>
+            <div class="node">
+              <div class="head">
+                <h3>Automatizaciones</h3>
+                <div class="tags"><span class="tag auto">Automático</span></div>
+              </div>
+              <p class="who">Procesos programados del sistema</p>
+              <ul>
+                <li>Vencen pre-reservas de 72 h</li>
+                <li>Recordatorios de saldo, D-7 y D-1; encuesta y reseña</li>
+                <li>Revisión diaria: calendario web vs. reservas</li>
+              </ul>
+            </div>
+            <div class="node">
+              <div class="head">
+                <h3>Proveedores del evento</h3>
+                <div class="tags"><span class="tag ext">Externo</span></div>
+              </div>
+              <p class="who">Catering, música y decoración del cliente o la planner</p>
+              <ul>
+                <li>Cumplen el reglamento y los horarios</li>
+                <li>Responden por sus daños</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section>
+      <h2 class="sec">Apoyo externo de SAWA</h2>
+      <div class="side">
+        <div class="node vacante">
+          <div class="head">
+            <h3>Contador</h3>
+            <div class="tags"><span class="tag vac">Por designar</span></div>
+          </div>
+          <p class="who">Facturación electrónica, tributos, planilla</p>
+        </div>
+        <div class="node vacante">
+          <div class="head">
+            <h3>Abogado</h3>
+            <div class="tags"><span class="tag vac">Por designar</span></div>
+          </div>
+          <p class="who">Contratos, privacidad, Libro de Reclamaciones, ruido</p>
+        </div>
+        <div class="node">
+          <div class="head">
+            <h3>Claude</h3>
+            <div class="tags"><span class="tag ia">IA</span></div>
+          </div>
+          <p class="who">
+            Construye y mantiene el sistema; prepara análisis y borradores. No decide dinero ni
+            firma.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="sec">Cómo leerlo</h2>
+      <ul class="legend">
+        <li><span class="sw lead" aria-hidden="true"></span>Socio que responde por su área</li>
+        <li><span class="sw" aria-hidden="true"></span>Persona, agente o proceso activo</li>
+        <li><span class="sw vac" aria-hidden="true"></span>Puesto por cubrir</li>
+        <li><span class="tag ia">IA</span>Agente de inteligencia artificial</li>
+        <li><span class="tag ext">Externo</span>Sin relación laboral</li>
+        <li><code>admin</code> <code>ops</code> <code>planner</code> Rol en el sistema</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 class="sec">Puestos y decisiones pendientes</h2>
+      <div class="tablebox">
+        <table>
+          <thead>
+            <tr>
+              <th>Pendiente</th>
+              <th>Por qué importa</th>
+              <th>Quién decide</th>
+              <th>Para cuándo</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Encargado de operaciones en sitio</td>
+              <td>Nadie para visitas, entregas del local ni emergencias</td>
+              <td>Carlos</td>
+              <td>Antes del go-live (26/10)</td>
+            </tr>
+            <tr>
+              <td>Contador y abogado de SAWA</td>
+              <td>Facturas, contrato y textos legales "por validar"</td>
+              <td>André</td>
+              <td>Primeras 2 semanas</td>
+            </tr>
+            <tr>
+              <td>Edición de video para redes</td>
+              <td>3 Reels por semana desde el 26/10</td>
+              <td>André</td>
+              <td>23/10</td>
+            </tr>
+            <tr>
+              <td>¿Persona comercial dedicada (rol <code>ops</code>)?</td>
+              <td>Hoy la venta humana la hacen los dos socios</td>
+              <td>André y Carlos</td>
+              <td>Revisar al mes 2</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer>
+      Fuente: docs/261018 Roles y RACI.md, docs/agentes.md y docs/261019 Plan de contenido redes 30
+      dias.md · 19/10/2026
+    </footer>
+  </div>
+</main>
