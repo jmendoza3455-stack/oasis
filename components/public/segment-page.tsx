@@ -1,11 +1,13 @@
 import Image from "next/image";
 import { Check, Clock, Moon, Store, Users } from "lucide-react";
 import { segmentFaq } from "@/lib/content/faq";
+import { breadcrumbJsonLd, faqJsonLd } from "@/lib/content/seo";
 import { PHOTOS } from "@/lib/content/photos";
 import type { Segment } from "@/lib/content/segments";
 import { formatPEN } from "@/lib/domain";
 import type { VenueInfo } from "@/server/public/venue-info";
 import { BrandArt } from "./brand-art";
+import { JsonLd } from "./json-ld";
 import { QuoteFlow } from "./quote-flow";
 import {
   CtaBand,
@@ -72,8 +74,16 @@ function Specs({ segment, info }: { segment: Segment; info: VenueInfo }) {
 export function SegmentPage({ segment, info }: { segment: Segment; info: VenueInfo }) {
   const photo = PHOTOS.segments[segment.slug];
   const from = info.pricesEnabled ? (info.fromPrice[segment.eventType] ?? null) : null;
+  const faq = segmentFaq(segment, info);
   return (
     <>
+      <JsonLd
+        data={breadcrumbJsonLd([
+          { name: "Inicio", path: "/" },
+          { name: segment.nav, path: `/${segment.slug}` },
+        ])}
+      />
+      <JsonLd data={faqJsonLd(faq)} />
       <section className="bg-brand-green text-brand-sand">
         <div className="mx-auto grid max-w-6xl items-start gap-10 px-4 py-12 md:py-20 lg:grid-cols-[1fr_1fr]">
           <div>
@@ -149,7 +159,7 @@ export function SegmentPage({ segment, info }: { segment: Segment; info: VenueIn
         <PolicyStrip info={info} className="mt-6" />
       </Section>
       <Section title="Preguntas frecuentes" tone="sand">
-        <Faq items={segmentFaq(segment, info)} />
+        <Faq items={faq} />
       </Section>
       <CtaBand title={segment.cta} text="Te respondemos en minutos con disponibilidad y precio." />
     </>

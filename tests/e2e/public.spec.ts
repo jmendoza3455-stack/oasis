@@ -8,8 +8,13 @@ test.describe("web pública", () => {
       /Casa de campo para celebrar en Pachacámac/,
     );
     await expect(page.getByRole("link", { name: /Bodas/ }).first()).toBeVisible();
-    const ld = await page.locator('script[type="application/ld+json"]').first().textContent();
-    expect(JSON.parse(ld!)["@type"]).toContain("EventVenue");
+    // Datos estructurados válidos: el local y sus preguntas frecuentes
+    const ld = (await page.locator('script[type="application/ld+json"]').allTextContents()).map(
+      (t) => JSON.parse(t),
+    );
+    expect(ld.map((j) => j["@type"])).toEqual(["LocalBusiness", "FAQPage"]);
+    expect(ld[0].additionalType).toBe("https://schema.org/EventVenue");
+    expect(ld[1].mainEntity.length).toBeGreaterThan(2);
     await expect(page.getByRole("link", { name: "Libro de Reclamaciones" })).toBeVisible();
     await shot(page, info, "home");
   });
@@ -18,6 +23,10 @@ test.describe("web pública", () => {
     page,
   }, info) => {
     await page.goto("/full-day");
+    const types = (await page.locator('script[type="application/ld+json"]').allTextContents()).map(
+      (t) => JSON.parse(t)["@type"],
+    );
+    expect(types).toEqual(["BreadcrumbList", "FAQPage"]);
     await consultDate(page, { date: "2027-01-17", guests: 40 });
     await expect(page.getByText("¡El domingo 17/01/2027 está libre!")).toBeVisible();
     await expect(page.getByText(/S\/\s?2,950\.00 – S\/\s?3,650\.00/)).toBeVisible();

@@ -4,6 +4,11 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Web · SEO y medición (19/10/2026)
+- Datos estructurados tipados con `schema-dts`: el local (LocalBusiness + EventVenue, con aforo, rango de precios solo si son públicos, teléfono y redes desde Configuración), preguntas frecuentes en la portada y en cada segmento, y migas de pan. Escapados para que ningún texto rompa la página.
+- Velocidad real de los visitantes (LCP, INP, CLS, FCP, TTFB) hacia GA4 con el medidor integrado de Next (`web-vitals`), solo con consentimiento de cookies.
+- Lighthouse en CI exige además SEO ≥ 95, buenas prácticas ≥ 90 y presupuestos de LCP, CLS y TBT; calienta las páginas antes de medir.
+
 ### Marca sin respaldo (19/10/2026)
 - La marca pasa a ser **Oasis Pachacámac** a secas: se retira "Un espacio sawa" del logo, el pie, la portada, los metadatos, la imagen para compartir, los cierres de Reels y carruseles, la firma de correos y WhatsApp, el asistente y los documentos de negocio.
 - La empresa operadora queda solo como dato legal en Configuración (`company_legal_name`, con RUC y domicilio) y se usa en el Libro de Reclamaciones, el aviso de privacidad, el contrato, la cotización y el pie. Migración `20261019001100`.

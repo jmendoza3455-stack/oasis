@@ -15,9 +15,10 @@ import {
   Section,
   Spaces,
 } from "@/components/public/sections";
+import { JsonLd } from "@/components/public/json-ld";
 import { separateFaq } from "@/lib/content/faq";
 import { PHOTOS } from "@/lib/content/photos";
-import { venueJsonLd } from "@/lib/content/seo";
+import { faqJsonLd, venueJsonLd } from "@/lib/content/seo";
 import { FAQ, SEGMENTS } from "@/lib/content/segments";
 import { venueInfo } from "@/server/public/venue-info";
 
@@ -43,10 +44,8 @@ export default async function Home() {
   }));
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(venueJsonLd(info)) }}
-      />
+      <JsonLd data={venueJsonLd(info)} />
+      <JsonLd data={faqJsonLd(faq)} />
       <section className="bg-brand-green text-brand-sand relative overflow-hidden">
         <BrandArt
           tone="green"

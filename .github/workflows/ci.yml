@@ -60,6 +60,7 @@ jobs:
       - name: Lighthouse móvil (web pública)
         env:
           LH_MIN_PERF: "85"
+          LH_MAX_LCP: "3500"
           CHROME_PATH: /usr/bin/google-chrome
         run: |
           PORT=3100 pnpm start &

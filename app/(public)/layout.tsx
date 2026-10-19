@@ -3,6 +3,7 @@ import { ChatLauncher } from "@/components/public/chat-launcher";
 import { MobileActionBar } from "@/components/public/mobile-action-bar";
 import { SiteFooter } from "@/components/public/site-footer";
 import { SiteHeader } from "@/components/public/site-header";
+import { WebVitals } from "@/components/public/web-vitals";
 import { WhatsAppButton } from "@/components/public/whatsapp-button";
 import { recepcionistaEnabled } from "@/server/agents/recepcionista";
 
@@ -24,6 +25,7 @@ export default function PublicLayout({ children }: LayoutProps<"/">) {
       {recepcionistaEnabled() && <ChatLauncher />}
       <MobileActionBar chat={recepcionistaEnabled()} />
       <Analytics />
+      <WebVitals />
     </>
   );
 }
