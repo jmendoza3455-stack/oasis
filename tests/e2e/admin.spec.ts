@@ -13,8 +13,12 @@ test.describe("back-office · calendario y reservas", () => {
   test("la ficha muestra montos con y sin IGV y bloquea Separar sin adelanto", async ({
     page,
   }, info) => {
+    // Pre-reserva propia (S/ 4,500.00 sin IGV): no depende del orden de otros tests
     const [b] = await db<{ id: string }>(
-      `select id from bookings where status = 'prebooked' order by event_date limit 1`,
+      `with c as (insert into clients (full_name, phone) values ('Ficha IGV E2E', '977888999') returning id)
+       insert into bookings (venue_id, client_id, channel, event_type, event_date, guests, rental_list_net)
+       select v.id, c.id, 'direct', 'wedding', $1::date, 100, 4500 from venues v, c returning id`,
+      [info.project.name === "mobile" ? "2031-03-15" : "2031-03-22"],
     );
     await loginAs(page, "admin@demo.oasis.test");
     await page.goto(`/admin/reservas/${b.id}`);
