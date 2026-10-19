@@ -48,7 +48,11 @@ export function InvitePlannerForm() {
           {pending ? "Invitando…" : "Invitar al portal"}
         </Button>
         {msg && (
-          <span className={msg.ok ? "text-brand-olive text-sm" : "text-destructive text-sm"}>
+          <span
+            className={
+              msg.ok ? "text-brand-olive dark:text-brand-camel text-sm" : "text-destructive text-sm"
+            }
+          >
             {msg.text}
           </span>
         )}

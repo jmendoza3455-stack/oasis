@@ -42,7 +42,10 @@ export function ChecklistEditor({
   return (
     <fieldset className="grid gap-2 rounded-lg border p-3" aria-label={title}>
       <legend className="px-1 text-sm font-medium">
-        {title} {completedAt && <span className="text-brand-olive text-xs">· cerrado</span>}
+        {title}{" "}
+        {completedAt && (
+          <span className="text-brand-olive dark:text-brand-camel text-xs">· cerrado</span>
+        )}
       </legend>
       {items.map((it, i) => (
         <label key={it.label} className="flex items-start gap-2 text-sm">

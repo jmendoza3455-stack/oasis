@@ -89,7 +89,11 @@ export function SettingRow({
           </Button>
         )}
         {msg && (
-          <span className={msg.ok ? "text-brand-olive text-xs" : "text-destructive text-xs"}>
+          <span
+            className={
+              msg.ok ? "text-brand-olive dark:text-brand-camel text-xs" : "text-destructive text-xs"
+            }
+          >
             {msg.text}
           </span>
         )}

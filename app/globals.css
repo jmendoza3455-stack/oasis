@@ -36,6 +36,10 @@
   --input: #d9d2c4;
   --ring: var(--brand-olive);
 
+  /* Logo: tinta según el modo (claro: verde; oscuro: arena) */
+  --logo-ink: var(--brand-green);
+  --logo-endorse: #6f6f6f;
+
   /* Estados de fecha (OASIS.md §5.1) */
   --status-free: oklch(0.68 0.12 150);
   --status-prebooked: oklch(0.8 0.13 85);
@@ -66,6 +70,8 @@
     --border: rgb(255 255 255 / 0.12);
     --input: rgb(255 255 255 / 0.16);
     --ring: var(--brand-camel);
+    --logo-ink: var(--brand-sand);
+    --logo-endorse: #b5ad9f;
   }
 }
 

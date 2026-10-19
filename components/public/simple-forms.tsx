@@ -69,8 +69,9 @@ export function PlannerApplicationForm() {
   if (state.ok) {
     return (
       <p role="status" className="bg-secondary flex gap-2 rounded-xl p-5">
-        <CheckCircle2 className="text-brand-green size-5" aria-hidden /> Recibimos tu solicitud. Te
-        contactaremos para coordinar una visita técnica e invitarte al portal.
+        <CheckCircle2 className="text-brand-green dark:text-brand-sand size-5" aria-hidden />{" "}
+        Recibimos tu solicitud. Te contactaremos para coordinar una visita técnica e invitarte al
+        portal.
       </p>
     );
   }
@@ -131,8 +132,8 @@ export function ComplaintForm() {
     return (
       <div role="status" className="bg-secondary grid gap-2 rounded-xl p-5">
         <p className="flex gap-2 font-medium">
-          <CheckCircle2 className="text-brand-green size-5" aria-hidden /> Registramos tu hoja de
-          reclamación.
+          <CheckCircle2 className="text-brand-green dark:text-brand-sand size-5" aria-hidden />{" "}
+          Registramos tu hoja de reclamación.
         </p>
         <p>
           Código: <strong className="font-mono">{state.code}</strong>. Guárdalo: te responderemos al

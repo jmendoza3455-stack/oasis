@@ -87,7 +87,7 @@ export function ClientForm() {
         </p>
       )}
       {state.ok && (
-        <p role="status" className="text-brand-green text-sm">
+        <p role="status" className="text-brand-green dark:text-brand-sand text-sm">
           Cliente registrado. Queda protegido a tu nombre.
         </p>
       )}

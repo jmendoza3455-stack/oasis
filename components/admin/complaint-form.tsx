@@ -21,7 +21,7 @@ export function ComplaintResponseForm({ id, code }: { id: string; code: string }
         {state && (
           <p
             role="status"
-            className={`text-sm ${state.ok ? "text-brand-olive" : "text-destructive"}`}
+            className={`text-sm ${state.ok ? "text-brand-olive dark:text-brand-camel" : "text-destructive"}`}
           >
             {state.message}
           </p>

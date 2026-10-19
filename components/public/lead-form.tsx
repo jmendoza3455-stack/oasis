@@ -41,7 +41,10 @@ export function LeadForm({
   if (state.ok) {
     return (
       <div role="status" className="bg-secondary flex items-start gap-3 rounded-xl p-5">
-        <CheckCircle2 className="text-brand-green mt-0.5 size-5 shrink-0" aria-hidden />
+        <CheckCircle2
+          className="text-brand-green dark:text-brand-sand mt-0.5 size-5 shrink-0"
+          aria-hidden
+        />
         <div>
           <p className="font-medium">¡Gracias! Recibimos tu consulta.</p>
           <p className="text-muted-foreground text-sm">

@@ -149,7 +149,7 @@ export function SegmentCards() {
             <div className="p-5">
               <h3 className="font-display text-2xl">{s.nav}</h3>
               <p className="text-muted-foreground mt-1 text-sm">{s.idealFor.join(" · ")}</p>
-              <p className="text-brand-olive mt-3 text-sm font-medium group-hover:underline">
+              <p className="text-brand-olive dark:text-brand-camel mt-3 text-sm font-medium group-hover:underline">
                 Ver {s.nav.toLowerCase()} →
               </p>
             </div>
@@ -191,7 +191,7 @@ export function Spaces() {
     <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
       {spaces.map(({ icon: Icon, name, text }) => (
         <li key={name} className="bg-card grid content-start gap-2 rounded-xl border p-5">
-          <Icon className="text-brand-olive size-6" aria-hidden />
+          <Icon className="text-brand-olive dark:text-brand-camel size-6" aria-hidden />
           <p className="font-medium">{name}</p>
           <p className="text-muted-foreground text-sm">{text}</p>
         </li>
@@ -234,7 +234,7 @@ export function HowItWorks({ info }: { info: VenueInfo }) {
       {steps.map(({ icon: Icon, title, text }, i) => (
         <li key={title} className="bg-card relative grid content-start gap-2 rounded-xl border p-5">
           <span className="text-brand-camel font-display text-4xl leading-none">{i + 1}</span>
-          <Icon className="text-brand-olive size-5" aria-hidden />
+          <Icon className="text-brand-olive dark:text-brand-camel size-5" aria-hidden />
           <p className="font-medium">{title}</p>
           <p className="text-muted-foreground text-sm">{text}</p>
         </li>
@@ -258,7 +258,7 @@ export function PolicyStrip({ info }: { info: VenueInfo }) {
     <ul className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
       {items.map((i) => (
         <li key={i} className="flex items-center gap-2">
-          <ShieldCheck className="text-brand-olive size-4" aria-hidden /> {i}
+          <ShieldCheck className="text-brand-olive dark:text-brand-camel size-4" aria-hidden /> {i}
         </li>
       ))}
     </ul>
@@ -285,7 +285,10 @@ export function Location({ info }: { info: VenueInfo }) {
   return (
     <div className="bg-card grid gap-4 rounded-xl border p-6 md:grid-cols-[1fr_auto] md:items-center">
       <div className="flex gap-3">
-        <MapPin className="text-brand-olive mt-0.5 size-5 shrink-0" aria-hidden />
+        <MapPin
+          className="text-brand-olive dark:text-brand-camel mt-0.5 size-5 shrink-0"
+          aria-hidden
+        />
         <div>
           <p className="font-medium">{info.address ?? "Pachacámac, Lima"}</p>
           <p className="text-muted-foreground text-sm">

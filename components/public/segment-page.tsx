@@ -57,7 +57,10 @@ function Specs({ segment, info }: { segment: Segment; info: VenueInfo }) {
     <dl className="bg-card grid divide-y rounded-xl border">
       {rows.map(({ icon: Icon, label, value }) => (
         <div key={label} className="flex items-start gap-3 p-4">
-          <Icon className="text-brand-olive mt-0.5 size-5 shrink-0" aria-hidden />
+          <Icon
+            className="text-brand-olive dark:text-brand-camel mt-0.5 size-5 shrink-0"
+            aria-hidden
+          />
           <dt className="w-36 shrink-0 font-medium">{label}</dt>
           <dd className="text-muted-foreground">{value}</dd>
         </div>

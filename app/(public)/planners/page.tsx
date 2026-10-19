@@ -82,7 +82,7 @@ export default async function PlannersPage() {
           {benefits(info).map(({ icon: Icon, title, text }) => (
             <Card key={title}>
               <CardHeader>
-                <Icon className="text-brand-olive size-6" aria-hidden />
+                <Icon className="text-brand-olive dark:text-brand-camel size-6" aria-hidden />
                 <CardTitle className="mt-2">{title}</CardTitle>
               </CardHeader>
               <CardContent className="text-muted-foreground text-sm">{text}</CardContent>

@@ -35,7 +35,10 @@ export function RescheduleForm({
         Reprogramar
       </Button>
       {state && (
-        <p role="status" className={state.ok ? "text-brand-olive" : "text-destructive"}>
+        <p
+          role="status"
+          className={state.ok ? "text-brand-olive dark:text-brand-camel" : "text-destructive"}
+        >
           {state.message}
         </p>
       )}

@@ -14,7 +14,7 @@ export function VoucherForm({ bookingId, today }: { bookingId: string; today: st
   );
   if (state?.ok)
     return (
-      <p role="status" className="text-brand-olive text-sm">
+      <p role="status" className="text-brand-olive dark:text-brand-camel text-sm">
         Voucher enviado. El equipo lo valida y verás el cambio de estado de la reserva.
       </p>
     );

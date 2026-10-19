@@ -29,7 +29,7 @@ export default function Page() {
           <Link key={href} href={href} className="group">
             <Card className="group-hover:border-brand-olive h-full">
               <CardHeader>
-                <Icon className="text-brand-olive size-6" aria-hidden />
+                <Icon className="text-brand-olive dark:text-brand-camel size-6" aria-hidden />
                 <CardTitle className="mt-2">{title}</CardTitle>
               </CardHeader>
               <CardContent className="text-muted-foreground text-sm">{text}</CardContent>

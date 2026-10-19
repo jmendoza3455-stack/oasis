@@ -20,7 +20,9 @@ function Result({ state }: { state: FinanceResult | null }) {
   return (
     <div className="text-sm" role="status">
       {state.message && (
-        <p className={state.ok ? "text-brand-olive" : "text-destructive"}>{state.message}</p>
+        <p className={state.ok ? "text-brand-olive dark:text-brand-camel" : "text-destructive"}>
+          {state.message}
+        </p>
       )}
       {state.errors && state.errors.length > 0 && (
         <ul className="text-destructive mt-1 list-disc pl-5 text-xs">
