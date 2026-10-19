@@ -18,23 +18,30 @@ const LeadForm = dynamic(() => import("./lead-form").then((m) => m.LeadForm), {
 });
 
 const noop = () => () => {};
+const ALL_TYPES = Object.keys(EVENT_TYPE_LABEL) as EventType[];
+// Etiquetas para el cliente (en el back-office "Social" es la categoría interna)
+const TYPE_OPTION_LABEL: Record<EventType, string> = {
+  ...EVENT_TYPE_LABEL,
+  social: "Otra celebración (quinceañero, aniversario…)",
+};
 const DOW = ["domingo", "lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];
 const longDate = (d: string) => `${DOW[new Date(`${d}T12:00:00Z`).getUTCDay()]} ${formatDate(d)}`;
 
 /**
- * Flujo único de cotización (OASIS.md §6.1): tipo, fecha e invitados → disponibilidad, fechas
- * libres cercanas y rango referencial → datos de contacto con todo ya cargado.
+ * Flujo único de cotización (OASIS.md §6.1): fecha e invitados (y tipo, si hay más de uno) →
+ * disponibilidad, fechas libres cercanas y rango referencial → datos de contacto ya cargados.
  */
 export function QuoteFlow({
-  defaultEventType = "wedding",
+  types = ALL_TYPES,
   defaultGuests = 80,
   form,
 }: {
-  defaultEventType?: EventType;
+  /** Tipos que se pueden cotizar aquí; con uno solo no se muestra el selector. */
+  types?: EventType[];
   defaultGuests?: number;
   form: string;
 }) {
-  const [eventType, setEventType] = useState<EventType>(defaultEventType);
+  const [eventType, setEventType] = useState<EventType>(types[0]);
   const [date, setDate] = useState("");
   const [guests, setGuests] = useState(String(defaultGuests));
   const [result, setResult] = useState<(CheckQuoteResult & { ok: true }) | null>(null);
@@ -100,7 +107,7 @@ export function QuoteFlow({
           run();
         }}
       >
-        <div className="grid gap-3 sm:grid-cols-3">
+        {types.length > 1 && (
           <div className="grid gap-1.5">
             <Label htmlFor={`qf-type-${form}`}>Tipo de evento</Label>
             <NativeSelect
@@ -111,13 +118,15 @@ export function QuoteFlow({
                 setResult(null);
               }}
             >
-              {(Object.keys(EVENT_TYPE_LABEL) as EventType[]).map((k) => (
+              {types.map((k) => (
                 <option key={k} value={k}>
-                  {EVENT_TYPE_LABEL[k]}
+                  {TYPE_OPTION_LABEL[k]}
                 </option>
               ))}
             </NativeSelect>
           </div>
+        )}
+        <div className="grid gap-3 sm:grid-cols-2">
           <div className="grid gap-1.5">
             <Label htmlFor={`qf-date-${form}`}>Fecha</Label>
             <Input

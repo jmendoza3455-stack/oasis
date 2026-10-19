@@ -15,12 +15,12 @@ import {
   Wallet,
   Waves,
 } from "lucide-react";
-import { FAQ, SEGMENTS } from "@/lib/content/segments";
+import { FAQ } from "@/lib/content/segments";
 import { PHOTOS } from "@/lib/content/photos";
 import { formatDate, formatPEN } from "@/lib/domain";
 import { cn } from "@/lib/utils";
 import type { VenueInfo } from "@/server/public/venue-info";
-import { BrandArt } from "./brand-art";
+import { CtaLink } from "./cta-link";
 
 export function Section({
   id,
@@ -54,7 +54,7 @@ export function Section({
   );
 }
 
-/** Datos clave del local para el hero: aforo, exclusividad, precio "desde" (si es público). */
+/** Datos clave del local para el hero, en texto plano (no parecen botones). */
 export function HeroFacts({
   info,
   from,
@@ -71,21 +71,29 @@ export function HeroFacts({
     from ? `Desde ${formatPEN(from)} con IGV` : null,
   ].filter((f): f is string => Boolean(f));
   return (
-    <ul className="mt-6 flex flex-wrap gap-2" aria-label="Datos del local">
-      {facts.map((f) => (
-        <li key={f} className="border-brand-sand/30 rounded-full border px-3 py-1 text-sm">
+    <ul
+      className="text-brand-sand/80 mt-5 flex flex-wrap gap-x-2 gap-y-1 text-sm"
+      aria-label="Datos del local"
+    >
+      {facts.map((f, i) => (
+        <li key={f} className="flex items-center gap-2">
           {f}
+          {i < facts.length - 1 && (
+            <span aria-hidden className="text-brand-camel">
+              ·
+            </span>
+          )}
         </li>
       ))}
     </ul>
   );
 }
 
-/** Aviso de reapertura (solo si la fecha es futura). */
-export function ReopeningBadge({ info }: { info: VenueInfo }) {
+/** Aviso de reapertura (solo si la fecha es futura), como texto junto al CTA. */
+export function ReopeningNote({ info }: { info: VenueInfo }) {
   if (!info.reopeningDate || !info.reopeningUpcoming) return null;
   return (
-    <p className="bg-brand-camel mb-5 inline-flex rounded-full px-3 py-1 text-sm font-medium text-[#2a2418]">
+    <p className="text-brand-camel mt-3 text-sm font-medium">
       Reabrimos el {formatDate(info.reopeningDate)} · Separa tu fecha de verano
     </p>
   );
@@ -120,42 +128,6 @@ export function Promise() {
           <p className="text-muted-foreground">{text}</p>
         </div>
       ))}
-    </div>
-  );
-}
-
-export function SegmentCards() {
-  return (
-    <div className="grid gap-4 md:grid-cols-3">
-      {SEGMENTS.map((s) => {
-        const photo = PHOTOS.segments[s.slug];
-        return (
-          <Link
-            key={s.slug}
-            href={`/${s.slug}`}
-            className="group bg-card overflow-hidden rounded-xl border transition-shadow hover:shadow-lg"
-          >
-            {photo ? (
-              <Image
-                src={photo.src}
-                alt={photo.alt}
-                width={800}
-                height={600}
-                className="aspect-[4/3] object-cover"
-              />
-            ) : (
-              <BrandArt tone={s.artTone} className="aspect-[4/3]" />
-            )}
-            <div className="p-5">
-              <h3 className="font-display text-2xl">{s.nav}</h3>
-              <p className="text-muted-foreground mt-1 text-sm">{s.idealFor.join(" · ")}</p>
-              <p className="text-brand-olive dark:text-brand-camel mt-3 text-sm font-medium group-hover:underline">
-                Ver {s.nav.toLowerCase()} →
-              </p>
-            </div>
-          </Link>
-        );
-      })}
     </div>
   );
 }
@@ -243,25 +215,25 @@ export function HowItWorks({ info }: { info: VenueInfo }) {
   );
 }
 
-/** Reglas claras de reserva y pagos (políticas en simple). */
-export function PolicyStrip({ info }: { info: VenueInfo }) {
+/** Reglas de reserva y pagos en una línea de texto (sin íconos ni recuadros). */
+export function PolicyStrip({ info, className }: { info: VenueInfo; className?: string }) {
   const items = [
     info.holdHours ? `Pre-reserva sin costo por ${info.holdHours} h` : null,
     info.depositPct !== null
-      ? `Adelanto del ${Math.round(info.depositPct * 100)} % para separar`
+      ? `adelanto del ${Math.round(info.depositPct * 100)} % para separar`
       : null,
-    info.balanceDueDays ? `Saldo hasta ${info.balanceDueDays} días antes` : null,
-    "Garantía reembolsable",
-    "Factura electrónica con IGV",
+    info.balanceDueDays ? `saldo hasta ${info.balanceDueDays} días antes` : null,
+    "garantía reembolsable",
+    "factura electrónica con IGV",
   ].filter((i): i is string => Boolean(i));
   return (
-    <ul className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
-      {items.map((i) => (
-        <li key={i} className="flex items-center gap-2">
-          <ShieldCheck className="text-brand-olive dark:text-brand-camel size-4" aria-hidden /> {i}
-        </li>
-      ))}
-    </ul>
+    <p className={cn("text-muted-foreground flex items-start gap-2 text-sm", className)}>
+      <ShieldCheck
+        className="text-brand-olive dark:text-brand-camel mt-0.5 size-4 shrink-0"
+        aria-hidden
+      />
+      <span>{items.join(" · ")}.</span>
+    </p>
   );
 }
 
@@ -328,12 +300,7 @@ export function CtaBand({ title, text }: { title: string; text: string }) {
           <p className="font-display text-3xl">{title}</p>
           <p className="text-brand-sand/80 mt-1">{text}</p>
         </div>
-        <Link
-          href="#cotizar"
-          className="bg-brand-camel rounded-md px-5 py-3 font-medium text-[#2a2418] hover:opacity-90"
-        >
-          Consultar mi fecha
-        </Link>
+        <CtaLink className="bg-brand-camel rounded-md px-5 py-3 font-medium text-[#2a2418] hover:opacity-90" />
       </div>
     </section>
   );

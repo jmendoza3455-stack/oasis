@@ -4,6 +4,13 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Web · portada simple (19/10/2026)
+- Un solo llamado a la acción, "Ver fechas disponibles", en portada, menú, barra móvil, cierre y 404. Sale "Ver precios" de la portada y "Soy planner" pasa a link de texto.
+- "¿Qué quieres celebrar?" justo debajo de la portada: elegir Bodas, Empresas o Full day despliega la consulta de fecha con el tipo ya cargado (Bodas permite "Otra celebración").
+- Datos del local, aviso de reapertura y políticas en texto plano (sin recuadros que parecían botones); "Ideal para" como lista.
+- La barra móvil aparece al pasar la portada para no repetir el botón principal.
+- Logo y acentos visibles en modo oscuro.
+
 ### Salida en vivo D-7 (19/10/2026)
 - Go-live adelantado al 26/10/2026 (OASIS.md §15.9): calendario día por día, criterio go/no-go y plan B en `docs/261019 Plan de salida en vivo D-7.md`.
 

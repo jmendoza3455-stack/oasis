@@ -13,6 +13,8 @@ export type Segment = {
   /** Invitados sugeridos en el cotizador. */
   defaultGuests: number;
   artTone: "green" | "olive" | "camel" | "slate";
+  /** Tipos de evento que se cotizan desde este segmento (el primero es el predeterminado). */
+  quoteTypes: EventType[];
 };
 
 // Copy por segmento. Promesa (manual SAWA): belleza del lugar + facilidad operativa + libertad.
@@ -37,6 +39,7 @@ export const SEGMENTS: Segment[] = [
     capacityKey: "cocktail",
     defaultGuests: 100,
     artTone: "olive",
+    quoteTypes: ["wedding", "social"],
   },
   {
     slug: "corporativo",
@@ -54,6 +57,7 @@ export const SEGMENTS: Segment[] = [
     capacityKey: "banquet",
     defaultGuests: 40,
     artTone: "slate",
+    quoteTypes: ["corporate"],
   },
   {
     slug: "full-day",
@@ -71,6 +75,7 @@ export const SEGMENTS: Segment[] = [
     capacityKey: "full_day",
     defaultGuests: 30,
     artTone: "camel",
+    quoteTypes: ["family_day"],
   },
 ];
 

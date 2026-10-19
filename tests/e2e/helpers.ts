@@ -69,13 +69,29 @@ export const pen = (n: number | string) =>
   `S/ ${Number(n).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
 /** Flujo único de cotización (componente QuoteFlow) en la página actual. */
+const CARD_FOR_TYPE: Record<string, RegExp> = {
+  wedding: /^Bodas/,
+  social: /^Bodas/,
+  corporate: /^Empresas/,
+  family_day: /^Full day/,
+};
+
+/** En la home el tipo se elige con las tarjetas "¿Qué quieres celebrar?" antes de ver la fecha. */
+async function chooseEvent(page: Page, type = "wedding") {
+  const chooser = page.getByRole("group", { name: "Tipo de evento" });
+  if ((await chooser.count()) === 0) return;
+  await chooser.getByRole("button", { name: CARD_FOR_TYPE[type] }).click();
+}
+
 export async function consultDate(
   page: Page,
   input: { date: string; type?: string; guests?: number },
 ) {
+  await chooseEvent(page, input.type);
   const form = page.getByRole("form", { name: "Consultar fecha y precio" }).first();
   await expect(form).toHaveAttribute("data-ready", ""); // hidratado: si no, React descarta lo escrito
-  if (input.type) await form.getByLabel("Tipo de evento").selectOption(input.type);
+  const select = form.getByLabel("Tipo de evento");
+  if (input.type && (await select.count())) await select.selectOption(input.type);
   await form.getByLabel("Fecha", { exact: true }).fill(input.date);
   if (input.guests) await form.getByLabel("Invitados", { exact: true }).fill(String(input.guests));
   await form.getByRole("button", { name: "Ver disponibilidad y precio" }).click();
@@ -83,6 +99,7 @@ export async function consultDate(
 
 /** Abre el paso de datos de contacto sin fecha ("¿Aún sin fecha?"). */
 export async function openLeadStep(page: Page) {
+  await chooseEvent(page);
   await expect(
     page.getByRole("form", { name: "Consultar fecha y precio" }).first(),
   ).toHaveAttribute("data-ready", "");

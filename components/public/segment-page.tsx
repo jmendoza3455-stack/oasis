@@ -13,7 +13,7 @@ import {
   HeroFacts,
   HowItWorks,
   PolicyStrip,
-  ReopeningBadge,
+  ReopeningNote,
   Section,
   Spaces,
 } from "./sections";
@@ -77,7 +77,6 @@ export function SegmentPage({ segment, info }: { segment: Segment; info: VenueIn
       <section className="bg-brand-green text-brand-sand">
         <div className="mx-auto grid max-w-6xl items-start gap-10 px-4 py-12 md:py-20 lg:grid-cols-[1fr_1fr]">
           <div>
-            <ReopeningBadge info={info} />
             <p className="text-brand-sand/70 text-sm tracking-[0.2em] uppercase">{segment.nav}</p>
             <h1 className="font-display mt-3 text-4xl leading-tight sm:text-5xl">
               {segment.title}
@@ -91,6 +90,7 @@ export function SegmentPage({ segment, info }: { segment: Segment; info: VenueIn
               ))}
             </ul>
             <HeroFacts info={info} from={from} capacity={info.capacity[segment.capacityKey]} />
+            <ReopeningNote info={info} />
             {photo ? (
               <Image
                 src={photo.src}
@@ -116,25 +116,24 @@ export function SegmentPage({ segment, info }: { segment: Segment; info: VenueIn
             </p>
             <QuoteFlow
               form={segment.slug}
-              defaultEventType={segment.eventType}
+              types={segment.quoteTypes}
               defaultGuests={segment.defaultGuests}
             />
           </div>
         </div>
       </section>
-      <div className="border-b">
-        <div className="mx-auto max-w-6xl px-4 py-4">
-          <PolicyStrip info={info} />
-        </div>
-      </div>
       <Section title="Ficha del local">
         <div className="grid gap-8 lg:grid-cols-[1.2fr_1fr]">
           <Specs segment={segment} info={info} />
           <div>
             <p className="font-medium">Ideal para</p>
-            <ul className="mt-3 flex flex-wrap gap-2">
+            <ul className="text-muted-foreground mt-3 grid gap-2">
               {segment.idealFor.map((i) => (
-                <li key={i} className="bg-secondary rounded-full px-3 py-1.5 text-sm">
+                <li key={i} className="flex gap-2">
+                  <Check
+                    className="text-brand-olive dark:text-brand-camel mt-1 size-4 shrink-0"
+                    aria-hidden
+                  />
                   {i}
                 </li>
               ))}
@@ -147,6 +146,7 @@ export function SegmentPage({ segment, info }: { segment: Segment; info: VenueIn
       </Section>
       <Section title="Así de simple es reservar">
         <HowItWorks info={info} />
+        <PolicyStrip info={info} className="mt-6" />
       </Section>
       <Section title="Preguntas frecuentes" tone="sand">
         <Faq items={segmentFaq(segment, info)} />

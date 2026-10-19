@@ -16,7 +16,9 @@ async function say(page: Page, text: string) {
 
 test("el chat de la web abre con el aviso de privacidad", async ({ page, isMobile }, info) => {
   await page.goto("/");
-  // En móvil se abre desde la barra de acciones; en desktop, con el botón flotante
+  // En móvil se abre desde la barra de acciones (aparece al pasar la portada); en desktop, con el
+  // botón flotante
+  if (isMobile) await page.evaluate(() => window.scrollTo(0, window.innerHeight));
   if (isMobile)
     await page
       .getByRole("navigation", { name: "Acciones rápidas" })

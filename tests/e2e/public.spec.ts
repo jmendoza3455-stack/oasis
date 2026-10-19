@@ -48,6 +48,22 @@ test.describe("web pública", () => {
     await expect(page.getByRole("button", { name: "Quiero esta fecha" })).toBeVisible();
   });
 
+  test("portada con un solo CTA y tipos de evento que despliegan la fecha", async ({ page }) => {
+    await page.goto("/");
+    const hero = page.locator("section").first();
+    await expect(hero.getByRole("link", { name: "Ver fechas disponibles" })).toHaveCount(1);
+    await expect(page.getByRole("form", { name: "Consultar fecha y precio" })).toHaveCount(0);
+    const chooser = page.getByRole("group", { name: "Tipo de evento" });
+    await chooser.getByRole("button", { name: /^Empresas/ }).click();
+    await expect(chooser.getByRole("button", { name: /^Empresas/ })).toHaveAttribute(
+      "aria-pressed",
+      "true",
+    );
+    const form = page.getByRole("form", { name: "Consultar fecha y precio" });
+    await expect(form).toBeVisible();
+    await expect(form.getByLabel("Tipo de evento")).toHaveCount(0);
+  });
+
   test("datos del local, sin «pendiente» a la vista", async ({ page }) => {
     await page.goto("/");
     await expect(page.getByRole("list", { name: "Datos del local" })).toContainText(
@@ -67,7 +83,7 @@ test.describe("web pública", () => {
     const res = await page.goto("/no-existe");
     expect(res?.status()).toBe(404);
     await expect(page.getByRole("heading", { name: "Esta página no existe" })).toBeVisible();
-    await expect(page.getByRole("link", { name: "Consultar mi fecha" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Ver fechas disponibles" })).toBeVisible();
   });
 });
 

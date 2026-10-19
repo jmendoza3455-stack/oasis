@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Menu } from "lucide-react";
 import { LogoHorizontal } from "@/components/brand/logo";
 import { SEGMENTS } from "@/lib/content/segments";
+import { CtaLink } from "./cta-link";
 
 const links = [
   ...SEGMENTS.map((s) => ({ href: `/${s.slug}`, label: s.nav })),
@@ -21,12 +22,7 @@ export function SiteHeader() {
               {l.label}
             </Link>
           ))}
-          <Link
-            href="/#cotizar"
-            className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-md px-4 py-2 font-medium"
-          >
-            Cotizar
-          </Link>
+          <CtaLink className="bg-primary text-primary-foreground hover:bg-primary/90 rounded-md px-4 py-2 font-medium" />
         </nav>
         <details className="relative md:hidden">
           <summary className="flex size-10 cursor-pointer list-none items-center justify-center rounded-md border">
@@ -42,12 +38,7 @@ export function SiteHeader() {
                 {l.label}
               </Link>
             ))}
-            <Link
-              href="/#cotizar"
-              className="bg-primary text-primary-foreground rounded-md px-3 py-2"
-            >
-              Cotizar
-            </Link>
+            <CtaLink className="bg-primary text-primary-foreground rounded-md px-3 py-2" />
           </nav>
         </details>
       </div>

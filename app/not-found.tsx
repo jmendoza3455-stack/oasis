@@ -1,3 +1,4 @@
+import { CTA_LABEL } from "@/components/public/cta-link";
 import Link from "next/link";
 import { Isotipo } from "@/components/brand/logo";
 
@@ -16,7 +17,7 @@ export default function NotFound() {
             href="/#cotizar"
             className="bg-brand-camel rounded-md px-5 py-3 font-medium text-[#2a2418]"
           >
-            Consultar mi fecha
+            {CTA_LABEL}
           </Link>
           <Link href="/" className="border-brand-sand/50 rounded-md border px-5 py-3">
             Ir al inicio
