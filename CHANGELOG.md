@@ -4,6 +4,9 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Salida en vivo D-7 (19/10/2026)
+- Go-live adelantado al 26/10/2026 (OASIS.md §15.9): calendario día por día, criterio go/no-go y plan B en `docs/261019 Plan de salida en vivo D-7.md`.
+
 ### Web · conversión (19/10/2026)
 - Flujo único de cotización en home y landings: tipo, fecha e invitados → disponibilidad, fechas libres cercanas si está tomada y rango referencial con IGV → datos de contacto con todo ya cargado (reemplaza el verificador, el cotizador y el formulario sueltos).
 - Precios públicos detrás del interruptor `public_prices_enabled` (Configuración → Web): rango en el cotizador, "desde" en el hero y página `/precios`; apagado en producción hasta validar el tarifario (S42). El Recepcionista tampoco da cifras mientras esté apagado.

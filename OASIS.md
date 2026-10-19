@@ -363,3 +363,7 @@ Fuente: "SAWA – Estrategia y pasos a seguir" y "SAWA – Manual de marca" (ref
 15.4 Agregados propuestos por Claude
 - Libro de Reclamaciones virtual en la web pública (Código de Protección y Defensa del Consumidor).
 - Inscripción del banco de datos personales ante la ANPD en el checklist legal (Ley 29733).
+
+15.9 Salida en vivo (André, 19/10/2026)
+- **Go-live el lunes 26/10/2026**, adelantado desde la ventana 18/11–17/12 del plan 30-60-90. Plan, criterio go/no-go y plan B en `docs/261019 Plan de salida en vivo D-7.md`.
+- Los agentes por cadencia y el Recepcionista se encienden en D0 (después del `reset-demo`), no el 01/12.
