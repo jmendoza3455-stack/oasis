@@ -4,6 +4,15 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Vista previa de la marca madre (19/10/2026)
+- `/vista-previa` (no publicada: libre en local y en despliegues de prueba; en producción solo admin; `noindex` y fuera de robots):
+  - portada de la marca con buscador (tipo, fecha, invitados);
+  - resultados con disponibilidad en vivo y aforo por local;
+  - experiencias de **ejemplo** con qué incluye y galería ampliable;
+  - página de local con galería y antes/después;
+  - diseño de "Mi cuenta" y del pago en línea con montos con y sin IGV desde Configuración.
+- Componentes reutilizables: galería con lightbox (`yet-another-react-lightbox`) y antes/después (`react-compare-slider`). Imágenes provisionales rotuladas "FOTO PENDIENTE".
+
 ### F1 · Base multi-local (19/10/2026)
 - Marca madre como dato (`brands`, provisional hasta elegir el nombre) y cada local con su marca.
 - **Personal por local:** `venue_members`, 32 políticas y 3 funciones de reservas verifican el local. Operaciones solo ve y opera sus locales; el admin, todos. Sin cambios para un solo local (el personal existente quedó asignado).
