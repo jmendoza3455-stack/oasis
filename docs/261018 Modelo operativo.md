@@ -1,4 +1,4 @@
-# Modelo operativo · Oasis Pachacámac · Un espacio SAWA
+# Modelo operativo · Oasis Pachacámac
 
 - **Fecha:** 18/10/2026
 - **Estado:** Borrador para validación de André y Carlos
@@ -10,7 +10,7 @@
 
 Operamos un local propio de SAWA (S13) para tres segmentos, con **una sola reserva por día** (`booking_mode = one_per_day`), venta por planners (5%) y venta directa con pauta, y un sistema que responde, cotiza, avisa y mide. **Criterio de éxito: ocupación** (OASIS.md §4), controlada con el ingreso neto por día disponible para no crecer a punta de descuentos.
 
-Promesa al cliente final (manual SAWA): **belleza del lugar + facilidad operativa + libertad para personalizar**.
+Promesa al cliente final (manual de marca): **belleza del lugar + facilidad operativa + libertad para personalizar**.
 Mensaje para planners: _"Nosotros hacemos que el espacio funcione; tú haces que el evento sea único."_
 
 ## 2. Propuesta de valor por segmento

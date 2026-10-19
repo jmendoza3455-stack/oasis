@@ -1,4 +1,4 @@
-# Laboratorio de marketing — Oasis Pachacámac · Un espacio SAWA
+# Laboratorio de marketing — Oasis Pachacámac
 
 - **Fecha:** 19/10/2026 · **Estado:** construido; mide desde la primera pieza publicada
 - **Relacionados:**

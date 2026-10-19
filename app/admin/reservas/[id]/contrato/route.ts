@@ -9,7 +9,9 @@ export async function GET(_: Request, ctx: RouteContext<"/admin/reservas/[id]/co
   const { id } = await ctx.params;
   const data = await bookingForDocument(user.id, id);
   if (!data) return new NextResponse("No encontrado", { status: 404 });
-  const pdf = await renderToBuffer(ContractPdf({ b: data.doc, policy: data.policy }));
+  const pdf = await renderToBuffer(
+    ContractPdf({ b: data.doc, company: data.company, policy: data.policy }),
+  );
   return new NextResponse(new Uint8Array(pdf), {
     headers: {
       "Content-Type": "application/pdf",

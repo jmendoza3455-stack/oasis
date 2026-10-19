@@ -26,7 +26,7 @@ export function brandOgImage(title?: string) {
       <div style={{ marginTop: 26, width: 420, height: 2, background: "#C9A46C" }} />
       {title && <div style={{ marginTop: 34, fontSize: 64, lineHeight: 1.15 }}>{title}</div>}
       <div style={{ marginTop: 30, fontSize: 32, fontFamily: "sans-serif", color: "#E6DCCBCC" }}>
-        Un espacio sawa · Pachacámac, Lima
+        Casa de campo · Pachacámac, Lima
       </div>
     </div>,
     ogSize,

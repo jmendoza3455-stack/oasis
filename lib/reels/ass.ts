@@ -154,7 +154,7 @@ export function buildAss(spec: ReelSpec): string {
     const cx = REEL.width / 2;
     events.push(
       dialogue(s, e, "endTitle", "Oasis Pachacámac", `{\\an5\\pos(${cx},1030)\\fad(200,0)}`),
-      dialogue(s, e, "endSub", "Un espacio sawa", `{\\an5\\pos(${cx},1120)\\fad(200,0)}`),
+      dialogue(s, e, "endSub", "Pachacámac · Lima", `{\\an5\\pos(${cx},1120)\\fad(200,0)}`),
       dialogue(
         s + 0.3,
         e,

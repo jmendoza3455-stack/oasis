@@ -17,7 +17,7 @@ const esc = (s: string) =>
 
 const footer = (i: number, n: number, dark: boolean) => `
   <footer class="foot ${dark ? "on-dark" : ""}">
-    <span>Oasis Pachacámac · <b>Un espacio sawa</b></span>
+    <span>Oasis Pachacámac</span>
     ${n > 1 ? `<span class="idx">${i + 1}/${n}</span>` : ""}
   </footer>`;
 

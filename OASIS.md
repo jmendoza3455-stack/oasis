@@ -331,7 +331,7 @@ Ola 2 (gestión completa):
 
 15.5 Insumos de SAWA (documentos de Carlos, 18/10/2026)
 Fuente: "SAWA – Estrategia y pasos a seguir" y "SAWA – Manual de marca" (referencia visual en assets/marca/).
-- Nombre comercial del venue: **Oasis Pachacámac · Un espacio SAWA** (reemplaza "El Oasis" en UI, copys y documentos). Marca respaldada: el lugar tiene identidad propia y SAWA aparece como respaldo, nunca como marca independiente de la línea.
+- ~~Nombre comercial del venue: Oasis Pachacámac · Un espacio SAWA~~ (reemplazado por §15.13: **Oasis Pachacámac** a secas). Marca respaldada: el lugar tiene identidad propia y SAWA aparece como respaldo, nunca como marca independiente de la línea.
 - SAWA abre la línea "Gestión de Espacios y Experiencias": operadora de espacios propios, alquilados o de terceros. **Implicancia de arquitectura (propuesta): modelo de datos multi-espacio desde el inicio** (`venues` + `venue_id` en reservas, tarifas, bloqueos, costos y settings), con un solo venue activo en la UI. Pendiente de OK de André.
 - Posicionamiento con planners: no competir con ellas. Mensaje: "Nosotros hacemos que el espacio funcione; tú haces que el evento sea único." Servicios modulares, proveedores externos permitidos con estándares objetivos.
 - Promesa al cliente final: belleza del lugar + facilidad operativa + libertad para personalizar.
@@ -339,7 +339,7 @@ Fuente: "SAWA – Estrategia y pasos a seguir" y "SAWA – Manual de marca" (ref
 - Marca visual: dirección A ajustada (verde Oasis #2E3B2B + paleta SAWA: olivo, arena, camel, azul grisáceo, grafito; Cormorant Garamond + Figtree). Pendiente de OK de André. El logo de SAWA se usa como texto hasta tener su arte maestro vectorial.
 
 15.6 Respuestas de André (18/10/2026, segunda ronda)
-- Marca: **aprobada la dirección A ajustada** (Oasis Pachacámac · Un espacio SAWA). Ver assets/marca/.
+- Marca: **aprobada la dirección A ajustada**. Ver assets/marca/. (El respaldo "Un espacio SAWA" se retiró en §15.13.)
 - **Modelo multi-espacio aprobado**: tabla `venues` y `venue_id` en todas las entidades operativas; la UI muestra un solo venue activo.
 - **WhatsApp Business Cloud API aprobada** para la Ola 2 (Recepcionista en WhatsApp).
 - Propiedad: **SAWA es dueña del total** del Oasis → es un espacio propio de SAWA; no hace falta contrato de arrendamiento Carlos ↔ SAWA (validar con el contador cómo quedó la transferencia).
@@ -383,3 +383,7 @@ Fuente: "SAWA – Estrategia y pasos a seguir" y "SAWA – Manual de marca" (ref
 - Los ganadores de pruebas y la calidad del director creativo se deciden con reglas fijas (bayesiana ≥ 1,000 por versión y 90 %; AUC, correlación y auditoría ciega), no a ojo. Detalle: `docs/261019 Laboratorio de marketing.md`.
 - Las fuentes que el entorno no alcanza (Instagram, TikTok, Biblioteca de anuncios, Google Trends) entran como archivos descargados por André o Carlos y se procesan con `pnpm marketing voc|trends|competencia|anuncios`; no se reemplazan con resúmenes de buscadores.
 - El segmento que empuja cada pieza sale de la contribución por tipo de fecha (`docs/261019 Economia de fechas.md`); los mensajes, de la voz del cliente (`docs/261019 Voz del cliente.md`).
+
+15.13 Marca sin respaldo (André, 19/10/2026)
+- La marca es **Oasis Pachacámac** a secas: sin "Un espacio SAWA" en logo, web, metadatos, imágenes para compartir, Reels, carruseles, correos, mensajes ni documentos de negocio.
+- SAWA – Gestión Comercial S.A.C. sigue como **empresa operadora** y aparece solo donde la ley lo pide (Libro de Reclamaciones, aviso de privacidad, contrato, cotización y comprobantes, pie con RUC). La razón social se lee de `settings.company_legal_name`, junto con `company_ruc` y `company_address`; nada hardcodeado.

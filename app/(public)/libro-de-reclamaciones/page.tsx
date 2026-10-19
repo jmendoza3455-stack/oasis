@@ -4,8 +4,7 @@ import { venueInfo } from "@/server/public/venue-info";
 
 export const metadata: Metadata = {
   title: "Libro de Reclamaciones",
-  description:
-    "Libro de Reclamaciones virtual de Oasis Pachacámac (SAWA – Gestión Comercial S.A.C.).",
+  description: "Libro de Reclamaciones virtual de Oasis Pachacámac.",
   alternates: { canonical: "/libro-de-reclamaciones" },
 };
 
@@ -17,7 +16,7 @@ export default async function ComplaintsPage() {
       <dl className="bg-card mt-4 grid gap-1 rounded-xl border p-4 text-sm">
         <div className="flex gap-2">
           <dt className="text-muted-foreground">Proveedor:</dt>
-          <dd>SAWA – Gestión Comercial S.A.C.</dd>
+          <dd>{info.legalName ?? "[COMPLETAR]"}</dd>
         </div>
         <div className="flex gap-2">
           <dt className="text-muted-foreground">RUC:</dt>

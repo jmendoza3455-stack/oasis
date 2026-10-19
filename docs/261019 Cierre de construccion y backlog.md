@@ -1,4 +1,4 @@
-# Cierre de construcción y backlog · Oasis Pachacámac · Un espacio SAWA
+# Cierre de construcción y backlog · Oasis Pachacámac
 
 - **Fecha:** 19/10/2026 (actualizado con la fase 2)
 - **Estado:** Ola 1 y Ola 2 construidas (fases 1–14). Pendiente de lanzamiento comercial.

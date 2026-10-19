@@ -1,4 +1,4 @@
-# Equipo de marketing — Oasis Pachacámac · Un espacio SAWA
+# Equipo de marketing — Oasis Pachacámac
 
 - **Fecha:** 19/10/2026 · **Estado:** construido; se activa con el go-live (26/10) y dos ajustes del entorno (§8)
 - **Relacionados:**

@@ -32,6 +32,8 @@ export type VenueInfo = {
     guestsMax: number;
     gross: number;
   }[];
+  /** Razón social de la empresa operadora (dato legal; la marca es solo Oasis Pachacámac). */
+  legalName: string | null;
   ruc: string | null;
   companyAddress: string | null;
   privacyEmail: string | null;
@@ -57,6 +59,7 @@ const EMPTY: VenueInfo = {
   pricesEnabled: false,
   fromPrice: {},
   rates: [],
+  legalName: null,
   ruc: null,
   companyAddress: null,
   privacyEmail: null,
@@ -128,6 +131,7 @@ export async function venueInfo(): Promise<VenueInfo> {
         pricesEnabled,
         fromPrice,
         rates,
+        legalName: str(s.company_legal_name),
         ruc: str(s.company_ruc),
         companyAddress: str(s.company_address),
         privacyEmail: str(s.privacy_email),

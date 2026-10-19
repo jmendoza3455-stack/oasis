@@ -1,4 +1,4 @@
-# Checklist legal y regulatorio — Oasis Pachacámac · Un espacio SAWA
+# Checklist legal y regulatorio — Oasis Pachacámac
 
 - **Fecha:** 18/10/2026
 - **Estado:** Borrador para validación de André y Carlos

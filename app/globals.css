@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 /*
- * Design tokens de Oasis Pachacámac · Un espacio SAWA (dirección A aprobada, OASIS.md §15.6).
- * Paleta: verde Oasis + paleta SAWA (olivo, arena, camel, azul grisáceo, grafito).
+ * Design tokens de Oasis Pachacámac (dirección A aprobada, OASIS.md §15.6).
+ * Paleta: verde Oasis + complementarios (olivo, arena, camel, azul grisáceo, grafito).
  * Toda la UI consume estos tokens; nunca usar hex sueltos en componentes.
  */
 :root {
@@ -38,7 +38,6 @@
 
   /* Logo: tinta según el modo (claro: verde; oscuro: arena) */
   --logo-ink: var(--brand-green);
-  --logo-endorse: #6f6f6f;
 
   /* Estados de fecha (OASIS.md §5.1) */
   --status-free: oklch(0.68 0.12 150);
@@ -71,7 +70,6 @@
     --input: rgb(255 255 255 / 0.16);
     --ring: var(--brand-camel);
     --logo-ink: var(--brand-sand);
-    --logo-endorse: #b5ad9f;
   }
 }
 

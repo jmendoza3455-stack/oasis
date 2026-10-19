@@ -3,20 +3,10 @@ import { cn } from "@/lib/utils";
 /** auto: sigue el modo claro/oscuro del sistema; dark/light: fijo sobre fondo claro/oscuro. */
 type Tone = "auto" | "dark" | "light";
 
-const palette: Record<Tone, { frond: string; trunk: string; text: string; endorse: string }> = {
-  auto: {
-    frond: "currentColor",
-    trunk: "currentColor",
-    text: "text-[var(--logo-ink)]",
-    endorse: "text-[var(--logo-endorse)]",
-  },
-  dark: { frond: "#2E3B2B", trunk: "#2E3B2B", text: "text-brand-green", endorse: "text-[#6F6F6F]" },
-  light: {
-    frond: "#E6DCCB",
-    trunk: "#E6DCCB",
-    text: "text-brand-sand",
-    endorse: "text-brand-sand/80",
-  },
+const palette: Record<Tone, { frond: string; trunk: string; text: string }> = {
+  auto: { frond: "currentColor", trunk: "currentColor", text: "text-[var(--logo-ink)]" },
+  dark: { frond: "#2E3B2B", trunk: "#2E3B2B", text: "text-brand-green" },
+  light: { frond: "#E6DCCB", trunk: "#E6DCCB", text: "text-brand-sand" },
 };
 
 export function Isotipo({ tone = "auto", className }: { tone?: Tone; className?: string }) {
@@ -38,19 +28,14 @@ export function Isotipo({ tone = "auto", className }: { tone?: Tone; className?:
   );
 }
 
-/** Logotipo horizontal: isotipo + "OASIS PACHACÁMAC" + respaldo "Un espacio sawa". */
+/** Logotipo horizontal: isotipo + "OASIS PACHACÁMAC". */
 export function LogoHorizontal({ tone = "auto", className }: { tone?: Tone; className?: string }) {
   const c = palette[tone];
   return (
     <span className={cn("inline-flex items-center gap-3", className)}>
       <Isotipo tone={tone} className="size-10 shrink-0" />
-      <span className="flex flex-col leading-none">
-        <span className={cn("font-display text-xl tracking-[0.12em] uppercase", c.text)}>
-          Oasis Pachacámac
-        </span>
-        <span className={cn("mt-1 text-xs tracking-wide", c.endorse)}>
-          Un espacio <strong className="font-semibold">sawa</strong>
-        </span>
+      <span className={cn("font-display text-xl leading-none tracking-[0.12em] uppercase", c.text)}>
+        Oasis Pachacámac
       </span>
     </span>
   );

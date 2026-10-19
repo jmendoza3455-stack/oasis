@@ -17,7 +17,7 @@ export type Segment = {
   quoteTypes: EventType[];
 };
 
-// Copy por segmento. Promesa (manual SAWA): belleza del lugar + facilidad operativa + libertad.
+// Copy por segmento. Promesa (manual de marca): belleza del lugar + facilidad operativa + libertad.
 export const SEGMENTS: Segment[] = [
   {
     slug: "bodas",

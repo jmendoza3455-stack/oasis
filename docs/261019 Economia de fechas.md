@@ -1,4 +1,4 @@
-# Economía de fechas — Oasis Pachacámac · Un espacio SAWA
+# Economía de fechas — Oasis Pachacámac
 
 - **Fecha:** 19/10/2026 · **Estado:** borrador con **tarifas de ejemplo (S24) y costos estándar (S28), ambos por validar**
 - **Relacionados:** [Tarifario propuesto](261018%20Tarifario%20propuesto%20y%20benchmark.md) · [Modelo económico](261018%20Modelo%20economico%20Oasis.xlsx) · [Laboratorio de marketing](261019%20Laboratorio%20de%20marketing.md) · [Supuestos](supuestos.md) (S24, S28, S52, S54)

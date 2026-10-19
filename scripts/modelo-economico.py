@@ -60,7 +60,7 @@ def title(ws, text, note=None):
 # ---------------------------------------------------------------------------
 readme = wb.active
 readme.title = "Léeme"
-title(readme, "Modelo económico · Oasis Pachacámac · Un espacio SAWA")
+title(readme, "Modelo económico · Oasis Pachacámac")
 lines = [
     f"Versión {STAMP}. Generado con scripts/modelo-economico.py (no editar la estructura a mano: regenerar).",
     "",

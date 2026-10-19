@@ -22,7 +22,7 @@ export type DigestCtx = {
 };
 
 const PAYMENT_INFO =
-  "Datos de pago: [COMPLETAR cuenta bancaria de SAWA – Gestión Comercial S.A.C. y número de Yape/Plin]. " +
+  "Datos de pago: [COMPLETAR cuenta bancaria de la empresa operadora y número de Yape/Plin]. " +
   "Envía tu voucher por este medio para validarlo.";
 const music = (c: BookingCtx) =>
   c.musicCutoff ? ` La música con volumen alto termina a las ${c.musicCutoff}.` : "";
@@ -39,7 +39,7 @@ type BookingTemplate = Template<BookingCtx> & { whatsapp: (c: BookingCtx) => str
 const bk = (t: BookingTemplate) => t;
 const dg = (t: Template<DigestCtx>) => t;
 
-const sign = (c: { venueName: string }) => `\n\nEquipo ${c.venueName} · Un espacio SAWA`;
+const sign = (c: { venueName: string }) => `\n\nEquipo ${c.venueName}`;
 
 export const TEMPLATES = {
   balance_due_soon: bk({

@@ -1,4 +1,4 @@
-# Roles y RACI · Oasis Pachacámac · Un espacio SAWA
+# Roles y RACI · Oasis Pachacámac
 
 - **Fecha:** 18/10/2026
 - **Estado:** Borrador para validación de André y Carlos

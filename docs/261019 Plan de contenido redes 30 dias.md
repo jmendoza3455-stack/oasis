@@ -19,7 +19,7 @@
 | **Transparencia:** fechas y precios en línea      | Grabación de pantalla del calendario vivo: "febrero: quedan 2 sábados" |
 | **Facilidad:** proveedores libres, respuesta 24/7 | El flujo de 3 pasos en pantalla; respuesta inmediata por DM y WhatsApp |
 
-**Tono (manual SAWA):**
+**Tono (manual de marca):**
 
 - Cercano, sereno y concreto. Frases cortas.
 - Sin superlativos ("el mejor de Lima") ni urgencia inventada.
@@ -46,9 +46,9 @@
 | TikTok (empresa)        | Alcance: full day, cumpleaños, empresas | Mismo nombre y link; videos verticales                                                                                                          |
 | Facebook (página)       | Familias de más de 35 y pauta CTWA      | Vinculada a Instagram y WhatsApp en Meta Business Suite                                                                                         |
 | Google Business Profile | Reseñas y búsquedas locales             | Verificación iniciada el D-7; 1 publicación por semana                                                                                          |
-| LinkedIn (André / SAWA) | Empresas (RR. HH.)                      | 1 publicación cada 2 semanas sobre full days y cierres de año                                                                                   |
+| LinkedIn (André)        | Empresas (RR. HH.)                      | 1 publicación cada 2 semanas sobre full days y cierres de año                                                                                   |
 
-- **Bio:** `Casa de campo para eventos en Pachacámac · Un espacio SAWA · Solo tu evento por día · Mira las fechas libres 👇`
+- **Bio:** `Casa de campo para eventos en Pachacámac · Solo tu evento por día · Mira las fechas libres 👇`
 - **Link en bio:** `https://{dominio}/#cotizar?utm_source=instagram&utm_medium=bio&utm_campaign=lanzamiento-oct`. En TikTok va `utm_source=tiktok` y en Facebook `utm_source=facebook`.
 - **En la web:** pegar las URL de las cuentas en **Configuración → Web → Redes sociales**. Aparecen en el pie de página y en los datos para Google.
 

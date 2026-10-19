@@ -1,4 +1,4 @@
-# Políticas · Oasis Pachacámac · Un espacio SAWA
+# Políticas · Oasis Pachacámac
 
 - **Fecha:** 18/10/2026
 - **Estado:** Borrador para validación de André y Carlos. **Todo lo legal, tributario y contractual está "por validar con abogado o contador"**; nada se da por cumplido.

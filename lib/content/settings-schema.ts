@@ -182,8 +182,15 @@ export const SETTINGS: SettingDef[] = [
     help: "Cuántos meses hacia adelante puede navegar el cliente en el calendario",
   },
   {
+    key: "company_legal_name",
+    label: "Razón social de la empresa operadora",
+    group: "Web",
+    type: "text",
+    help: "Solo en textos legales: Libro de Reclamaciones, privacidad, contrato y comprobantes. No es marca",
+  },
+  {
     key: "company_ruc",
-    label: "RUC de SAWA",
+    label: "RUC de la empresa operadora",
     group: "Web",
     type: "text",
     help: "Se muestra en el pie de página",
@@ -191,7 +198,7 @@ export const SETTINGS: SettingDef[] = [
   { key: "venue_address", label: "Dirección del local", group: "Web", type: "text" },
   {
     key: "company_address",
-    label: "Domicilio fiscal de SAWA",
+    label: "Domicilio fiscal de la empresa operadora",
     group: "Web",
     type: "text",
     help: "Libro de Reclamaciones y aviso de privacidad",

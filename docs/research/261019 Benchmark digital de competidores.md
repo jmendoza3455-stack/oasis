@@ -1,4 +1,4 @@
-# Benchmark digital de competidores: Oasis Pachacámac · Un espacio SAWA
+# Benchmark digital de competidores: Oasis Pachacámac
 
 **Fecha de consulta de todas las fuentes:** 19/10/2026 (cada URL citada se consultó ese día).
 **Alcance:** presencia digital y web, sin precios. Los precios están en [261018 Benchmark de competidores](261018%20Benchmark%20de%20competidores.md) y aquí no se repiten.

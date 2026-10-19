@@ -18,12 +18,7 @@ export async function SiteFooter() {
         <div className="grid content-start gap-3 md:col-span-2">
           <div className="flex items-center gap-3">
             <Isotipo tone="light" className="size-10" />
-            <div>
-              <p className="font-display tracking-[0.12em] uppercase">Oasis Pachacámac</p>
-              <p className="text-brand-sand/80 text-xs">
-                Un espacio <strong>sawa</strong>
-              </p>
-            </div>
+            <p className="font-display tracking-[0.12em] uppercase">Oasis Pachacámac</p>
           </div>
           <p className="text-brand-sand/80 max-w-sm text-sm">
             Casa de campo para bodas, eventos de empresa y full days con piscina en{" "}
@@ -78,9 +73,12 @@ export async function SiteFooter() {
           <Link href="/ingresar" className="text-brand-sand/70 hover:underline">
             Acceso equipo y planners
           </Link>
-          <p className="text-brand-sand/70 text-xs">
-            SAWA – Gestión Comercial S.A.C.{info.ruc ? ` · RUC ${info.ruc}` : ""}
-          </p>
+          {info.legalName && (
+            <p className="text-brand-sand/70 text-xs">
+              {info.legalName}
+              {info.ruc ? ` · RUC ${info.ruc}` : ""}
+            </p>
+          )}
         </div>
       </div>
     </footer>

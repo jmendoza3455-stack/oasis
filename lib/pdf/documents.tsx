@@ -6,7 +6,7 @@ const GREEN = "#2E3B2B";
 const s = StyleSheet.create({
   page: { padding: 40, fontSize: 10, fontFamily: "Helvetica", color: "#333333", lineHeight: 1.4 },
   brand: { fontSize: 18, letterSpacing: 4, color: GREEN, fontFamily: "Times-Roman" },
-  endorse: { fontSize: 9, color: "#6F6F6F", marginBottom: 18 },
+  legal: { fontSize: 9, color: "#6F6F6F", marginBottom: 18 },
   h1: { fontSize: 14, fontFamily: "Helvetica-Bold", color: GREEN, marginBottom: 8 },
   h2: { fontSize: 11, fontFamily: "Helvetica-Bold", color: GREEN, marginTop: 12, marginBottom: 4 },
   row: {
@@ -20,6 +20,9 @@ const s = StyleSheet.create({
   draft: { fontSize: 8, color: "#C2683F", marginBottom: 10 },
   footer: { position: "absolute", bottom: 24, left: 40, right: 40, fontSize: 7, color: "#6F6F6F" },
 });
+
+/** Empresa operadora (razón social de Configuración): dato legal, no marca. */
+export type DocCompany = { legalName: string; ruc: string; address: string };
 
 export type DocBooking = {
   code: string;
@@ -40,12 +43,12 @@ export type DocBooking = {
   slotLabel: string;
 };
 
-function Header() {
+function Header({ company }: { company: DocCompany }) {
   return (
     <View>
       <Text style={s.brand}>OASIS PACHACÁMAC</Text>
-      <Text style={s.endorse}>
-        Un espacio sawa · SAWA – Gestión Comercial S.A.C. · RUC [COMPLETAR]
+      <Text style={s.legal}>
+        {company.legalName} · RUC {company.ruc}
       </Text>
     </View>
   );
@@ -78,17 +81,19 @@ function Amounts({ b }: { b: DocBooking }) {
 
 export function QuotePdf({
   b,
+  company,
   version,
   validUntil,
 }: {
   b: DocBooking;
+  company: DocCompany;
   version: number;
   validUntil: string | null;
 }) {
   return (
     <Document title={`Cotización ${b.code} v${version}`} author="Oasis Pachacámac">
       <Page size="A4" style={s.page}>
-        <Header />
+        <Header company={company} />
         <Text style={s.h1}>
           Cotización N.º {b.code}-v{version}
         </Text>
@@ -110,7 +115,7 @@ export function QuotePdf({
           Proveedores externos permitidos según el reglamento de uso.
         </Text>
         <Text style={s.footer}>
-          Comprobante electrónico emitido por SAWA – Gestión Comercial S.A.C. Montos en soles (S/).
+          Comprobante electrónico emitido por {company.legalName}. Montos en soles (S/).
         </Text>
       </Page>
     </Document>
@@ -119,22 +124,24 @@ export function QuotePdf({
 
 export function ContractPdf({
   b,
+  company,
   policy,
 }: {
   b: DocBooking;
+  company: DocCompany;
   policy: { earlyDays: number; earlyPct: number; reschedDays: number };
 }) {
   return (
     <Document title={`Contrato ${b.code}`} author="Oasis Pachacámac">
       <Page size="A4" style={s.page}>
-        <Header />
+        <Header company={company} />
         <Text style={s.draft}>
           BORRADOR · Texto pendiente de revisión legal antes de su uso (OASIS.md §11.7).
         </Text>
         <Text style={s.h1}>Contrato de alquiler de local para evento N.º {b.code}</Text>
         <Text>
-          De una parte, SAWA – Gestión Comercial S.A.C., con RUC [COMPLETAR] y domicilio en
-          [COMPLETAR] («EL OPERADOR»), y de la otra, {b.client.name}
+          De una parte, {company.legalName}, con RUC {company.ruc} y domicilio en {company.address}{" "}
+          («EL OPERADOR»), y de la otra, {b.client.name}
           {b.client.document ? `, con documento ${b.client.document}` : ""} («EL CLIENTE»),
           acuerdan:
         </Text>

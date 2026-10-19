@@ -18,9 +18,9 @@ export default async function PrivacyPage() {
       <h1 className="font-display text-4xl">Aviso de privacidad y cookies</h1>
       <h2>Responsable</h2>
       <p>
-        SAWA – Gestión Comercial S.A.C., RUC {info.ruc ?? "[COMPLETAR]"}, con domicilio en{" "}
-        {info.companyAddress ?? "[COMPLETAR]"}, operadora de Oasis Pachacámac. Contacto para datos
-        personales: {email}.
+        {info.legalName ?? "[COMPLETAR razón social]"}, RUC {info.ruc ?? "[COMPLETAR]"}, con
+        domicilio en {info.companyAddress ?? "[COMPLETAR]"}, operadora de Oasis Pachacámac. Contacto
+        para datos personales: {email}.
       </p>
       <h2>Qué datos tratamos y para qué</h2>
       <ul>
@@ -37,8 +37,8 @@ export default async function PrivacyPage() {
       </ul>
       <h2>Banco de datos</h2>
       <p>
-        Los datos se almacenan en el banco de datos de clientes de SAWA, inscrito ante la Autoridad
-        Nacional de Protección de Datos Personales
+        Los datos se almacenan en el banco de datos de clientes de la empresa operadora, inscrito
+        ante la Autoridad Nacional de Protección de Datos Personales
         {info.anpdCode
           ? ` con código ${info.anpdCode}`
           : " [COMPLETAR código — inscripción en trámite]"}

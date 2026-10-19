@@ -20,7 +20,7 @@ export async function GET(
   );
   if (!data || !q) return new NextResponse("No encontrado", { status: 404 });
   const pdf = await renderToBuffer(
-    QuotePdf({ b: data.doc, version: q.version, validUntil: q.validUntil }),
+    QuotePdf({ b: data.doc, company: data.company, version: q.version, validUntil: q.validUntil }),
   );
   return new NextResponse(new Uint8Array(pdf), {
     headers: {

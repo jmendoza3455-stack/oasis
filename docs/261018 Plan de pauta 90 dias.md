@@ -1,4 +1,4 @@
-# Plan de pauta a 90 días · Oasis Pachacámac · Un espacio SAWA
+# Plan de pauta a 90 días · Oasis Pachacámac
 
 - **Fecha:** 18/10/2026
 - **Estado:** Borrador para validación de André y Carlos. Cifras del modelo = **supuestos por validar**.
@@ -65,7 +65,7 @@ Reglas: titular ≤ 40 caracteres y texto ≤ 125 (`agents/growth.md`); sin cifr
 | Corporativo | Team building sin salir de Lima    | Un solo grupo por día, factura electrónica con IGV y tus proveedores o aliados que te recomendamos.       | Carrusel "cómo es un día" (llegada, dinámica, almuerzo, piscina)        | Cotizar            |
 | Corporativo | Arranca el año fuera de la oficina | Kick-off u offsite de verano en un espacio exclusivo en Pachacámac. Escríbenos y cotiza en minutos.       | Video corto con texto en pantalla                                       | WhatsApp           |
 | Bodas       | Tu boda en el campo, a tu manera   | Jardín, terraza y piscina en Pachacámac. Un solo evento por día y libertad para elegir tus proveedores.   | Video "detrás de cámaras" de la remodelación → fotos reales al terminar | Agendar visita     |
-| Bodas       | Precios claros para tu boda 2027   | Mira el rango de tu fecha antes de visitarnos. Oasis Pachacámac, un espacio SAWA.                         | Imagen con el cotizador rápido de la web                                | Cotizar            |
+| Bodas       | Precios claros para tu boda 2027   | Mira el rango de tu fecha antes de visitarnos. Oasis Pachacámac.                                          | Imagen con el cotizador rápido de la web                                | Cotizar            |
 | Bodas       | ¿Ya tienes planner? Trae tu equipo | Nosotros hacemos que el espacio funcione; ustedes hacen que el evento sea único. Agenda tu visita.        | Imagen de mesa montada **[PENDIENTE]**                                  | Agendar visita     |
 
 ---
@@ -81,7 +81,7 @@ Reglas: titular ≤ 40 caracteres y texto ≤ 125 (`agents/growth.md`); sin cifr
 | **Google Business Profile**     | Base del SEO local y de la reputación                               | Ficha verificada, fotos, publicaciones de Novedad/Oferta/Evento, reseñas                                      | **Crear o verificar ya**: puede tardar hasta un mes en aparecer                                                            | Ayuda oficial de Google (research §6, 18/10/2026)                                                                |
 | **Directorios de bodas**        | Fichas gratuitas como enlaces y vitrina                             | Escaparate gratuito                                                                                           | Ver la tabla siguiente                                                                                                     | Research §1                                                                                                      |
 
-**Google Business Profile, reglas clave:** nombre real tal como figura en el letrero ("Oasis Pachacámac"; agregar "Un espacio SAWA" solo si así figura), sin palabras clave en el nombre; pocas categorías y específicas; pedir reseñas a todos los clientes por igual con enlace o QR, **sin incentivos** ni cuotas; responder en 24–72 h; no condicionar la comisión de planners a reseñas.
+**Google Business Profile, reglas clave:** nombre real tal como figura en el letrero ("Oasis Pachacámac"), sin palabras clave en el nombre; pocas categorías y específicas; pedir reseñas a todos los clientes por igual con enlace o QR, **sin incentivos** ni cuotas; responder en 24–72 h; no condicionar la comisión de planners a reseñas.
 
 ### Directorios de bodas de Lima: vigencia
 

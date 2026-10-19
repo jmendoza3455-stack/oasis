@@ -1,4 +1,4 @@
-# Guía de puesta en producción — Oasis Pachacámac · Un espacio SAWA
+# Guía de puesta en producción — Oasis Pachacámac
 
 - **Fecha:** 18/10/2026
 - **Estado:** Borrador para validación de André y Carlos

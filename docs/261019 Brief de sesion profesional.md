@@ -1,4 +1,4 @@
-# Brief de sesión profesional de fotos y video — Oasis Pachacámac · Un espacio SAWA
+# Brief de sesión profesional de fotos y video — Oasis Pachacámac
 
 - **Fecha:** 19/10/2026 · **Estado:** listo para cotizar; fecha y presupuesto por definir con André
 - **Relacionados:** [Equipo de marketing](261019%20Equipo%20de%20marketing.md) · [Plan de contenido §6](261019%20Plan%20de%20contenido%20redes%2030%20dias.md) · [Derechos de imagen](<261019%20Derechos%20de%20imagen%20(borradores).md>) · [Economía de fechas](261019%20Economia%20de%20fechas.md)

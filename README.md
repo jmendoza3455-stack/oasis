@@ -1,4 +1,4 @@
-# Oasis Pachacámac · Un espacio SAWA
+# Oasis Pachacámac
 
 Sistema comercial y operativo de Oasis Pachacámac, casa de campo para eventos en Pachacámac
 (Lima, Perú), operada por SAWA – Gestión Comercial S.A.C.: web pública con chat de IA, portal de

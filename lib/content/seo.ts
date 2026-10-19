@@ -25,7 +25,6 @@ export function venueJsonLd(info?: {
     ...(info && Object.values(info.social).some(Boolean)
       ? { sameAs: Object.values(info.social).filter(Boolean) }
       : {}),
-    parentOrganization: { "@type": "Organization", name: "SAWA – Gestión Comercial S.A.C." },
     amenityFeature: ["Piscina", "Jardín", "Terraza", "Zona de parrilla"].map((name) => ({
       "@type": "LocationFeatureSpecification",
       name,

@@ -4,6 +4,10 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Marca sin respaldo (19/10/2026)
+- La marca pasa a ser **Oasis Pachacámac** a secas: se retira "Un espacio sawa" del logo, el pie, la portada, los metadatos, la imagen para compartir, los cierres de Reels y carruseles, la firma de correos y WhatsApp, el asistente y los documentos de negocio.
+- La empresa operadora queda solo como dato legal en Configuración (`company_legal_name`, con RUC y domicilio) y se usa en el Libro de Reclamaciones, el aviso de privacidad, el contrato, la cotización y el pie. Migración `20261019001100`.
+
 ### Marketing · laboratorio (19/10/2026)
 - **Atribución por pieza:** links cortos `/r/<código>` (web y WhatsApp) que llegan al calendario con `utm_content` o al chat con "código pieza-<código>". Registro de clics sin datos personales (`marketing_link_clicks`) y vista `marketing_attribution` con clics, leads y separaciones por pieza; se ven en `/admin/marketing` y en el snapshot.
 - **Laboratorio** en `/admin/marketing`: pruebas de gancho (`r07` vs `r07b`) con regla bayesiana (≥ 1,000 reproducciones y 90 %) sobre la tasa de salto, y calibración del director creativo (aprobadas a la primera, AUC, correlación con el rendimiento). La BD guarda la primera decisión de André sobre cada versión (`first_decision`).

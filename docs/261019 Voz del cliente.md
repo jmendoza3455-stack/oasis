@@ -1,4 +1,4 @@
-# Voz del cliente y mapa de mensajes — Oasis Pachacámac · Un espacio SAWA
+# Voz del cliente y mapa de mensajes — Oasis Pachacámac
 
 - **Fecha:** 19/10/2026 · **Estado:** procedimiento listo; **sin datos reales todavía** (esperan los chats de Carlos y 6 entrevistas)
 - **Relacionados:** [Laboratorio de marketing](261019%20Laboratorio%20de%20marketing.md) · [Plan de contenido](261019%20Plan%20de%20contenido%20redes%2030%20dias.md) · plantilla `docs/marketing/plantillas/mapa-de-mensajes.csv`

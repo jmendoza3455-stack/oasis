@@ -1,4 +1,4 @@
-# Derechos de imagen: borradores — Oasis Pachacámac · Un espacio SAWA
+# Derechos de imagen: borradores — Oasis Pachacámac
 
 - **Fecha:** 19/10/2026
 - **Estado:** **BORRADORES POR VALIDAR CON ABOGADO.** No usar con clientes hasta su revisión (S55).

@@ -1,4 +1,4 @@
-# Plan de lanzamiento 30-60-90 — Oasis Pachacámac · Un espacio SAWA
+# Plan de lanzamiento 30-60-90 — Oasis Pachacámac
 
 - **Fecha:** 18/10/2026
 - **Estado:** Borrador para validación de André y Carlos

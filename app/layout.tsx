@@ -19,11 +19,11 @@ export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000"),
   openGraph: { siteName: "Oasis Pachacámac", locale: "es_PE", type: "website" },
   title: {
-    default: "Oasis Pachacámac · Un espacio SAWA",
+    default: "Oasis Pachacámac · Casa de campo para eventos",
     template: "%s · Oasis Pachacámac",
   },
   description:
-    "Casa de campo en Pachacámac para bodas, eventos corporativos y full days con piscina. Un espacio SAWA.",
+    "Casa de campo en Pachacámac para bodas, eventos corporativos y full days con piscina.",
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

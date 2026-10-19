@@ -1,4 +1,4 @@
-# Plan de salida en vivo D-7 — Oasis Pachacámac · Un espacio SAWA
+# Plan de salida en vivo D-7 — Oasis Pachacámac
 
 - **Decisión (André, 19/10/2026):** salir en vivo en 7 días → **lunes 26/10/2026 (D0)**. Adelanta el go-live del [Plan 30-60-90](261018%20Plan%20de%20lanzamiento%2030-60-90.md) (era 18/11–17/12).
 - **Qué significa "en vivo":** web pública en el dominio propio, sin datos de demo, con usuarios reales, leads entrando al CRM, avisos por correo, chat con IA y agentes por cadencia encendidos, y pauta corriendo.

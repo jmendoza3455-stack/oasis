@@ -1,6 +1,6 @@
 import "server-only";
 import { withDb } from "@/lib/db";
-import type { DocBooking } from "@/lib/pdf/documents";
+import type { DocBooking, DocCompany } from "@/lib/pdf/documents";
 import { EVENT_TYPE_LABEL } from "@/lib/ui/status";
 
 const SLOT = { full_day: "full day", night: "noche", full_day_and_night: "día y noche" } as const;
@@ -48,6 +48,20 @@ export async function bookingForDocument(userId: string, id: string) {
     }>(`select value from settings where venue_id = $1 and key = 'cancellation_policy'`, [
       b.venueId,
     ]);
+    const co = Object.fromEntries(
+      (
+        await sql<{ key: string; value: unknown }>(
+          `select key, value from settings where venue_id = $1
+              and key in ('company_legal_name', 'company_ruc', 'company_address')`,
+          [b.venueId],
+        )
+      ).map((r) => [r.key, typeof r.value === "string" && r.value.trim() ? r.value : null]),
+    ) as Record<string, string | null>;
+    const company: DocCompany = {
+      legalName: co.company_legal_name ?? "[COMPLETAR razón social]",
+      ruc: co.company_ruc ?? "[COMPLETAR]",
+      address: co.company_address ?? "[COMPLETAR]",
+    };
     const doc: DocBooking = {
       code: b.code,
       eventDate: b.eventDate,
@@ -71,6 +85,6 @@ export async function bookingForDocument(userId: string, id: string) {
       earlyPct: p?.value?.early_cancel_refund_pct ?? 0.5,
       reschedDays: p?.value?.reschedule_free_min_days ?? 30,
     };
-    return { doc, policy };
+    return { doc, policy, company };
   });
 }

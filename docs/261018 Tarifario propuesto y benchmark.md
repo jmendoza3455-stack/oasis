@@ -1,4 +1,4 @@
-# Tarifario propuesto y benchmark · Oasis Pachacámac · Un espacio SAWA
+# Tarifario propuesto y benchmark · Oasis Pachacámac
 
 - **Fecha:** 18/10/2026
 - **Estado:** Borrador para validación de André y Carlos. **Todos los precios: por validar (S24).**

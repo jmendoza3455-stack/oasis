@@ -62,7 +62,7 @@ export default async function Home() {
             </h1>
             <p className="text-brand-sand/85 mt-4 text-lg">
               Bodas, eventos de empresa y full days con piscina, en un espacio exclusivo y bien
-              gestionado. Un espacio <strong>sawa</strong>.
+              gestionado.
             </p>
             <HeroFacts info={info} from={Number.isFinite(from) ? from : null} />
             <CtaLink className="bg-brand-camel mt-8 inline-flex rounded-md px-6 py-3.5 text-base font-medium text-[#2a2418] shadow-lg hover:opacity-90" />

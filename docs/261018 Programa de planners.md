@@ -1,4 +1,4 @@
-# Programa de planners aliadas · Oasis Pachacámac · Un espacio SAWA
+# Programa de planners aliadas · Oasis Pachacámac
 
 - **Fecha:** 18/10/2026
 - **Estado:** Borrador para validación de André y Carlos. El contrato marco es un borrador **por validar con abogado**.
@@ -122,7 +122,7 @@ Lo que la planner acepta en su primer ingreso al portal (`/planners/portal/contr
 
 **Mensaje de primer contacto (borrador, sin cifras no confirmadas):**
 
-> Hola, [nombre]. Soy [nombre] de Oasis Pachacámac, un espacio SAWA: casa de campo para eventos con jardín, terraza y piscina en Pachacámac, que reabre el 17/12/2026. Trabajamos con planners aliadas: nosotros hacemos que el espacio funcione y tú haces que el evento sea único. Tienes un portal con disponibilidad en tiempo real, pre-reservas de 72 h, tus clientes protegidos 90 días y una comisión del 5 % que se paga sola. ¿Te puedo mostrar el local o el portal en 15 minutos esta semana?
+> Hola, [nombre]. Soy [nombre] de Oasis Pachacámac: casa de campo para eventos con jardín, terraza y piscina en Pachacámac, que reabre el 17/12/2026. Trabajamos con planners aliadas: nosotros hacemos que el espacio funcione y tú haces que el evento sea único. Tienes un portal con disponibilidad en tiempo real, pre-reservas de 72 h, tus clientes protegidos 90 días y una comisión del 5 % que se paga sola. ¿Te puedo mostrar el local o el portal en 15 minutos esta semana?
 
 ---
 

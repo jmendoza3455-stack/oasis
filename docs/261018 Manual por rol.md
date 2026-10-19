@@ -1,4 +1,4 @@
-# Manual por rol · Oasis Pachacámac · Un espacio SAWA
+# Manual por rol · Oasis Pachacámac
 
 - **Fecha:** 18/10/2026
 - **Estado:** Borrador para validación de André y Carlos

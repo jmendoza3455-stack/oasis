@@ -15,8 +15,8 @@ export function agreementClauses(p: {
     `Pre-reservas: cada una dura ${p.holdHours} horas y vence sola. Puedes tener hasta ${p.maxHolds} activas a la vez.`,
     `Protección de clientes: si un cliente que registraste nos contacta directo dentro de ${p.protectionDays} días, la reserva se te atribuye.`,
     "Registras datos reales y con autorización de tu cliente (Ley N.º 29733); solo ves la información de tus propios clientes.",
-    "El cliente firma el contrato de alquiler con SAWA – Gestión Comercial S.A.C. y paga directamente a SAWA.",
+    "El cliente firma el contrato de alquiler con la empresa operadora de Oasis Pachacámac y le paga directamente a ella.",
     "Cumples el reglamento de uso del local y los estándares de seguridad para proveedores.",
-    "SAWA puede actualizar el programa con aviso previo; las nuevas versiones requieren tu aceptación en el portal.",
+    "Oasis Pachacámac puede actualizar el programa con aviso previo; las nuevas versiones requieren tu aceptación en el portal.",
   ];
 }
