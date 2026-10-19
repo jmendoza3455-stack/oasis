@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { db, loginAs, shot } from "./helpers";
+import { consultDate, db, loginAs, shot } from "./helpers";
 
 test.describe("promociones (serial, solo desktop)", () => {
   test.describe.configure({ mode: "serial" });
@@ -24,10 +24,7 @@ test.describe("promociones (serial, solo desktop)", () => {
     // Cotizador público: martes 08/06/2027, corporativo
     await page.context().clearCookies();
     await page.goto("/corporativo");
-    await page.getByLabel("Tipo de evento").first().selectOption("corporate");
-    await page.getByLabel("Fecha", { exact: true }).fill("2027-06-08");
-    await page.getByLabel("Invitados", { exact: true }).first().fill("60");
-    await page.getByRole("button", { name: "Ver rango estimado" }).click();
+    await consultDate(page, { type: "corporate", date: "2027-06-08", guests: 60 });
     await expect(
       page.getByText("Incluye la promoción «Corporativo L-J E2E» (−10 %)"),
     ).toBeVisible();

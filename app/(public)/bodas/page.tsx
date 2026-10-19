@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SegmentPage } from "@/components/public/segment-page";
 import { SEGMENTS } from "@/lib/content/segments";
+import { venueInfo } from "@/server/public/venue-info";
 
 export const metadata: Metadata = {
   title: "Bodas en Pachacámac",
@@ -14,6 +15,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Page() {
-  return <SegmentPage segment={SEGMENTS.find((s) => s.slug === "bodas")!} />;
+export default async function Page() {
+  return (
+    <SegmentPage segment={SEGMENTS.find((s) => s.slug === "bodas")!} info={await venueInfo()} />
+  );
 }

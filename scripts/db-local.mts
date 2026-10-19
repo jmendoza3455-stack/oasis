@@ -41,6 +41,9 @@ await db.query(`
   select p.planner_id, '2026-10', p.id from public.profiles p
    where p.role = 'planner' and p.planner_id = (select id from public.planners order by business_name limit 1);
 `);
+// Demo local/CI: precios públicos visibles para probar el cotizador (en producción quedan
+// apagados hasta validar el tarifario, S24)
+await db.query(`update public.settings set value = 'true' where key = 'public_prices_enabled'`);
 await db.end();
 
 url.username = "oasis_app";

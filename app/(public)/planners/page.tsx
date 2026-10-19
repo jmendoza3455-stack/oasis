@@ -4,38 +4,51 @@ import { CalendarClock, HandCoins, ShieldCheck, Sparkles } from "lucide-react";
 import { Section } from "@/components/public/sections";
 import { PlannerApplicationForm } from "@/components/public/simple-forms";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { venueInfo, type VenueInfo } from "@/server/public/venue-info";
 
 export const metadata: Metadata = {
   title: "Programa de planners",
   description:
-    "Programa para wedding y event planners: disponibilidad en línea, pre-reservas de 72 horas, protección de tus clientes por 90 días y 5 % de comisión.",
+    "Programa para wedding y event planners: disponibilidad en línea, pre-reservas, protección de tus clientes y comisión por evento.",
   alternates: { canonical: "/planners" },
 };
 
-const BENEFITS = [
-  {
-    icon: CalendarClock,
-    title: "Disponibilidad en línea",
-    text: "Revisa fechas libres y separa una pre-reserva por 72 horas mientras tu cliente decide.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Tus clientes protegidos",
-    text: "Si un cliente que registraste nos escribe directo dentro de los 90 días, se respeta tu gestión.",
-  },
-  {
-    icon: HandCoins,
-    title: "5 % de comisión",
-    text: "Sobre el alquiler del espacio sin IGV. Se paga 7 días después del evento realizado y cobrado.",
-  },
-  {
-    icon: Sparkles,
-    title: "Tú eres la protagonista",
-    text: "Nosotros hacemos que el espacio funcione; tú haces que el evento sea único. Proveedores libres.",
-  },
-];
+// Cifras del programa leídas de settings (sin números fijos en el código, regla 7)
+function benefits(info: VenueInfo) {
+  const pct =
+    info.plannerCommissionRate !== null
+      ? `${Math.round(info.plannerCommissionRate * 100)} %`
+      : null;
+  return [
+    {
+      icon: CalendarClock,
+      title: "Disponibilidad en línea",
+      text: info.holdHours
+        ? `Revisa fechas libres y separa una pre-reserva por ${info.holdHours} horas mientras tu cliente decide.`
+        : "Revisa fechas libres y separa una pre-reserva mientras tu cliente decide.",
+    },
+    {
+      icon: ShieldCheck,
+      title: "Tus clientes protegidos",
+      text: info.plannerProtectionDays
+        ? `Si un cliente que registraste nos escribe directo dentro de los ${info.plannerProtectionDays} días, se respeta tu gestión.`
+        : "Si un cliente que registraste nos escribe directo, se respeta tu gestión.",
+    },
+    {
+      icon: HandCoins,
+      title: pct ? `${pct} de comisión` : "Comisión por evento",
+      text: `Sobre el alquiler del espacio sin IGV. Se paga${info.commissionPaymentDays ? ` ${info.commissionPaymentDays} días` : ""} después del evento realizado y cobrado.`,
+    },
+    {
+      icon: Sparkles,
+      title: "Tú eres la protagonista",
+      text: "Nosotros hacemos que el espacio funcione; tú haces que el evento sea único. Proveedores libres.",
+    },
+  ];
+}
 
-export default function PlannersPage() {
+export default async function PlannersPage() {
+  const info = await venueInfo();
   return (
     <>
       <section className="bg-brand-green text-brand-sand">
@@ -66,7 +79,7 @@ export default function PlannersPage() {
       </section>
       <Section title="Cómo funciona">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {BENEFITS.map(({ icon: Icon, title, text }) => (
+          {benefits(info).map(({ icon: Icon, title, text }) => (
             <Card key={title}>
               <CardHeader>
                 <Icon className="text-brand-olive size-6" aria-hidden />
@@ -78,7 +91,10 @@ export default function PlannersPage() {
         </div>
         <p className="text-muted-foreground mt-6 text-sm">
           El alta es por invitación tras una visita técnica. En tu primer ingreso aceptas el
-          contrato marco del programa. Puedes tener hasta 2 pre-reservas activas a la vez.
+          contrato marco del programa.
+          {info.plannerMaxHolds
+            ? ` Puedes tener hasta ${info.plannerMaxHolds} pre-reservas activas a la vez.`
+            : ""}
         </p>
       </Section>
       <Section id="alta" title="Solicita tu alta" className="pt-0">

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { venueInfo } from "@/server/public/venue-info";
 
 export const metadata: Metadata = {
   title: "Aviso de privacidad y cookies",
@@ -6,7 +7,9 @@ export const metadata: Metadata = {
   alternates: { canonical: "/privacidad" },
 };
 
-export default function PrivacyPage() {
+export default async function PrivacyPage() {
+  const info = await venueInfo();
+  const email = info.privacyEmail ?? "[COMPLETAR correo]";
   return (
     <article className="[&_h2]:font-display [&_p]:text-muted-foreground mx-auto grid max-w-3xl gap-4 px-4 py-12 [&_h2]:mt-6 [&_h2]:text-2xl [&_li]:ml-5 [&_li]:list-disc">
       <p className="rounded-md border border-dashed p-3 text-xs">
@@ -15,8 +18,9 @@ export default function PrivacyPage() {
       <h1 className="font-display text-4xl">Aviso de privacidad y cookies</h1>
       <h2>Responsable</h2>
       <p>
-        SAWA – Gestión Comercial S.A.C., RUC [COMPLETAR], con domicilio en [COMPLETAR], operadora de
-        Oasis Pachacámac. Contacto para datos personales: [COMPLETAR correo].
+        SAWA – Gestión Comercial S.A.C., RUC {info.ruc ?? "[COMPLETAR]"}, con domicilio en{" "}
+        {info.companyAddress ?? "[COMPLETAR]"}, operadora de Oasis Pachacámac. Contacto para datos
+        personales: {email}.
       </p>
       <h2>Qué datos tratamos y para qué</h2>
       <ul>
@@ -34,7 +38,11 @@ export default function PrivacyPage() {
       <h2>Banco de datos</h2>
       <p>
         Los datos se almacenan en el banco de datos de clientes de SAWA, inscrito ante la Autoridad
-        Nacional de Protección de Datos Personales con código [COMPLETAR — inscripción pendiente].
+        Nacional de Protección de Datos Personales
+        {info.anpdCode
+          ? ` con código ${info.anpdCode}`
+          : " [COMPLETAR código — inscripción en trámite]"}
+        .
       </p>
       <h2>Encargados y transferencias</h2>
       <p>
@@ -45,8 +53,7 @@ export default function PrivacyPage() {
       <h2>Tus derechos</h2>
       <p>
         Puedes ejercer tus derechos de información, acceso, rectificación, cancelación y oposición
-        escribiendo a [COMPLETAR correo], y acudir a la Autoridad Nacional de Protección de Datos
-        Personales.
+        escribiendo a {email}, y acudir a la Autoridad Nacional de Protección de Datos Personales.
       </p>
       <h2>Cookies</h2>
       <p>

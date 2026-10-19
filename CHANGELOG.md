@@ -4,6 +4,14 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Web · conversión (19/10/2026)
+- Flujo único de cotización en home y landings: tipo, fecha e invitados → disponibilidad, fechas libres cercanas si está tomada y rango referencial con IGV → datos de contacto con todo ya cargado (reemplaza el verificador, el cotizador y el formulario sueltos).
+- Precios públicos detrás del interruptor `public_prices_enabled` (Configuración → Web): rango en el cotizador, "desde" en el hero y página `/precios`; apagado en producción hasta validar el tarifario (S42). El Recepcionista tampoco da cifras mientras esté apagado.
+- Sin "pendiente" a la vista: aforo, horarios, políticas, beneficios de planners, RUC, dirección, Maps y redes se leen de settings (caché por horas, se refresca al guardar). Nuevos settings del grupo Web (S43).
+- Hero con datos del local, ficha técnica y FAQ por segmento, "Cómo funciona" y políticas en simple, ubicación, franja de cierre y arte de marca en lugar de fotos inventadas (`lib/content/photos.ts` listo para las fotos reales).
+- Barra de acciones fija en móvil (Consultar fecha · WhatsApp · Chat) sin tapar el contenido; 404 con marca; imágenes OG por página.
+- CI: el build usa la BD local para prerenderizar las páginas públicas con datos.
+
 ### Fase 2 · agentes programados y cierre (19/10/2026)
 - Los 6 agentes por cadencia quedaron creados como tareas programadas de Claude Code (desactivadas hasta el 01/12/2026, con recordatorio para activarlas si producción ya no tiene el demo).
 - `docs/261019 Cierre de construccion y backlog.md`: avance de la fase 2 y backlog restante.

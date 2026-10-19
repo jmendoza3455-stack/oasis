@@ -28,7 +28,7 @@ export function WhatsAppButton({ eventLabel }: { eventLabel?: string }) {
       target="_blank"
       rel="noopener noreferrer"
       onClick={() => track("whatsapp_click", { campaign })}
-      className="fixed right-4 bottom-4 z-40 flex items-center gap-2 rounded-full bg-[#1f7a4d] px-4 py-3 text-sm font-medium text-white shadow-lg hover:bg-[#19663f]"
+      className="fixed right-4 bottom-4 z-40 hidden items-center gap-2 rounded-full bg-[#1f7a4d] px-4 py-3 text-sm font-medium text-white shadow-lg hover:bg-[#19663f] md:flex"
     >
       <MessageCircle className="size-5" aria-hidden /> WhatsApp
     </a>

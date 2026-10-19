@@ -40,24 +40,37 @@ export function SettingRow({
         {def.label}
         {def.help && <span className="text-muted-foreground block text-xs">{def.help}</span>}
       </label>
-      <Field
-        id={id}
-        value={raw}
-        onChange={(e: React.ChangeEvent<HTMLInputElement & HTMLTextAreaElement>) =>
-          setRaw(e.target.value)
-        }
-        disabled={!canEdit}
-        type={
-          def.type === "date"
-            ? "date"
-            : def.type === "json" || def.type === "text"
-              ? undefined
-              : "number"
-        }
-        step={def.type === "percent" ? "0.01" : undefined}
-        rows={def.type === "json" ? 2 : undefined}
-        className={def.type === "json" ? "font-mono text-xs" : undefined}
-      />
+      {def.type === "boolean" ? (
+        <select
+          id={id}
+          value={raw}
+          onChange={(e) => setRaw(e.target.value)}
+          disabled={!canEdit}
+          className="border-input bg-card h-10 rounded-md border px-3 text-sm"
+        >
+          <option value="false">No</option>
+          <option value="true">Sí</option>
+        </select>
+      ) : (
+        <Field
+          id={id}
+          value={raw}
+          onChange={(e: React.ChangeEvent<HTMLInputElement & HTMLTextAreaElement>) =>
+            setRaw(e.target.value)
+          }
+          disabled={!canEdit}
+          type={
+            def.type === "date"
+              ? "date"
+              : def.type === "json" || def.type === "text"
+                ? undefined
+                : "number"
+          }
+          step={def.type === "percent" ? "0.01" : undefined}
+          rows={def.type === "json" ? 2 : undefined}
+          className={def.type === "json" ? "font-mono text-xs" : undefined}
+        />
+      )}
       <div className="flex items-center gap-2">
         {def.type === "percent" && <span className="text-muted-foreground text-sm">%</span>}
         {canEdit && (

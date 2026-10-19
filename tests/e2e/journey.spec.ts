@@ -1,6 +1,6 @@
 import path from "node:path";
 import { expect, test } from "@playwright/test";
-import { db, loginAs } from "./helpers";
+import { db, loginAs, openLeadStep } from "./helpers";
 
 // OASIS.md §13: un lead con UTM conserva su campaña hasta la reserva y aparece en el CAC.
 test.describe("recorrido completo con UTM (serial, solo desktop)", () => {
@@ -13,6 +13,7 @@ test.describe("recorrido completo con UTM (serial, solo desktop)", () => {
   test("lead con UTM → pre-reserva → adelanto validado → Separada → CAC", async ({ page }) => {
     // 1. Visita desde un anuncio y deja sus datos
     await page.goto(`/bodas?utm_source=facebook&utm_medium=paid&utm_campaign=${CAMPAIGN}`);
+    await openLeadStep(page);
     await page.getByLabel("Nombre").fill("Recorrido E2E");
     await page.getByLabel("Celular / WhatsApp").fill("955444333");
     await page.getByLabel("Correo").fill(EMAIL);

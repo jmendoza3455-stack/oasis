@@ -185,6 +185,11 @@ async function runTool(
       const invitados = Number(input.invitados);
       if (!fecha || !tipo || !(invitados > 0)) return { error: "datos_incompletos" };
       const pc = await loadPricingContext(ctx.venue.id);
+      if (!pc.publicPricesEnabled) {
+        return {
+          nota: "Los precios se confirman en la cotización: registra al cliente y el equipo la envía.",
+        };
+      }
       try {
         const promotion = bestPromotion(
           pc.promotions,

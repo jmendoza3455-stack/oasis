@@ -1,17 +1,24 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { Isotipo } from "@/components/brand/logo";
-import { AvailabilityChecker } from "@/components/public/availability-checker";
+import { BrandArt } from "@/components/public/brand-art";
+import { QuoteFlow } from "@/components/public/quote-flow";
 import {
+  CtaBand,
   Faq,
+  HeroFacts,
+  HowItWorks,
+  Location,
+  PolicyStrip,
   Promise,
-  QuoteAndLead,
+  ReopeningBadge,
   Section,
   SegmentCards,
   Spaces,
-  TestimonialsPlaceholder,
 } from "@/components/public/sections";
+import { separateFaq } from "@/lib/content/faq";
 import { venueJsonLd } from "@/lib/content/seo";
+import { FAQ } from "@/lib/content/segments";
+import { venueInfo } from "@/server/public/venue-info";
 
 export const metadata: Metadata = {
   title: { absolute: "Oasis Pachacámac · Casa de campo para eventos en Pachacámac" },
@@ -20,77 +27,90 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-export default function Home() {
+export default async function Home() {
+  const info = await venueInfo();
+  const from = info.pricesEnabled ? Math.min(...Object.values(info.fromPrice)) : null;
+  const faq = [separateFaq(info), ...FAQ.filter((f) => f.q !== "¿Cómo separo una fecha?")];
   return (
     <>
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(venueJsonLd()) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(venueJsonLd(info)) }}
       />
-      <section className="bg-brand-green text-brand-sand">
-        <div className="mx-auto grid max-w-6xl items-center gap-10 px-4 py-14 md:grid-cols-2 md:py-20">
+      <section className="bg-brand-green text-brand-sand relative overflow-hidden">
+        <BrandArt
+          tone="green"
+          className="pointer-events-none absolute inset-y-0 right-0 hidden w-1/2 opacity-40 lg:block"
+        />
+        <div className="relative mx-auto grid max-w-6xl items-center gap-10 px-4 py-12 md:py-20 lg:grid-cols-[1.05fr_1fr]">
           <div>
-            <Isotipo tone="light" className="size-14" />
-            <h1 className="font-display mt-6 text-4xl leading-tight sm:text-5xl">
+            <ReopeningBadge info={info} />
+            <p className="text-brand-sand/70 text-sm tracking-[0.2em] uppercase">
+              Pachacámac · Lima
+            </p>
+            <h1 className="font-display mt-3 text-4xl leading-tight sm:text-5xl lg:text-6xl">
               Casa de campo para celebrar en Pachacámac
             </h1>
             <p className="text-brand-sand/85 mt-4 max-w-prose text-lg">
               Bodas, eventos de empresa y full days con piscina, en un espacio exclusivo y bien
               gestionado. Un espacio <strong>sawa</strong>.
             </p>
+            <HeroFacts info={info} from={Number.isFinite(from) ? from : null} />
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                href="#cotizar"
-                className="bg-brand-camel rounded-md px-5 py-3 font-medium text-[#2a2418] hover:opacity-90"
-              >
-                Cotizar mi evento
-              </Link>
               <Link
                 href="/planners"
                 className="border-brand-sand/50 rounded-md border px-5 py-3 hover:bg-white/10"
               >
                 Soy planner
               </Link>
+              {info.pricesEnabled && (
+                <Link href="/precios" className="rounded-md px-5 py-3 underline hover:bg-white/10">
+                  Ver precios
+                </Link>
+              )}
             </div>
           </div>
-          <div id="disponibilidad" className="bg-card text-foreground rounded-xl p-5 shadow-lg">
-            <h2 className="font-display mb-3 text-2xl">Consulta disponibilidad</h2>
-            <AvailabilityChecker />
+          <div
+            id="cotizar"
+            className="bg-card text-foreground scroll-mt-24 rounded-2xl p-5 shadow-2xl sm:p-6"
+          >
+            <h2 className="font-display mb-1 text-2xl sm:text-3xl">Consulta tu fecha</h2>
+            <p className="text-muted-foreground mb-4 text-sm">
+              Disponibilidad al instante y la cotización en minutos.
+            </p>
+            <QuoteFlow form="home" />
           </div>
         </div>
       </section>
 
+      <div className="border-b">
+        <div className="mx-auto max-w-6xl px-4 py-4">
+          <PolicyStrip info={info} />
+        </div>
+      </div>
+
       <Section title="Un espacio con personalidad, a tu manera">
         <Promise />
       </Section>
-      <Section title="¿Qué quieres celebrar?" className="pt-0">
+      <Section title="¿Qué quieres celebrar?" tone="sand">
         <SegmentCards />
       </Section>
-      <Section
-        title="Los espacios"
-        lead="Fotos del local en preparación: el Oasis está en remodelación para su reapertura."
-        className="pt-0"
-      >
+      <Section title="Los espacios" lead="Todo el local es para tu evento: un solo evento por día.">
         <Spaces />
       </Section>
-      <Section
-        id="cotizar"
-        title="Cotiza en minutos"
-        lead="Elige tipo de evento, fecha e invitados y te mostramos un rango referencial."
-      >
-        <QuoteAndLead form="home" />
+      <Section title="Así de simple es reservar" tone="sand">
+        <HowItWorks info={info} />
       </Section>
-      <Section title="Lo que dicen nuestros clientes" className="pt-0">
-        <TestimonialsPlaceholder />
-      </Section>
-      <Section title="Preguntas frecuentes" className="pt-0">
-        <Faq />
+      <Section title="Preguntas frecuentes">
+        <Faq items={faq} />
       </Section>
       <Section title="Ubicación" className="pt-0">
-        <div className="text-muted-foreground rounded-xl border border-dashed p-6 text-sm">
-          Pachacámac, Lima. Mapa y dirección exacta: <strong>pendiente</strong>.
-        </div>
+        <Location info={info} />
       </Section>
+      <CtaBand
+        title="¿Ya tienes fecha en mente?"
+        text="Consulta disponibilidad y recibe tu cotización hoy mismo."
+      />
     </>
   );
 }

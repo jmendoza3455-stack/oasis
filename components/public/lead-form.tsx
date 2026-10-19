@@ -21,10 +21,15 @@ export function LeadForm({
   defaultEventType = "wedding",
   defaultDate,
   form = "general",
+  fixed,
+  submitLabel = "Solicitar cotización",
 }: {
   defaultEventType?: EventType;
   defaultDate?: string;
   form?: string;
+  /** Datos ya elegidos en el flujo de cotización: se envían ocultos, sin volver a pedirlos. */
+  fixed?: { eventType: EventType; date?: string; guests?: number };
+  submitLabel?: string;
 }) {
   const [state, action, pending] = useActionState<LeadState, FormData>(submitLead, {});
   const raw = useStored(ATTRIBUTION_STORAGE_KEY);
@@ -113,29 +118,37 @@ export function LeadForm({
           />,
         )}
       </div>
-      <div className="grid gap-4 sm:grid-cols-3">
-        {field(
-          "eventType",
-          "Tipo de evento",
-          <NativeSelect id="eventType" name="eventType" defaultValue={defaultEventType}>
-            {(Object.keys(EVENT_TYPE_LABEL) as EventType[]).map((k) => (
-              <option key={k} value={k}>
-                {EVENT_TYPE_LABEL[k]}
-              </option>
-            ))}
-          </NativeSelect>,
-        )}
-        {field(
-          "eventDate",
-          "Fecha tentativa",
-          <Input id="eventDate" name="eventDate" type="date" defaultValue={defaultDate} />,
-        )}
-        {field(
-          "guests",
-          "Invitados",
-          <Input id="guests" name="guests" type="number" min={1} max={500} inputMode="numeric" />,
-        )}
-      </div>
+      {fixed ? (
+        <>
+          <input type="hidden" name="eventType" value={fixed.eventType} />
+          <input type="hidden" name="eventDate" value={fixed.date ?? ""} />
+          <input type="hidden" name="guests" value={fixed.guests ?? ""} />
+        </>
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-3">
+          {field(
+            "eventType",
+            "Tipo de evento",
+            <NativeSelect id="eventType" name="eventType" defaultValue={defaultEventType}>
+              {(Object.keys(EVENT_TYPE_LABEL) as EventType[]).map((k) => (
+                <option key={k} value={k}>
+                  {EVENT_TYPE_LABEL[k]}
+                </option>
+              ))}
+            </NativeSelect>,
+          )}
+          {field(
+            "eventDate",
+            "Fecha tentativa",
+            <Input id="eventDate" name="eventDate" type="date" defaultValue={defaultDate} />,
+          )}
+          {field(
+            "guests",
+            "Invitados",
+            <Input id="guests" name="guests" type="number" min={1} max={500} inputMode="numeric" />,
+          )}
+        </div>
+      )}
       {field(
         "message",
         "Cuéntanos de tu evento (opcional)",
@@ -173,7 +186,7 @@ export function LeadForm({
         </p>
       )}
       <Button type="submit" size="lg" disabled={pending}>
-        {pending ? "Enviando…" : "Solicitar cotización"}
+        {pending ? "Enviando…" : submitLabel}
       </Button>
     </form>
   );

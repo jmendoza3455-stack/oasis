@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { db, shot } from "./helpers";
+import { consultDate, db, openLeadStep, shot } from "./helpers";
 
 test.describe("web pública", () => {
   test("home: propuesta, segmentos y datos estructurados", async ({ page }, info) => {
@@ -14,31 +14,60 @@ test.describe("web pública", () => {
     await shot(page, info, "home");
   });
 
-  test("consulta de disponibilidad: libre y ocupada", async ({ page }) => {
+  test("flujo único: fecha ocupada sugiere fechas libres cercanas", async ({ page }) => {
     await page.goto("/");
-    const input = page.getByLabel("¿Qué fecha tienes en mente?");
     // Otros tests mutan reservas en paralelo: se re-consulta la fecha ocupada en cada intento
     await expect(async () => {
       const [taken] = await db<{ d: string }>(
         `select to_char(event_date, 'YYYY-MM-DD') as d from bookings where status in ('reserved','confirmed') order by event_date desc limit 1`,
       );
-      await input.fill(taken.d);
-      await page.getByRole("button", { name: "Consultar", exact: true }).click();
+      await consultDate(page, { date: taken.d });
       await expect(page.getByText(/no está disponible/)).toBeVisible({ timeout: 3000 });
     }).toPass({ timeout: 20_000 });
-    await input.fill("2030-03-12");
-    await page.getByRole("button", { name: "Consultar", exact: true }).click();
-    await expect(page.getByText(/12\/03\/2030 está disponible/)).toBeVisible();
+    await expect(page.getByText("Fechas libres cercanas:")).toBeVisible();
+    const alternative = page
+      .locator("#cotizar")
+      .getByRole("button", { name: /\d{2}\/\d{2}\/\d{4}/ })
+      .first();
+    await alternative.click();
+    await expect(page.getByText(/está libre!/)).toBeVisible();
   });
 
-  test("cotizador muestra un rango con IGV", async ({ page }, info) => {
+  test("flujo único: rango con IGV y datos de contacto con la fecha ya cargada", async ({
+    page,
+  }, info) => {
     await page.goto("/full-day");
-    await page.getByLabel("Tipo de evento").first().selectOption("family_day");
-    await page.getByLabel("Fecha", { exact: true }).fill("2027-01-17");
-    await page.getByLabel("Invitados", { exact: true }).first().fill("40");
-    await page.getByRole("button", { name: "Ver rango estimado" }).click();
+    await consultDate(page, { date: "2027-01-17", guests: 40 });
+    await expect(page.getByText("¡El domingo 17/01/2027 está libre!")).toBeVisible();
     await expect(page.getByText(/S\/\s?2,950\.00 – S\/\s?3,650\.00/)).toBeVisible();
     await shot(page, info, "full-day");
+    await page.getByRole("button", { name: "Separar o cotizar esta fecha" }).click();
+    await expect(
+      page.getByText("Full day familiar · domingo 17/01/2027 · 40 invitados"),
+    ).toBeVisible();
+    await expect(page.getByRole("button", { name: "Quiero esta fecha" })).toBeVisible();
+  });
+
+  test("datos del local, sin «pendiente» a la vista", async ({ page }) => {
+    await page.goto("/");
+    await expect(page.getByRole("list", { name: "Datos del local" })).toContainText(
+      "Un solo evento por día",
+    );
+    await expect(page.getByText(/pendiente|\[COMPLETAR/i)).toHaveCount(0);
+    await expect(page.getByRole("heading", { name: "Así de simple es reservar" })).toBeVisible();
+  });
+
+  test("precios públicos y página 404 con marca", async ({ page }, info) => {
+    await page.goto("/precios");
+    await expect(page.getByRole("heading", { level: 1 })).toHaveText(
+      "Precios claros, sin sorpresas",
+    );
+    await expect(page.getByRole("table").first()).toContainText(/desde S\/\s?[\d,]+\.\d{2}/);
+    await shot(page, info, "precios");
+    const res = await page.goto("/no-existe");
+    expect(res?.status()).toBe(404);
+    await expect(page.getByRole("heading", { name: "Esta página no existe" })).toBeVisible();
+    await expect(page.getByRole("link", { name: "Consultar mi fecha" })).toBeVisible();
   });
 });
 
@@ -51,6 +80,7 @@ test.describe("web pública · formularios (serial, solo desktop)", () => {
       "/bodas?utm_source=facebook&utm_medium=cpc&utm_campaign=bodas-e2e&fbclid=FB123",
     );
     await page.goto("/bodas"); // navegación posterior: la atribución first-touch se mantiene
+    await openLeadStep(page);
     await page.getByLabel("Nombre").fill("Novia E2E");
     await page.getByLabel("Celular / WhatsApp").fill("987 654 321");
     await page.getByLabel("Correo").fill("novia.e2e@test.pe");
@@ -79,6 +109,7 @@ test.describe("web pública · formularios (serial, solo desktop)", () => {
       `select c.phone, c.created_by_planner_id as planner from clients c where c.created_by_planner_id is not null limit 1`,
     );
     await page.goto("/");
+    await openLeadStep(page);
     await page.getByLabel("Nombre").fill("Duplicado E2E");
     await page.getByLabel("Celular / WhatsApp").fill(`+51 ${pc.phone}`);
     await page.getByLabel("Correo").fill("duplicado.e2e@test.pe");
@@ -96,6 +127,7 @@ test.describe("web pública · formularios (serial, solo desktop)", () => {
 
   test("el honeypot descarta bots sin guardar nada", async ({ page }) => {
     await page.goto("/");
+    await openLeadStep(page);
     await page.getByLabel("Nombre").fill("Bot");
     await page.getByLabel("Celular / WhatsApp").fill("999999999");
     await page.getByLabel("Correo").fill("bot@spam.test");

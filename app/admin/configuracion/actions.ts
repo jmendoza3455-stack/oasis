@@ -1,6 +1,6 @@
 "use server";
 
-import { refresh } from "next/cache";
+import { refresh, revalidateTag } from "next/cache";
 import { z } from "zod";
 import { requireAdmin } from "@/lib/auth/session";
 import { withDb } from "@/lib/db";
@@ -23,9 +23,17 @@ export async function saveSetting(key: string, raw: string): Promise<ConfigResul
         .regex(/^\d{4}-\d{2}-\d{2}$/)
         .parse(raw);
     else if (def.type === "json") value = JSON.parse(raw);
+    else if (def.type === "boolean") value = z.enum(["true", "false"]).parse(raw) === "true";
+    else if (def.group === "Web") value = z.string().trim().max(300).parse(raw);
     else value = z.string().trim().min(1).max(100).parse(raw);
   } catch {
     return { ok: false, error: `Valor inválido para «${def.label}».` };
+  }
+  if ((key === "maps_url" && value) || key === "social_links") {
+    const urls =
+      key === "maps_url" ? [String(value)] : Object.values(value as Record<string, string>);
+    if (urls.some((u) => u && !/^https:\/\//.test(u)))
+      return { ok: false, error: "Los enlaces deben empezar con https://" };
   }
   if (key === "booking_mode" && !["one_per_day", "slots"].includes(String(value))) {
     return { ok: false, error: "El modo debe ser one_per_day o slots." };
@@ -39,6 +47,7 @@ export async function saveSetting(key: string, raw: string): Promise<ConfigResul
     ),
   );
   refresh();
+  revalidateTag("public-settings", "max");
   return { ok: true };
 }
 
@@ -60,6 +69,7 @@ export async function saveRate(input: z.input<typeof rateSchema>): Promise<Confi
     ]),
   );
   refresh();
+  revalidateTag("public-settings", "max");
   return { ok: true };
 }
 
@@ -79,6 +89,7 @@ export async function addHoliday(input: { date: string; name: string }): Promise
     ),
   );
   refresh();
+  revalidateTag("public-settings", "max");
   return { ok: true };
 }
 
@@ -88,5 +99,6 @@ export async function deleteHoliday(date: string): Promise<ConfigResult> {
     sql(`delete from holidays where date = $1`, [date]),
   );
   refresh();
+  revalidateTag("public-settings", "max");
   return { ok: true };
 }

@@ -14,9 +14,15 @@ async function say(page: Page, text: string) {
   return chat;
 }
 
-test("el chat de la web abre con el aviso de privacidad", async ({ page }, info) => {
+test("el chat de la web abre con el aviso de privacidad", async ({ page, isMobile }, info) => {
   await page.goto("/");
-  await page.getByRole("button", { name: "Chatea con nosotros" }).click();
+  // En móvil se abre desde la barra de acciones; en desktop, con el botón flotante
+  if (isMobile)
+    await page
+      .getByRole("navigation", { name: "Acciones rápidas" })
+      .getByRole("button", { name: "Chat" })
+      .click();
+  else await page.getByRole("button", { name: "Chatea con nosotros" }).click();
   const chat = page.getByRole("dialog", { name: "Chat con Oasis Pachacámac" });
   await expect(chat.getByText(/Soy el asistente virtual/)).toBeVisible();
   await expect(chat.getByRole("link", { name: "aviso de privacidad" })).toBeVisible();

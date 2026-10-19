@@ -47,6 +47,8 @@ jobs:
         run: pnpm test:coverage
       - name: BD (migraciones, RLS, constraints, seed)
         run: pnpm test:db
+      - name: BD local para el build (las páginas públicas leen settings con caché)
+        run: pnpm db:local
       - name: Build
         run: pnpm build
       - name: Install Playwright Chromium

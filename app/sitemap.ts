@@ -1,12 +1,15 @@
 import type { MetadataRoute } from "next";
 import { SITE_URL } from "@/lib/content/seo";
+import { venueInfo } from "@/server/public/venue-info";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const { pricesEnabled } = await venueInfo();
   return [
     "",
     "/bodas",
     "/corporativo",
     "/full-day",
+    ...(pricesEnabled ? ["/precios"] : []),
     "/planners",
     "/libro-de-reclamaciones",
     "/privacidad",

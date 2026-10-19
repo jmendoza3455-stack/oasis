@@ -1,5 +1,6 @@
 import { Analytics } from "@/components/public/analytics";
 import { ChatLauncher } from "@/components/public/chat-launcher";
+import { MobileActionBar } from "@/components/public/mobile-action-bar";
 import { SiteFooter } from "@/components/public/site-footer";
 import { SiteHeader } from "@/components/public/site-header";
 import { WhatsAppButton } from "@/components/public/whatsapp-button";
@@ -21,6 +22,7 @@ export default function PublicLayout({ children }: LayoutProps<"/">) {
       <SiteFooter />
       <WhatsAppButton />
       {recepcionistaEnabled() && <ChatLauncher />}
+      <MobileActionBar chat={recepcionistaEnabled()} />
       <Analytics />
     </>
   );

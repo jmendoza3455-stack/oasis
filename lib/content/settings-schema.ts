@@ -2,8 +2,8 @@
 export type SettingDef = {
   key: string;
   label: string;
-  group: "Reservas" | "Dinero" | "Planners" | "Comercial" | "Metas";
-  type: "number" | "percent" | "text" | "json" | "date";
+  group: "Reservas" | "Dinero" | "Planners" | "Comercial" | "Metas" | "Web";
+  type: "number" | "percent" | "text" | "json" | "date" | "boolean";
   help?: string;
 };
 
@@ -167,4 +167,42 @@ export const SETTINGS: SettingDef[] = [
     help: '{"d7": ["..."], "d1": ["..."]}',
   },
   { key: "occupancy_targets", label: "Metas de ocupación", group: "Metas", type: "json" },
+  {
+    key: "public_prices_enabled",
+    label: "Publicar precios en la web",
+    group: "Web",
+    type: "boolean",
+    help: "Muestra precios «desde» y la página /precios. Actívalo solo con el tarifario validado (S24)",
+  },
+  {
+    key: "company_ruc",
+    label: "RUC de SAWA",
+    group: "Web",
+    type: "text",
+    help: "Se muestra en el pie de página",
+  },
+  { key: "venue_address", label: "Dirección del local", group: "Web", type: "text" },
+  {
+    key: "company_address",
+    label: "Domicilio fiscal de SAWA",
+    group: "Web",
+    type: "text",
+    help: "Libro de Reclamaciones y aviso de privacidad",
+  },
+  { key: "privacy_email", label: "Correo de datos personales", group: "Web", type: "text" },
+  { key: "anpd_code", label: "Código ANPD del banco de datos", group: "Web", type: "text" },
+  {
+    key: "maps_url",
+    label: "Enlace de Google Maps",
+    group: "Web",
+    type: "text",
+    help: "https://maps.app.goo.gl/…",
+  },
+  {
+    key: "social_links",
+    label: "Redes sociales",
+    group: "Web",
+    type: "json",
+    help: '{"instagram": "https://…", "facebook": "", "tiktok": ""}',
+  },
 ];

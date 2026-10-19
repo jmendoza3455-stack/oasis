@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ComplaintForm } from "@/components/public/simple-forms";
+import { venueInfo } from "@/server/public/venue-info";
 
 export const metadata: Metadata = {
   title: "Libro de Reclamaciones",
@@ -8,7 +9,8 @@ export const metadata: Metadata = {
   alternates: { canonical: "/libro-de-reclamaciones" },
 };
 
-export default function ComplaintsPage() {
+export default async function ComplaintsPage() {
+  const info = await venueInfo();
   return (
     <div className="mx-auto max-w-3xl px-4 py-12">
       <h1 className="font-display text-4xl">Libro de Reclamaciones</h1>
@@ -19,15 +21,15 @@ export default function ComplaintsPage() {
         </div>
         <div className="flex gap-2">
           <dt className="text-muted-foreground">RUC:</dt>
-          <dd>[COMPLETAR]</dd>
+          <dd>{info.ruc ?? "[COMPLETAR]"}</dd>
         </div>
         <div className="flex gap-2">
           <dt className="text-muted-foreground">Domicilio:</dt>
-          <dd>[COMPLETAR]</dd>
+          <dd>{info.companyAddress ?? "[COMPLETAR]"}</dd>
         </div>
         <div className="flex gap-2">
           <dt className="text-muted-foreground">Establecimiento:</dt>
-          <dd>Oasis Pachacámac, Pachacámac, Lima</dd>
+          <dd>Oasis Pachacámac, {info.address ?? "Pachacámac, Lima"}</dd>
         </div>
       </dl>
       <p className="text-muted-foreground mt-4 text-sm">

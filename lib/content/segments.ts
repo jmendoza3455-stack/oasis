@@ -10,6 +10,9 @@ export type Segment = {
   idealFor: string[];
   cta: string;
   capacityKey: "cocktail" | "banquet" | "full_day";
+  /** Invitados sugeridos en el cotizador. */
+  defaultGuests: number;
+  artTone: "green" | "olive" | "camel" | "slate";
 };
 
 // Copy por segmento. Promesa (manual SAWA): belleza del lugar + facilidad operativa + libertad.
@@ -32,6 +35,8 @@ export const SEGMENTS: Segment[] = [
     ],
     cta: "Consultar fecha para mi boda",
     capacityKey: "cocktail",
+    defaultGuests: 100,
+    artTone: "olive",
   },
   {
     slug: "corporativo",
@@ -47,6 +52,8 @@ export const SEGMENTS: Segment[] = [
     idealFor: ["Team building y offsites", "Cierres de año", "Activaciones y lanzamientos"],
     cta: "Cotizar evento corporativo",
     capacityKey: "banquet",
+    defaultGuests: 40,
+    artTone: "slate",
   },
   {
     slug: "full-day",
@@ -62,6 +69,8 @@ export const SEGMENTS: Segment[] = [
     idealFor: ["Cumpleaños", "Reuniones familiares", "Grupos de amigos"],
     cta: "Ver disponibilidad",
     capacityKey: "full_day",
+    defaultGuests: 30,
+    artTone: "camel",
   },
 ];
 

@@ -1,12 +1,21 @@
 import Link from "next/link";
 import { BookOpenText } from "lucide-react";
 import { Isotipo } from "@/components/brand/logo";
+import { venueInfo } from "@/server/public/venue-info";
 
-export function SiteFooter() {
+const SOCIAL_LABEL: Record<string, string> = {
+  instagram: "Instagram",
+  facebook: "Facebook",
+  tiktok: "TikTok",
+};
+
+export async function SiteFooter() {
+  const info = await venueInfo();
+  const social = Object.entries(info.social).filter(([, url]) => url);
   return (
-    <footer className="bg-brand-green text-brand-sand mt-auto">
-      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-10 md:grid-cols-3">
-        <div className="grid gap-3">
+    <footer className="bg-brand-green text-brand-sand mt-auto pb-20 md:pb-0">
+      <div className="mx-auto grid max-w-6xl gap-8 px-4 py-12 md:grid-cols-4">
+        <div className="grid content-start gap-3 md:col-span-2">
           <div className="flex items-center gap-3">
             <Isotipo tone="light" className="size-10" />
             <div>
@@ -16,9 +25,26 @@ export function SiteFooter() {
               </p>
             </div>
           </div>
-          <p className="text-brand-sand/80 text-sm">
-            Casa de campo para eventos en Pachacámac, Lima.
+          <p className="text-brand-sand/80 max-w-sm text-sm">
+            Casa de campo para bodas, eventos de empresa y full days con piscina en{" "}
+            {info.address ?? "Pachacámac, Lima"}.
           </p>
+          {social.length > 0 && (
+            <ul className="flex gap-4 text-sm">
+              {social.map(([k, url]) => (
+                <li key={k}>
+                  <a
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="hover:underline"
+                  >
+                    {SOCIAL_LABEL[k] ?? k}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
         <nav aria-label="Enlaces" className="grid content-start gap-2 text-sm">
           <Link href="/bodas" className="hover:underline">
@@ -30,11 +56,13 @@ export function SiteFooter() {
           <Link href="/full-day" className="hover:underline">
             Full day familiar
           </Link>
+          {info.pricesEnabled && (
+            <Link href="/precios" className="hover:underline">
+              Precios
+            </Link>
+          )}
           <Link href="/planners" className="hover:underline">
             Programa de planners
-          </Link>
-          <Link href="/ingresar" className="hover:underline">
-            Ingresar
           </Link>
         </nav>
         <div className="grid content-start gap-3 text-sm">
@@ -47,8 +75,11 @@ export function SiteFooter() {
           <Link href="/privacidad" className="hover:underline">
             Aviso de privacidad y cookies
           </Link>
+          <Link href="/ingresar" className="text-brand-sand/70 hover:underline">
+            Acceso equipo y planners
+          </Link>
           <p className="text-brand-sand/70 text-xs">
-            SAWA – Gestión Comercial S.A.C. · RUC [COMPLETAR]
+            SAWA – Gestión Comercial S.A.C.{info.ruc ? ` · RUC ${info.ruc}` : ""}
           </p>
         </div>
       </div>

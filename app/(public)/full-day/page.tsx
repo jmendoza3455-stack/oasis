@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { SegmentPage } from "@/components/public/segment-page";
 import { SEGMENTS } from "@/lib/content/segments";
+import { venueInfo } from "@/server/public/venue-info";
 
 export const metadata: Metadata = {
   title: "Full day familiar con piscina",
@@ -14,6 +15,8 @@ export const metadata: Metadata = {
   },
 };
 
-export default function Page() {
-  return <SegmentPage segment={SEGMENTS.find((s) => s.slug === "full-day")!} />;
+export default async function Page() {
+  return (
+    <SegmentPage segment={SEGMENTS.find((s) => s.slug === "full-day")!} info={await venueInfo()} />
+  );
 }

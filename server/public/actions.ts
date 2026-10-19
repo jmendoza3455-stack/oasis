@@ -18,29 +18,7 @@ function todayLima() {
 }
 
 // ---------------------------------------------------------------------------
-// Disponibilidad: solo "disponible / no disponible"
-// ---------------------------------------------------------------------------
-export async function checkAvailability(
-  date: string,
-): Promise<{ ok: true; available: boolean } | { ok: false; error: string }> {
-  const parsed = isoDate.safeParse(date);
-  if (!parsed.success) return { ok: false, error: "Elige una fecha válida." };
-  if (parsed.data < todayLima()) return { ok: false, error: "Elige una fecha futura." };
-  if (!(await withinRateLimit("availability", 60))) {
-    return { ok: false, error: "Demasiadas consultas. Intenta en unos minutos." };
-  }
-  const venue = await activeVenue();
-  const [row] = await withDb({ kind: "anon" }, (sql) =>
-    sql<{ ok: boolean }>(`select public.is_date_available($1, $2) as ok`, [
-      venue.slug,
-      parsed.data,
-    ]),
-  );
-  return { ok: true, available: row.ok };
-}
-
-// ---------------------------------------------------------------------------
-// Cotizador rápido: rango estimado con IGV
+// Cotizador: tipo de evento, fecha e invitados
 // ---------------------------------------------------------------------------
 const quoteSchema = z.object({
   eventType,
@@ -48,46 +26,71 @@ const quoteSchema = z.object({
   guests: z.coerce.number().int().min(1, "Indica el número de invitados.").max(500),
 });
 
-export type QuoteResult =
+// ---------------------------------------------------------------------------
+// Flujo único: disponibilidad + fechas libres cercanas + rango (si los precios son públicos)
+// ---------------------------------------------------------------------------
+export type CheckQuoteResult =
   | {
       ok: true;
-      min: number;
-      max: number;
-      deposit: number;
-      guarantee: number;
-      isPlaceholder: true;
-      promotion: { name: string; discountPct: number } | null;
+      available: boolean;
+      alternatives: string[];
+      range: {
+        min: number;
+        max: number;
+        promotion: { name: string; discountPct: number } | null;
+      } | null;
+      customQuote: boolean;
     }
   | { ok: false; error: string };
 
-export async function estimateQuote(input: z.input<typeof quoteSchema>): Promise<QuoteResult> {
+export async function checkQuote(input: z.input<typeof quoteSchema>): Promise<CheckQuoteResult> {
   const parsed = quoteSchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0].message };
-  if (!(await withinRateLimit("quote", 60))) {
+  if (parsed.data.date < todayLima()) return { ok: false, error: "Elige una fecha futura." };
+  if (!(await withinRateLimit("availability", 60))) {
     return { ok: false, error: "Demasiadas consultas. Intenta en unos minutos." };
   }
   const venue = await activeVenue();
+  const { available, alternatives } = await withDb({ kind: "anon" }, async (sql) => {
+    const [row] = await sql<{ ok: boolean }>(`select public.is_date_available($1, $2) as ok`, [
+      venue.slug,
+      parsed.data.date,
+    ]);
+    // Si está ocupada: hasta 4 fechas libres más cercanas (±30 días), sin datos de terceros
+    const alt = row.ok
+      ? []
+      : await sql<{ d: string }>(
+          `select to_char(d, 'YYYY-MM-DD') as d
+             from generate_series($2::date - 30, $2::date + 30, interval '1 day') d
+            where d::date >= (now() at time zone 'America/Lima')::date and d::date <> $2::date
+              and public.is_date_available($1, d::date)
+            order by abs(d::date - $2::date), d limit 4`,
+          [venue.slug, parsed.data.date],
+        );
+    return { available: row.ok, alternatives: alt.map((a) => a.d) };
+  });
   const ctx = await loadPricingContext(venue.id);
+  if (!ctx.publicPricesEnabled)
+    return { ok: true, available, alternatives, range: null, customQuote: false };
   try {
     const promotion = bestPromotion(ctx.promotions, parsed.data, ctx.holidays);
     const r = estimateRange(ctx.cards, { ...parsed.data, promotion }, ctx.holidays, ctx.settings);
     return {
       ok: true,
-      min: r.min,
-      max: r.max,
-      deposit: r.base.deposit,
-      guarantee: r.base.guarantee,
-      isPlaceholder: true,
-      promotion: r.base.promotion
-        ? { name: r.base.promotion.name, discountPct: r.base.discountPct }
-        : null,
+      available,
+      alternatives,
+      range: {
+        min: r.min,
+        max: r.max,
+        promotion: r.base.promotion
+          ? { name: r.base.promotion.name, discountPct: r.base.discountPct }
+          : null,
+      },
+      customQuote: false,
     };
   } catch (error) {
     if (error instanceof PricingError && error.code === "no_rate_card") {
-      return {
-        ok: false,
-        error: "Para ese aforo o fecha preparamos una cotización a medida. Déjanos tus datos.",
-      };
+      return { ok: true, available, alternatives, range: null, customQuote: true };
     }
     throw error;
   }
