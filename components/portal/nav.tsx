@@ -8,6 +8,7 @@ const items = [
   { href: "/planners/portal", label: "Disponibilidad" },
   { href: "/planners/portal/clientes", label: "Mis clientes" },
   { href: "/planners/portal/reservas", label: "Mis reservas" },
+  { href: "/planners/portal/fechas", label: "Fechas libres" },
   { href: "/planners/portal/comisiones", label: "Comisiones" },
   { href: "/planners/portal/descargas", label: "Descargas" },
 ];

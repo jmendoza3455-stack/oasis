@@ -4,6 +4,11 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Fase 2 · portal de planners (19/10/2026)
+- `/planners/portal/fechas`: fechas libres de los próximos 90 días (V-S-D y feriados resaltados) con texto listo para copiar o compartir por WhatsApp. Función `free_dates()` que solo expone disponible / no disponible.
+- El planner envía el voucher de sus reservas desde "Mis reservas": queda pendiente hasta que el admin lo valide. RLS: solo inserta pagos pendientes de reservas propias y sigue sin leer pagos.
+- Test de portal acotado a su propia reserva (antes dependía del orden de otros tests).
+
 ### Fase 2 · pre-reserva desde el chat (19/10/2026)
 - El Recepcionista puede pedir una pre-reserva de 72 h para una fecha disponible (herramienta `solicitar_pre_reserva`, solo con el lead ya registrado). Queda como propuesta "hold" en `/admin/agentes` con alerta por correo al staff.
 - Operaciones o el admin la confirman con un clic: se crea la pre-reserva con precio del tarifario (misma lógica que el CRM, ahora en `server/prebooking.ts`). S35 actualizado: el agente pide, una persona confirma.

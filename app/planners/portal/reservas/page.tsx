@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Suspense } from "react";
 import { CancelHoldButton } from "@/components/portal/cancel-hold";
 import { HoldCountdown } from "@/components/portal/hold-countdown";
+import { VoucherForm } from "@/components/portal/voucher-form";
 import { Badge } from "@/components/ui/badge";
 import { formatDate, STATUS_LABEL } from "@/lib/domain";
 import { EVENT_TYPE_LABEL, STATUS_COLOR } from "@/lib/ui/status";
@@ -12,6 +13,7 @@ export const metadata: Metadata = { title: "Mis reservas" };
 async function Bookings() {
   const ctx = await activePlannerContext();
   const now = new Date();
+  const today = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Lima" }).format(now);
   const rows = (await plannerBookings(ctx)).filter(
     (b) => !(b.status === "prebooked" && b.holdExpiresAt && new Date(b.holdExpiresAt) <= now),
   );
@@ -45,6 +47,9 @@ async function Bookings() {
               </>
             )}
           </div>
+          {["prebooked", "reserved", "confirmed"].includes(b.status) && (
+            <VoucherForm bookingId={b.id} today={today} />
+          )}
         </li>
       ))}
     </ul>

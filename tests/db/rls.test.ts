@@ -136,6 +136,51 @@ describe("aislamiento de planners (OASIS.md §13)", () => {
     expect(updated).toBe(0);
   });
 
+  it("el planner envía vouchers solo de sus reservas y sigue sin leer pagos", async () => {
+    const insert = (actor: Parameters<typeof as>[1], booking: string, status = "pending") =>
+      as(pool, actor, (c) =>
+        c.query(
+          `insert into public.payments (booking_id, kind, amount, method, status) values ($1, 'deposit', 500, 'yape', $2)`,
+          [booking, status],
+        ),
+      );
+    await insert(w.plannerA, bookingA);
+    await expect(insert(w.plannerB, bookingA)).rejects.toThrow(/row-level security/);
+    await expect(insert(w.plannerA, bookingDirect)).rejects.toThrow(/row-level security/);
+    await expect(insert(w.plannerA, bookingA, "validated")).rejects.toThrow(
+      /row-level security|payment_validation_requires_admin/,
+    );
+    expect(await count(w.plannerA, `select 1 from public.payments`)).toBe(0);
+    const [row] = await as(
+      pool,
+      "service",
+      async (c) =>
+        (
+          await c.query(`select status, created_by from public.payments where booking_id = $1`, [
+            bookingA,
+          ])
+        ).rows,
+    );
+    expect(row.status).toBe("pending");
+    expect(row.created_by).toBe(w.plannerA.sub);
+  });
+
+  it("free_dates solo devuelve fechas, sin datos de terceros", async () => {
+    const rows = await as(
+      pool,
+      w.plannerB,
+      async (c) =>
+        (await c.query(`select * from public.free_dates('rls', current_date, current_date + 30)`))
+          .rows,
+    );
+    for (const r of rows) expect(Object.keys(r)).toEqual(["free_dates"]);
+    await expect(
+      as(pool, "anon", (c) =>
+        c.query(`select public.free_dates('x', current_date, current_date + 1)`),
+      ),
+    ).rejects.toThrow(/permission denied/);
+  });
+
   it("la disponibilidad del planner no expone datos de terceros", async () => {
     const rows = await as(
       pool,

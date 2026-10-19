@@ -1,11 +1,13 @@
 "use server";
 
+import { randomUUID } from "node:crypto";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { refresh } from "next/cache";
 import { z } from "zod";
 import { dbErrorCode, withDb } from "@/lib/db";
 import { addDays } from "@/lib/domain";
+import { ALLOWED_TYPES, putFile, validateUpload } from "@/lib/storage";
 import { activePlannerContext, plannerContext } from "@/server/queries/planner";
 
 export type PortalResult = { ok: true } | { ok: false; error: string };
@@ -145,6 +147,66 @@ export async function cancelHold(bookingId: string): Promise<PortalResult> {
   try {
     await withDb({ kind: "user", userId: ctx.user.id }, (sql) =>
       sql(`select public.transition_booking($1, 'cancelled', 'Liberada por el planner')`, [id]),
+    );
+  } catch (error) {
+    return { ok: false, error: message(error) };
+  }
+  refresh();
+  return { ok: true };
+}
+
+// ---------------------------------------------------------------------------
+// Voucher de pago enviado por el planner: queda "pendiente" hasta que el admin lo valide.
+// ---------------------------------------------------------------------------
+const voucherSchema = z.object({
+  bookingId: z.uuid(),
+  kind: z.enum(["deposit", "balance", "guarantee"]),
+  amount: z.coerce.number().positive("El monto debe ser mayor a 0.").max(1_000_000),
+  method: z.enum(["transfer", "yape", "plin"]),
+  operationCode: z.string().trim().max(60).optional(),
+  paidOn: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Indica la fecha de pago."),
+});
+
+export async function submitVoucher(
+  _: PortalResult | null,
+  formData: FormData,
+): Promise<PortalResult> {
+  const ctx = await activePlannerContext();
+  const parsed = voucherSchema.safeParse(Object.fromEntries(formData));
+  if (!parsed.success) return { ok: false, error: parsed.error.issues[0].message };
+  const d = parsed.data;
+  if (d.paidOn > today()) return { ok: false, error: "La fecha de pago no puede ser futura." };
+  const file = formData.get("voucher");
+  if (!(file instanceof File) || file.size === 0)
+    return { ok: false, error: "Adjunta el voucher." };
+  const invalid = validateUpload(file);
+  if (invalid) return { ok: false, error: invalid };
+  // Verifica con RLS que la reserva es del planner antes de subir el archivo
+  const own = await withDb({ kind: "user", userId: ctx.user.id }, (sql) =>
+    sql(
+      `select 1 from bookings where id = $1 and status in ('prebooked', 'reserved', 'confirmed')`,
+      [d.bookingId],
+    ),
+  );
+  if (own.length === 0) return { ok: false, error: MESSAGES.forbidden };
+  const key = await putFile(
+    `vouchers/${d.bookingId}/${randomUUID()}.${ALLOWED_TYPES[file.type]}`,
+    file,
+  );
+  try {
+    await withDb({ kind: "user", userId: ctx.user.id }, (sql) =>
+      sql(
+        `insert into payments (booking_id, kind, amount, method, operation_code, paid_on, voucher_path)
+         values ($1, $2, $3, $4, $5, $6, $7)`,
+        [d.bookingId, d.kind, d.amount, d.method, d.operationCode || null, d.paidOn, key],
+      ),
+    );
+    await withDb({ kind: "service", actorName: "portal" }, (sql) =>
+      sql(
+        `insert into documents (venue_id, booking_id, kind, storage_path)
+         select venue_id, id, 'voucher', $2 from bookings where id = $1`,
+        [d.bookingId, key],
+      ),
     );
   } catch (error) {
     return { ok: false, error: message(error) };

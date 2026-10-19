@@ -74,10 +74,12 @@ test.describe("portal de planners · flujo (serial, solo desktop)", () => {
     await expect(page.getByText(/Pre-reserva creada/)).toBeVisible();
 
     await page.goto("/planners/portal/reservas");
-    await expect(page.getByText(/Vence en (71|72) h/)).toBeVisible();
+    // Acotado a la reserva de este test: el seed puede tener otras pre-reservas del planner
+    const item = page.getByRole("listitem").filter({ hasText: "Familia E2E" });
+    await expect(item.getByText(/Vence en (71|72) h/)).toBeVisible();
     await shot(page, info, "portal-reservas");
-    await page.getByRole("button", { name: "Liberar fecha" }).click();
-    await expect(page.getByText(/Vence en/)).toHaveCount(0);
+    await item.getByRole("button", { name: "Liberar fecha" }).click();
+    await expect(item.getByText(/Vence en/)).toHaveCount(0);
   });
 });
 
