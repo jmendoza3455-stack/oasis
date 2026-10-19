@@ -23,6 +23,7 @@ test.describe("marketing (serial)", () => {
   test.afterAll(async () => {
     await db(`delete from marketing_pieces where code = $1`, [code]);
     await db(`delete from marketing_clips where notes like 'E2E piscina%'`);
+    await db(`delete from marketing_link_clicks where code = $1`, [code]);
   });
 
   test("operaciones sube clips desde el celular y no puede decidir piezas", async ({
@@ -87,6 +88,7 @@ test.describe("marketing (serial)", () => {
     // Pasa a "Listas para publicar" con el formulario de publicación
     const ready = page.getByRole("listitem").filter({ hasText: `${code} v2` });
     await expect(ready.getByRole("button", { name: "Copiar caption" })).toBeVisible();
+    await expect(ready.getByRole("button", { name: "Link WhatsApp" })).toBeVisible();
     await ready
       .getByLabel("Enlace en Instagram")
       .fill("https://www.instagram.com/reel/prueba-e2e/");
@@ -98,6 +100,7 @@ test.describe("marketing (serial)", () => {
       .filter({ has: page.getByRole("link", { name: "instagram" }) });
     await pub.getByLabel("Alcance").fill("1200");
     await pub.getByLabel("Guardados").fill("40");
+    await pub.getByLabel("Tasa de salto %").fill("32.5");
     await pub.getByRole("button", { name: "Guardar resultados" }).click();
     await expect(page.getByText("Resultados guardados.")).toBeVisible();
     const [row] = await db<{ metrics: Record<string, number>; status: string }>(
@@ -105,7 +108,30 @@ test.describe("marketing (serial)", () => {
       [code],
     );
     expect(row.status).toBe("published");
-    expect(row.metrics).toMatchObject({ reach: 1200, saves: 40 });
+    expect(row.metrics).toMatchObject({ reach: 1200, saves: 40, skip_rate: 32.5 });
+    // Atribución y laboratorio
+    await expect(
+      pub.getByText(/Clics web \d+ · WhatsApp \d+ · Leads 0 · Separaciones 0/),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("heading", { name: "Calibración del director creativo" }),
+    ).toBeVisible();
     await shot(page, info, "marketing-admin");
+  });
+
+  test("el link de la pieza lleva a la web con su código y registra el clic", async ({ page }) => {
+    const before = async () =>
+      (
+        await db<{ n: number }>(
+          `select count(*)::int as n from marketing_link_clicks where code = $1 and network = 'tiktok'`,
+          [code],
+        )
+      )[0].n;
+    const start = await before();
+    await page.goto(`/r/${code.toUpperCase()}?s=tiktok`);
+    await expect(page).toHaveURL(
+      new RegExp(`utm_source=tiktok&utm_medium=social&utm_campaign=organico&utm_content=${code}`),
+    );
+    await expect.poll(before).toBe(start + 1);
   });
 });

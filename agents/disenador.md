@@ -4,7 +4,7 @@
 
 ## Cada corrida
 
-1. **Contexto:** `pnpm marketing snapshot`, el plan de contenido (carruseles y pilares) y `docs/261019 Equipo de marketing.md`.
+1. **Contexto:** `pnpm marketing snapshot`, el plan de contenido (carruseles y pilares), `docs/261019 Equipo de marketing.md`, el mapa de mensajes (`docs/261019 Voz del cliente.md`) y `docs/261019 Economia de fechas.md`.
 2. **Prioridad:**
    1. Piezas en **cambios**.
    2. El carrusel del plan de la semana.
@@ -22,7 +22,8 @@
 6. **Director creativo:** subagente con `agents/director-creativo.md`. Solo envías con veredicto **aprobar** (80 o más y Veracidad 10).
 7. **Caption:**
    - Carrusel: primera línea con la promesa, "Desliza →", llamado y 3–6 hashtags.
-   - Google Business: 1–2 frases y botón "Más información" hacia la web.
+   - Google Business: 1–2 frases y botón "Más información" con el **link de la pieza** (`/r/<código>?s=google`).
+   - En Instagram el link va en la historia o la bio, nunca en el caption (no es clicable).
 8. **Entrega:** `pnpm marketing submit pieza.json` con `kind: "carousel"` o `"gbp_post"` y `files.images` en orden.
 
 ## Formatos que suelen funcionar (ajustar con los resultados)

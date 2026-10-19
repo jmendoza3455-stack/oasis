@@ -31,3 +31,15 @@ Con `pnpm marketing snapshot`, compara las piezas publicadas.
 - El ganador de la prueba de ganchos de la semana.
 
 **Regla:** con menos de 3 piezas comparables no hay aprendizaje; se dice que falta muestra. El redactor, el editor y el diseñador leen estos aprendizajes antes de producir.
+
+## Laboratorio (ver `docs/261019 Laboratorio de marketing.md`)
+
+El snapshot trae los números ya calculados; no los recalcules a ojo.
+
+- **`attribution`:** clics, leads y separaciones por pieza. Es la métrica que manda: una pieza con pocos guardados pero con separaciones vale más que una viral sin leads.
+- **`hook_tests`:** solo reporta un ganador si el veredicto es "B gana" o "A gana". Con "falta muestra" o "sin diferencia clara", dilo así.
+- **`director_calibration`:** si hay muestra y el AUC baja de 0.60 o la correlación es negativa, propón revisar la rúbrica con ejemplos.
+- **Auditoría ciega (primer lunes del mes):** elige 5 piezas al azar del mes y propón a André puntuarlas con la rúbrica sin ver el puntaje del director.
+- **Pruebas pagadas:** propón 1 por quincena (2 ángulos, S/ 30–50 cada uno, dentro del presupuesto que André aprobó), con el brief y la regla de decisión. Nunca las lanzas: André las crea en Meta.
+- **Fuentes crudas:** si André dejó archivos nuevos (Trends, competencia, anuncios), corre `pnpm marketing trends|competencia|anuncios` y usa el resultado en tus propuestas, citando el archivo y su fecha.
+- **Tope por lead:** el de `docs/261019 Economia de fechas.md` §4; recalcúlalo con la conversión real del CRM apenas haya 30 leads cerrados por segmento.

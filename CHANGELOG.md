@@ -4,6 +4,12 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Marketing · laboratorio (19/10/2026)
+- **Atribución por pieza:** links cortos `/r/<código>` (web y WhatsApp) que llegan al calendario con `utm_content` o al chat con "código pieza-<código>". Registro de clics sin datos personales (`marketing_link_clicks`) y vista `marketing_attribution` con clics, leads y separaciones por pieza; se ven en `/admin/marketing` y en el snapshot.
+- **Laboratorio** en `/admin/marketing`: pruebas de gancho (`r07` vs `r07b`) con regla bayesiana (≥ 1,000 reproducciones y 90 %) sobre la tasa de salto, y calibración del director creativo (aprobadas a la primera, AUC, correlación con el rendimiento). La BD guarda la primera decisión de André sobre cada versión (`first_decision`).
+- **Fuentes crudas:** `pnpm marketing voc` (chats de WhatsApp exportados de Android o iPhone, anonimizados, con temas y frases textuales), `trends` (estacionalidad mensual de Google Trends), `competencia` y `anuncios` (Biblioteca de anuncios: activos 21+ días). Plantillas en `docs/marketing/plantillas/`.
+- Documentos: laboratorio de marketing, voz del cliente y mapa de mensajes (guía de entrevistas), economía de fechas, derechos de imagen (borradores por validar con abogado) y brief de sesión profesional. Guías de los agentes actualizadas.
+
 ### Equipo de marketing (19/10/2026)
 - Equipo de agentes con aprobación humana: estratega (Growth), redactor (Contenido), editor de video, diseñador y director creativo con rúbrica de 10 criterios. Manual en `docs/261019 Equipo de marketing.md`.
 - `pnpm reels:render`: motor de Reels con la marca (cortes, encuadre vertical, zoom, textos en zonas seguras, cierre con isotipo, portada, −14 LUFS) y control técnico automático.

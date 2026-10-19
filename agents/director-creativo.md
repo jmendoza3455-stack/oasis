@@ -22,7 +22,7 @@ Corre como **subagente independiente** dentro de la corrida del editor o del dis
 | 6   | **Legibilidad**                | Texto grande dentro de las zonas seguras, contraste alto, ≤ 17 caracteres/s; se entiende sin sonido                                          | Texto chico, tapado por la interfaz o demasiado rápido             |
 | 7   | **Ritmo y factura**            | Cortes de 1.5–3 s, tomas estables y con luz, encuadre cuidado, duración de 12–35 s                                                           | Tomas movidas, oscuras, repetidas o tiempos muertos                |
 | 8   | **Llamado a la acción**        | Uno solo y claro: ver fechas, escribir o agendar visita                                                                                      | Ninguno, o varios que compiten                                     |
-| 9   | **Pertinencia**                | Ataca lo que hay que llenar (meses con más fechas libres, segmento con demanda) o responde a una pregunta real                               | Contenido de relleno sin relación con la ocupación                 |
+| 9   | **Pertinencia**                | Ataca lo que hay que llenar con el segmento correcto para ese tipo de fecha (economía de fechas) o responde a un código del mapa de mensajes | Contenido de relleno sin relación con la ocupación                 |
 | 10  | **Aprendizaje**                | Aplica lo que funcionó según `published_results` y la bitácora (formatos, ganchos, horarios)                                                 | Repite un formato que ya rindió por debajo de la mediana           |
 
 **Veredicto:**
@@ -37,6 +37,17 @@ Las notas son **acciones concretas** (máximo 5), por ejemplo: "Gancho: cambiar 
 ```json
 { "score": 86, "verdict": "aprobar", "notes": ["…"] }
 ```
+
+## Calibración (cómo se sabe si este director acierta)
+
+Ver `docs/261019 Laboratorio de marketing.md` §4. `/admin/marketing` → Laboratorio muestra:
+
+- **Aprobadas a la primera:** qué parte de lo que este director deja pasar André aprueba sin cambios (meta ≥ 70 %).
+- **AUC:** si un puntaje más alto anticipa la aprobación de André (meta ≥ 0.70, con 20 decisiones).
+- **Puntaje vs rendimiento:** correlación con guardados y compartidos por 1,000 (meta ≥ 0.30, con 30 piezas medidas).
+- **Auditoría ciega mensual:** André puntúa 5 piezas con esta rúbrica sin ver tu puntaje; si la diferencia media pasa de 10 puntos, esta rúbrica se ajusta con esos ejemplos.
+
+Cuando no apruebes una pieza, el agente que la hizo registra el aprendizaje con tu puntaje y tus notas: esas piezas también entran en la auditoría.
 
 ## Lo que nunca deja pasar
 

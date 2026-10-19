@@ -154,6 +154,7 @@ export async function publishPiece(
 }
 
 const count = z.union([z.literal("").transform(() => undefined), z.coerce.number().int().min(0)]);
+const pct = z.union([z.literal("").transform(() => undefined), z.coerce.number().min(0).max(100)]);
 
 /** Resultados de la pieza (se cargan a los 7 días desde Instagram/TikTok). */
 export async function savePieceMetrics(
@@ -169,9 +170,11 @@ export async function savePieceMetrics(
       saves: count.optional(),
       shares: count.optional(),
       link_clicks: count.optional(),
+      skip_rate: pct.optional(),
     })
     .safeParse(Object.fromEntries(formData));
-  if (!parsed.success) return { ok: false, message: "Usa números enteros." };
+  if (!parsed.success)
+    return { ok: false, message: "Usa números enteros (la tasa de salto, de 0 a 100)." };
   const { id, ...m } = parsed.data;
   const metrics = Object.fromEntries(Object.entries(m).filter(([, v]) => v !== undefined));
   await withDb({ kind: "user", userId: user.id }, (sql) =>

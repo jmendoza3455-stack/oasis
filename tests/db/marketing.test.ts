@@ -108,6 +108,76 @@ describe("marketing", () => {
     expect(m.rows[0].metrics).toEqual({ saves: 12 });
   });
 
+  it("guarda la primera decisión de André aunque la versión se reemplace", async () => {
+    const p = await piece();
+    await setStatus(w.admin, p.id, "changes", `, feedback = 'Otro gancho'`);
+    await setStatus("service", p.id, "review");
+    await setStatus(w.admin, p.id, "approved");
+    const [row] = (await setStatus("service", p.id, "discarded")).rows;
+    expect(row.first_decision).toBe("changes");
+    const q = await piece();
+    expect((await setStatus(w.admin, q.id, "approved")).rows[0].first_decision).toBe("approved");
+  });
+
+  it("atribuye clics, leads y separaciones a la pieza; las planners no ven la atribución", async () => {
+    const p = await piece();
+    await as(pool, "service", async (c) => {
+      for (const target of ["web", "web", "whatsapp"])
+        await c.query(
+          `insert into public.marketing_link_clicks (venue_id, code, network, target) values ($1, $2, 'instagram', $3)`,
+          [w.venueId, p.code, target],
+        );
+    });
+    // Lead por la web (utm_content) y lead por WhatsApp (código pieza-<código>), uno separa fecha
+    const lead = (col: string, value: string) =>
+      as(pool, "service", async (c) => {
+        const { rows } = await c.query(
+          `insert into public.leads (venue_id, client_id, channel, event_type, ${col}) values ($1, $2, 'direct', 'wedding', $3) returning id`,
+          [w.venueId, w.directClientId, value],
+        );
+        return rows[0].id as string;
+      });
+    await lead("utm_content", p.code);
+    const waLead = await lead("utm_campaign", `pieza-${p.code}`);
+    await as(pool, w.admin, async (c) => {
+      const { rows } = await c.query(
+        `insert into public.bookings (venue_id, client_id, lead_id, channel, event_type, event_date, guests, rental_list_net)
+         values ($1, $2, $3, 'direct', 'wedding', '2029-03-10', 80, 4000) returning id, deposit_amount`,
+        [w.venueId, w.directClientId, waLead],
+      );
+      await c.query(
+        `insert into public.payments (booking_id, kind, amount, method, status) values ($1, 'deposit', $2, 'transfer', 'validated')`,
+        [rows[0].id, rows[0].deposit_amount],
+      );
+      await c.query(`select public.transition_booking($1, 'reserved')`, [rows[0].id]);
+    });
+    const view = (actor: Parameters<typeof as>[1]) =>
+      as(
+        pool,
+        actor,
+        async (c) =>
+          (
+            await c.query(
+              `select web_clicks, whatsapp_clicks, leads, bookings from public.marketing_attribution where code = $1`,
+              [p.code],
+            )
+          ).rows,
+      );
+    expect(await view(w.admin)).toEqual([
+      { web_clicks: 2, whatsapp_clicks: 1, leads: 2, bookings: 1 },
+    ]);
+    expect(await view(w.plannerA)).toEqual([]);
+    // Los clics no guardan datos personales y solo el servidor los registra
+    await expect(
+      as(pool, w.ops, (c) =>
+        c.query(
+          `insert into public.marketing_link_clicks (venue_id, code, network, target) values ($1, 'r1', 'instagram', 'web')`,
+          [w.venueId],
+        ),
+      ),
+    ).rejects.toThrow();
+  });
+
   it("todo queda en la auditoría", async () => {
     const p = await piece();
     await setStatus(w.admin, p.id, "discarded");

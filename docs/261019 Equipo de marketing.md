@@ -6,6 +6,11 @@
   - [Benchmark digital](research/261019%20Benchmark%20digital%20de%20competidores.md)
   - [Plan de pauta 90 días](261018%20Plan%20de%20pauta%2090%20dias.md)
   - [Agentes](agentes.md)
+  - [Laboratorio de marketing](261019%20Laboratorio%20de%20marketing.md) (atribución, pruebas, calibración, fuentes crudas)
+  - [Voz del cliente y mapa de mensajes](261019%20Voz%20del%20cliente.md)
+  - [Economía de fechas](261019%20Economia%20de%20fechas.md)
+  - [Derechos de imagen (borradores)](<261019%20Derechos%20de%20imagen%20(borradores).md>)
+  - [Brief de sesión profesional](261019%20Brief%20de%20sesion%20profesional.md)
   - Guías del equipo:
     - [editor de video](../agents/editor-video.md)
     - [diseñador](../agents/disenador.md)
@@ -22,6 +27,7 @@
 | Nivel            | Métrica                                                          | Dónde se ve                         |
 | ---------------- | ---------------------------------------------------------------- | ----------------------------------- |
 | Norte            | Fechas consultadas y leads desde redes                           | GA4 por fuente · CRM (`utm_source`) |
+| Por pieza        | Clics, leads y separaciones de cada pieza (links `/r/<código>`)  | `/admin/marketing` → publicadas     |
 | Calidad de pieza | Guardados y compartidos por cada 1,000 de alcance; clics al link | `/admin/marketing` → resultados     |
 | Proceso          | Piezas aprobadas a la primera; días de clip a publicación        | `/admin/marketing`                  |
 | Negocio          | Separaciones con origen en redes; costo por separación           | CRM · dashboard                     |
@@ -63,7 +69,13 @@
 
 ## 5. Cómo aprende el equipo
 
-- **Prueba de ganchos cada semana:** un Reel en dos versiones. La b se publica como _Reel de prueba_ de Instagram (solo para no seguidores) y gana la que retiene más.
+Reglas completas en el [Laboratorio de marketing](261019%20Laboratorio%20de%20marketing.md).
+
+- **Atribución por pieza:** cada pieza tiene sus links (`/r/<código>`, web y WhatsApp). La página muestra clics, leads y separaciones de cada una.
+- **Prueba de ganchos cada semana:** un Reel en dos versiones (`r07` y `r07b`). La b se publica como _Reel de prueba_ de Instagram (solo para no seguidores). Se concluye con ≥ 1,000 reproducciones por versión y 90 % de probabilidad (regla bayesiana); si no, "falta muestra".
+- **Calibración del director creativo:** aprobadas a la primera, AUC (≥ 20 decisiones), correlación con el rendimiento (≥ 30 piezas) y auditoría ciega mensual de André.
+- **Qué segmento empuja cada pieza:** el que más deja en el tipo de fecha que falta llenar ([Economía de fechas](261019%20Economia%20de%20fechas.md)).
+- **De dónde salen los mensajes:** de las palabras de los clientes ([Voz del cliente](261019%20Voz%20del%20cliente.md)), no de la intuición.
 - **Bitácora:** Growth registra cada lunes hasta 3 aprendizajes con datos (`aprendizaje` en `/admin/agentes`). Los demás agentes los leen antes de producir.
   - **Muestra mínima:** con menos de 3 piezas comparables no se concluye nada.
 - **Regla de corte:** un formato que rinde bajo la mediana en 3 publicaciones seguidas se cambia.
@@ -81,13 +93,15 @@
 
 ## 7. Herramientas
 
-| Herramienta                                | Para qué                                                                                                                                            |
-| ------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `/admin/marketing`                         | Subir clips desde el celular (hasta 50 MB, en 1080p), revisar con puntajes, aprobar o pedir cambios, descargar, marcar publicada, cargar resultados |
-| `pnpm marketing snapshot · fetch · submit` | Contexto, descarga de clips y entrega de piezas a revisión (agentes)                                                                                |
-| `pnpm reels:render`                        | Motor de edición de Reels con las plantillas de la marca                                                                                            |
-| `pnpm design:render`                       | Motor de carruseles e imágenes con las plantillas de la marca                                                                                       |
-| GA4 + Microsoft Clarity                    | Embudo desde redes hasta la fecha consultada                                                                                                        |
+| Herramienta                                            | Para qué                                                                                                                                            |
+| ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `/admin/marketing`                                     | Subir clips desde el celular (hasta 50 MB, en 1080p), revisar con puntajes, aprobar o pedir cambios, descargar, marcar publicada, cargar resultados |
+| `pnpm marketing snapshot · fetch · submit`             | Contexto (con atribución, pruebas y calibración), descarga de clips y entrega de piezas a revisión (agentes)                                        |
+| `pnpm marketing voc · trends · competencia · anuncios` | Fuentes crudas descargadas por André o Carlos: chats anonimizados, estacionalidad, competencia y anuncios activos                                   |
+| Links de pieza `/r/<código>`                           | Atribuyen clics, leads y separaciones a cada pieza (web y WhatsApp)                                                                                 |
+| `pnpm reels:render`                                    | Motor de edición de Reels con las plantillas de la marca                                                                                            |
+| `pnpm design:render`                                   | Motor de carruseles e imágenes con las plantillas de la marca                                                                                       |
+| GA4 + Microsoft Clarity                                | Embudo desde redes hasta la fecha consultada                                                                                                        |
 
 ## 8. Para encenderlo
 

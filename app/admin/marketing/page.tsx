@@ -11,8 +11,11 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { requireStaff } from "@/lib/auth/session";
+import { SITE_URL } from "@/lib/content/seo";
 import { withDb } from "@/lib/db";
 import { formatDate } from "@/lib/domain";
+import { pieceLinks } from "@/lib/marketing/links";
+import { calibration, hookTests, performance, type AbResult } from "@/lib/marketing/stats";
 import { marketingFileUrl } from "@/lib/storage";
 import { activeVenue } from "@/server/venue";
 
@@ -109,6 +112,46 @@ function PieceMedia({ p }: { p: Awaited<ReturnType<typeof withUrls>> }) {
   return null;
 }
 
+type Attribution = {
+  code: string;
+  webClicks: number;
+  whatsappClicks: number;
+  leads: number;
+  bookings: number;
+};
+
+/** Links cortos por pieza: miden clics, leads y separaciones de cada Reel o carrusel. */
+function PieceLinks({ code }: { code: string }) {
+  const links = pieceLinks(SITE_URL, code);
+  return (
+    <div className="grid gap-2 text-sm">
+      <p className="text-muted-foreground">
+        Links de esta pieza (historia, bio o comentario fijado). El de WhatsApp abre el chat con el
+        código <span className="font-mono">pieza-{code}</span>.
+      </p>
+      <div className="flex flex-wrap gap-2">
+        <CopyButton text={links.instagram} label="Link Instagram" />
+        <CopyButton text={links.tiktok} label="Link TikTok" />
+        <CopyButton text={links.facebook} label="Link Facebook" />
+        <CopyButton text={links.whatsapp} label="Link WhatsApp" />
+      </div>
+    </div>
+  );
+}
+
+const pct = (v: number | null, digits = 0) => (v === null ? "—" : `${(v * 100).toFixed(digits)} %`);
+const dec = (v: number | null) => (v === null ? "—" : v.toFixed(2));
+
+function Verdict({ r }: { r: AbResult }) {
+  const tone =
+    r.verdict === "B gana" || r.verdict === "A gana"
+      ? "bg-primary text-primary-foreground"
+      : "bg-secondary";
+  return (
+    <span className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${tone}`}>{r.verdict}</span>
+  );
+}
+
 function PieceCard({
   p,
   admin,
@@ -188,7 +231,7 @@ async function Marketing() {
   const user = await requireStaff();
   const admin = user.role === "admin";
   const venue = await activeVenue();
-  const { pieces, clips, counts } = await withDb(
+  const { pieces, clips, counts, attribution, history } = await withDb(
     { kind: "user", userId: user.id },
     async (sql) => ({
       pieces: await sql<Piece>(
@@ -216,6 +259,23 @@ async function Marketing() {
          from marketing_clips where venue_id = $1 order by created_at desc limit 40`,
         [venue.id],
       ),
+      attribution: await sql<Attribution>(
+        `select code, web_clicks as "webClicks", whatsapp_clicks as "whatsappClicks", leads, bookings
+           from marketing_attribution where venue_id = $1`,
+        [venue.id],
+      ),
+      // Toda la historia (no solo 60 días): calibración del director y pruebas de gancho
+      history: await sql<{
+        code: string;
+        status: Piece["status"];
+        score: number | null;
+        firstDecision: string | null;
+        metrics: Record<string, unknown>;
+      }>(
+        `select code, status, (review->>'score')::int as score, first_decision as "firstDecision", metrics
+           from marketing_pieces where venue_id = $1 and status <> 'draft'`,
+        [venue.id],
+      ),
       counts: (
         await sql<{ newClips: number; published30: number }>(
           `select (select count(*) from marketing_clips where venue_id = $1 and created_at > now() - interval '7 days')::int as "newClips",
@@ -231,6 +291,16 @@ async function Marketing() {
   const ready = by(["approved"]);
   const changes = by(["changes", "draft"]);
   const published = by(["published"]);
+  const attr = new Map(attribution.map((a) => [a.code, a]));
+  const live = history.filter((h) => h.status === "published");
+  const tests = hookTests(live);
+  const calib = calibration(
+    history.map((h) => ({
+      score: h.score,
+      firstDecision: h.firstDecision,
+      perf: h.status === "published" ? performance(h.metrics) : null,
+    })),
+  );
   const tiles = [
     ["Para revisar", review.length],
     ["Listas para publicar", ready.length],
@@ -277,8 +347,8 @@ async function Marketing() {
         </CardHeader>
         <CardContent className="grid gap-3">
           <p className="text-muted-foreground text-sm">
-            Descarga el video, copia el caption, elige la música en la app y publica. Luego pega los
-            enlaces para medir la pieza.
+            Descarga el video, copia el caption, elige la música en la app y publica con el link de
+            la pieza. Luego pega los enlaces de la publicación para medirla.
           </p>
           {ready.length === 0 ? (
             <p className="text-muted-foreground text-sm">Sin piezas aprobadas por publicar.</p>
@@ -286,6 +356,7 @@ async function Marketing() {
             <ul className="grid gap-4">
               {ready.map((p) => (
                 <PieceCard key={p.id} p={p} admin={admin}>
+                  <PieceLinks code={p.code} />
                   <PublishForm id={p.id} />
                 </PieceCard>
               ))}
@@ -342,11 +413,95 @@ async function Marketing() {
                       </a>
                     ))}
                   </div>
+                  <p className="text-muted-foreground text-sm tabular-nums">
+                    Clics web {attr.get(p.code)?.webClicks ?? 0} · WhatsApp{" "}
+                    {attr.get(p.code)?.whatsappClicks ?? 0} · Leads {attr.get(p.code)?.leads ?? 0} ·
+                    Separaciones {attr.get(p.code)?.bookings ?? 0}
+                  </p>
+                  {admin && (
+                    <details className="text-sm">
+                      <summary className="cursor-pointer">Links de la pieza</summary>
+                      <div className="mt-2">
+                        <PieceLinks code={p.code} />
+                      </div>
+                    </details>
+                  )}
                   {admin && <MetricsForm id={p.id} metrics={p.metrics} />}
                 </li>
               ))}
             </ul>
           )}
+        </CardContent>
+      </Card>
+
+      <Card>
+        <CardHeader>
+          <CardTitle>Laboratorio</CardTitle>
+        </CardHeader>
+        <CardContent className="grid gap-6">
+          <section className="grid gap-2" aria-labelledby="lab-ganchos">
+            <h3 id="lab-ganchos" className="font-medium">
+              Pruebas de gancho
+            </h3>
+            <p className="text-muted-foreground text-sm">
+              Mismo video con dos ganchos (código r07 y r07b). Gana el que más gente retiene los 3
+              primeros segundos: se decide con 1,000 reproducciones por versión y 90 % de
+              probabilidad. Carga la tasa de salto de cada una.
+            </p>
+            {tests.length === 0 ? (
+              <p className="text-muted-foreground text-sm">Sin pruebas publicadas todavía.</p>
+            ) : (
+              <ul className="divide-y text-sm">
+                {tests.map((t) => (
+                  <li key={t.b} className="flex flex-wrap items-center gap-x-3 gap-y-1 py-2">
+                    <span className="font-mono text-xs">
+                      {t.a.toUpperCase()} vs {t.b.toUpperCase()}
+                    </span>
+                    <span className="tabular-nums">
+                      Retención 3 s: {pct(t.result.rateA, 1)} vs {pct(t.result.rateB, 1)}
+                    </span>
+                    <span className="text-muted-foreground tabular-nums">
+                      P(B mejor) {pct(t.result.pBBeatsA)}
+                    </span>
+                    <Verdict r={t.result} />
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+          <section className="grid gap-2" aria-labelledby="lab-director">
+            <h3 id="lab-director" className="font-medium">
+              Calibración del director creativo
+            </h3>
+            <p className="text-muted-foreground text-sm">
+              ¿Su puntaje predice tu decisión y el rendimiento real? AUC de 0.70 o más: predice tu
+              decisión. Correlación de 0.30 o más: predice guardados y compartidos.
+            </p>
+            <dl className="grid gap-3 sm:grid-cols-3">
+              {(
+                [
+                  ["Aprobadas a la primera", pct(calib.precision), `${calib.decided} decididas`],
+                  ["AUC (predice tu decisión)", dec(calib.auc), "mín. 20 decididas"],
+                  [
+                    "Puntaje vs rendimiento",
+                    dec(calib.scoreVsPerformance),
+                    `${calib.measured} medidas · mín. 30`,
+                  ],
+                ] as const
+              ).map(([label, value, note]) => (
+                <div key={label} className="bg-card rounded-xl border p-4">
+                  <dt className="text-muted-foreground text-xs">{label}</dt>
+                  <dd className="text-3xl font-semibold tabular-nums">{value}</dd>
+                  <dd className="text-muted-foreground text-xs">{note}</dd>
+                </div>
+              ))}
+            </dl>
+            {calib.pending.length > 0 && (
+              <p className="text-muted-foreground text-sm">
+                Todavía no se concluye: {calib.pending.join("; ")}.
+              </p>
+            )}
+          </section>
         </CardContent>
       </Card>
 

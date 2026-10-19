@@ -5,13 +5,30 @@
 //   pnpm marketing fetch <carpeta> [--days 14]   # descarga los clips recientes (para editar)
 //   pnpm marketing submit <pieza.json>      # sube los archivos y deja la pieza "en revisión"
 //
+// Fuentes crudas (archivos que André o Carlos descargan; ver docs/marketing/plantillas):
+//   pnpm marketing voc <chat.txt|carpeta>... --negocio "Carlos,Oasis" [--out out/voc]
+//                                           # chats de WhatsApp anonimizados + temas de la voz del cliente
+//   pnpm marketing trends <trends.csv>      # estacionalidad mensual de Google Trends
+//   pnpm marketing competencia <competencia.csv>   # qué formatos y temas rinden a la competencia
+//   pnpm marketing anuncios <anuncios.csv> [--hoy aaaa-mm-dd]   # anuncios activos 21+ días
+//
 // Conexión a la BD: DATABASE_URL o SUPABASE_PROJECT_REF (Management API, como scripts/agent.mts).
 // Archivos: bucket "marketing" con NEXT_PUBLIC_SUPABASE_URL + SUPABASE_SERVICE_ROLE_KEY; sin ellas,
 // .storage/marketing/ (modo local). Los agentes nunca publican: solo André aprueba y publica.
-import { copyFile, mkdir, readFile, writeFile } from "node:fs/promises";
+import { copyFile, mkdir, readdir, readFile, stat, writeFile } from "node:fs/promises";
 import path from "node:path";
 import pg from "pg";
 import { z } from "zod";
+import {
+  adsReport,
+  anonymizeChat,
+  chatMarkdown,
+  competitorReport,
+  parseWhatsappExport,
+  trendsSeasonality,
+  vocSummary,
+} from "../lib/marketing/ingest.ts";
+import { calibration, hookTests, performance } from "../lib/marketing/stats.ts";
 
 const root = path.resolve(import.meta.dirname, "..");
 const [cmd, ...rest] = process.argv.slice(2);
@@ -96,6 +113,16 @@ if (cmd === "snapshot") {
   const months = [0, 1, 2, 3, 4, 5].map(
     (i) => `date_trunc('month', ${today} + interval '${i} month')::date`,
   );
+  const history = (await json(
+    `select code, status, (review->>'score')::int as score, first_decision as "firstDecision", metrics
+       from marketing_pieces where venue_id = ${venue} and status <> 'draft'`,
+  )) as {
+    code: string;
+    status: string;
+    score: number | null;
+    firstDecision: string | null;
+    metrics: Record<string, unknown>;
+  }[];
   const snapshot = {
     generated_at: new Date().toISOString(),
     settings: await json(
@@ -138,6 +165,20 @@ if (cmd === "snapshot") {
          from marketing_pieces where venue_id = ${venue} and status = 'published'
         order by published_at desc limit 30`,
     ),
+    // Atribución por pieza (links /r/<código> y código pieza-<código> en WhatsApp)
+    attribution: await json(
+      `select code, web_clicks, whatsapp_clicks, leads, bookings from marketing_attribution
+        where venue_id = ${venue} and (web_clicks + whatsapp_clicks + leads) > 0 order by bookings desc, leads desc`,
+    ),
+    // Laboratorio: pruebas de gancho (r07 vs r07b) y calibración del director creativo
+    hook_tests: hookTests(history.filter((h) => h.status === "published")),
+    director_calibration: calibration(
+      history.map((h) => ({
+        score: h.score,
+        firstDecision: h.firstDecision,
+        perf: h.status === "published" ? performance(h.metrics) : null,
+      })),
+    ),
     // Plan de la semana y aprendizajes que dejaron Contenido y Growth (y los pedidos de tomas)
     team_notes: await json(
       `select agent, kind, title, body, status, to_char(created_at, 'YYYY-MM-DD') as created
@@ -167,7 +208,12 @@ if (cmd === "snapshot") {
   console.log(`${clips.length} clips en ${dir} (${remote ? "Supabase" : "local"})`);
 } else if (cmd === "submit") {
   const pieceSchema = z.object({
-    code: z.string().regex(/^[a-z]{1,3}\d{2,3}$/, "código tipo r01, c03, h12, g05"),
+    code: z
+      .string()
+      .regex(
+        /^[a-z]{1,3}\d{2,3}b?$/,
+        "código tipo r01, c03, h12, g05 (variante B de una prueba: r01b)",
+      ),
     kind: z.enum(["reel", "carousel", "story", "gbp_post"]),
     title: z.string().min(3).max(140),
     pillar: z.string().max(60).optional(),
@@ -230,7 +276,122 @@ if (cmd === "snapshot") {
   console.log(
     `✓ ${piece.code} v${v} en revisión (${remote ? "Supabase" : "local"}) → /admin/marketing`,
   );
+} else if (cmd === "voc") {
+  const flag = (name: string) => (rest.includes(name) ? rest[rest.indexOf(name) + 1] : undefined);
+  const business = (flag("--negocio") ?? "").split(",").filter(Boolean);
+  if (!business.length)
+    throw new Error('Indica quién responde por el negocio: --negocio "Carlos,Oasis Pachacámac"');
+  const outDir = path.resolve(flag("--out") ?? path.join(root, "out", "voc"));
+  const inputs = rest.filter((a, i) => !a.startsWith("--") && !rest[i - 1]?.startsWith("--"));
+  const files: string[] = [];
+  for (const input of inputs) {
+    const p = path.resolve(input);
+    if ((await stat(p)).isDirectory())
+      files.push(
+        ...(await readdir(p)).filter((f) => f.endsWith(".txt")).map((f) => path.join(p, f)),
+      );
+    else files.push(p);
+  }
+  await mkdir(outDir, { recursive: true });
+  const chats = [];
+  for (const [i, f] of files.sort().entries()) {
+    const chat = anonymizeChat(parseWhatsappExport(await readFile(f, "utf8")), business);
+    if (!chat.length) continue;
+    chats.push(chat);
+    // Nombre neutro: el archivo original suele llevar el nombre del cliente
+    await writeFile(
+      path.join(outDir, `chat-${String(i + 1).padStart(3, "0")}.md`),
+      chatMarkdown(chat),
+    );
+  }
+  const s = vocSummary(chats);
+  const md = [
+    `# Voz del cliente: primera lectura automática (${s.chats} chats, ${s.clientMessages} mensajes de clientes)`,
+    "",
+    "Codificación por palabras clave; la fina la hace una persona con docs/marketing/plantillas/mapa-de-mensajes.csv.",
+    "",
+    "| Tema | Chats | % |",
+    "| --- | ---: | ---: |",
+    ...s.topics.map((t) => `| ${t.topic} | ${t.chats} | ${Math.round(t.share * 100)} % |`),
+    "",
+    "## Primeras frases de los clientes (textuales, anonimizadas)",
+    "",
+    ...s.openers.map((o) => `- "${o}"`),
+  ].join("\n");
+  await writeFile(path.join(outDir, "resumen.md"), md);
+  console.log(md);
+  console.log(`\n${chats.length} chats anonimizados en ${outDir} (no se suben al repositorio).`);
+} else if (cmd === "trends") {
+  const s = trendsSeasonality(await readFile(path.resolve(rest[0] ?? ""), "utf8"));
+  const MONTHS = [
+    "ene",
+    "feb",
+    "mar",
+    "abr",
+    "may",
+    "jun",
+    "jul",
+    "ago",
+    "set",
+    "oct",
+    "nov",
+    "dic",
+  ];
+  console.log(
+    [
+      "Índice mensual de búsquedas en Google (100 = promedio del término)",
+      "",
+      `| Mes | ${s.terms.join(" | ")} |`,
+      `| --- | ${s.terms.map(() => "---:").join(" | ")} |`,
+      ...s.months.map(
+        (m) => `| ${MONTHS[m.month - 1]} | ${s.terms.map((t) => m.values[t] ?? "—").join(" | ")} |`,
+      ),
+      "",
+      ...s.terms.map((t) => `Picos de "${t}": ${s.peaks[t].map((m) => MONTHS[m - 1]).join(", ")}`),
+    ].join("\n"),
+  );
+} else if (cmd === "competencia") {
+  const r = competitorReport(await readFile(path.resolve(rest[0] ?? ""), "utf8"));
+  const lines = [`${r.rows} publicaciones registradas`, ""];
+  for (const c of r.byCompetitor) {
+    lines.push(
+      `## ${c.competitor}: ${c.posts} publicaciones, mediana ${c.medianInteractions ?? "—"} interacciones`,
+      ...c.byFormat.map(
+        (f) => `- ${f.format}: ${f.posts} (mediana ${f.medianInteractions ?? "—"})`,
+      ),
+      ...c.top.map(
+        (t) => `  - Top: ${t.date} ${t.format} "${t.topic}" ${t.interactions} → ${t.url}`,
+      ),
+      "",
+    );
+  }
+  lines.push(
+    "## Por tema (todos los competidores)",
+    ...r.byTopic.map((t) => `- ${t.topic}: ${t.posts} (mediana ${t.medianInteractions ?? "—"})`),
+  );
+  console.log(lines.join("\n"));
+} else if (cmd === "anuncios") {
+  const hoy = rest.includes("--hoy")
+    ? rest[rest.indexOf("--hoy") + 1]
+    : new Date().toLocaleDateString("en-CA", { timeZone: "America/Lima" });
+  const r = adsReport(await readFile(path.resolve(rest[0] ?? ""), "utf8"), hoy);
+  console.log(
+    [
+      `${r.rows} anuncios registrados (al ${hoy})`,
+      "",
+      "| Anunciante | Anuncios | Activos | 21+ días |",
+      "| --- | ---: | ---: | ---: |",
+      ...r.byAdvertiser.map((a) => `| ${a.advertiser} | ${a.ads} | ${a.active} | ${a.winners} |`),
+      "",
+      "## Los que probablemente rinden (activos 21 días o más)",
+      ...r.winners.map(
+        (w) => `- ${w.advertiser} · ${w.days} días · ${w.format} · ${w.cta}: "${w.text}"`,
+      ),
+    ].join("\n"),
+  );
 } else {
-  console.error("Uso: pnpm marketing snapshot | fetch <carpeta> [--days 14] | submit <pieza.json>");
+  console.error(
+    "Uso: pnpm marketing snapshot | fetch <carpeta> | submit <pieza.json> | voc <chats> --negocio <nombres> | trends <csv> | competencia <csv> | anuncios <csv>",
+  );
   process.exit(1);
 }

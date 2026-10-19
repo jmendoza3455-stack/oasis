@@ -266,6 +266,7 @@ export function PublishForm({ id }: { id: string }) {
 const METRICS = [
   ["reach", "Alcance"],
   ["views", "Reproducciones"],
+  ["skip_rate", "Tasa de salto %"],
   ["saves", "Guardados"],
   ["shares", "Compartidos"],
   ["link_clicks", "Clics al link"],
@@ -280,7 +281,7 @@ export function MetricsForm({ id, metrics }: { id: string; metrics: Record<strin
   return (
     <form action={action} className="grid gap-2" aria-label="Resultados">
       <input type="hidden" name="id" value={id} />
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
+      <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
         {METRICS.map(([k, label]) => (
           <div key={k} className="grid gap-1">
             <Label htmlFor={`${k}-${id}`} className="text-xs">
@@ -291,7 +292,9 @@ export function MetricsForm({ id, metrics }: { id: string; metrics: Record<strin
               name={k}
               type="number"
               min={0}
-              inputMode="numeric"
+              {...(k === "skip_rate"
+                ? { max: 100, step: 0.1, inputMode: "decimal" as const }
+                : { inputMode: "numeric" as const })}
               defaultValue={metrics[k] ?? ""}
             />
           </div>

@@ -8,6 +8,7 @@
    - `pnpm marketing snapshot`: fechas libres por mes, demanda por segmento, piezas abiertas, comentarios de André, resultados de lo publicado, clips y aprendizajes.
    - `docs/261019 Plan de contenido redes 30 dias.md`: guiones, pilares y calendario.
    - `docs/261019 Equipo de marketing.md`: estándares.
+   - `docs/261019 Voz del cliente.md` (mapa de mensajes) y `docs/261019 Economia de fechas.md` (qué segmento empuja cada tipo de fecha).
 2. **Qué hacer primero**
    1. Piezas en **cambios**: aplica el comentario de André al pie de la letra.
    2. El siguiente Reel del plan. Si el snapshot lo justifica, adelanta el que ataca el mes con más sábados libres o el segmento con más demanda.
@@ -27,13 +28,14 @@
    - Que nada quede tapado.
    - Que el encuadre sea bueno.
    - Que el ritmo no tenga tiempos muertos.
-7. **Prueba de gancho:** 1 Reel por semana sale en dos versiones (código `rNN` y `rNNb`) con ganchos distintos. André publica la b como **Reel de prueba** de Instagram (solo para no seguidores) y gana la que retiene más.
+7. **Prueba de gancho:** 1 Reel por semana sale en dos versiones (código `rNN` y `rNNb`) con el **mismo cuerpo** y distinto gancho. André publica la b como **Reel de prueba** de Instagram (solo para no seguidores). El ganador lo decide la regla del laboratorio (≥ 1,000 reproducciones por versión y 90 % de probabilidad), no la impresión.
 8. **Director creativo:** lanza un subagente con `agents/director-creativo.md` y pásale el guion, los cuadros, el caption y el reporte técnico.
    - Si el veredicto es **rehacer**, aplica sus notas y repite, máximo 2 vueltas.
    - Si no llega a 80, **no envíes**: registra un aprendizaje explicando qué faltó (casi siempre, el material).
 9. **Caption:**
    - Primera línea = el gancho.
    - 1–3 frases y un llamado ("Mira las fechas libres: link en la bio").
+   - El link de la bio y el de la historia son los **links de la pieza** (`/r/<código>`), que André copia en `/admin/marketing`; así cada lead queda atribuido al Reel.
    - 3–6 hashtags locales (#Pachacamac #CasaDeCampoLima #BodasLima…) y máximo 2 emojis.
 10. **Entrega:** `pnpm marketing submit pieza.json`, con `qa` del render, `review` del director y `files.video`/`files.cover`. Queda **en revisión** en `/admin/marketing`.
 

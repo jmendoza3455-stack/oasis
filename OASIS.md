@@ -377,3 +377,9 @@ Fuente: "SAWA – Estrategia y pasos a seguir" y "SAWA – Manual de marca" (ref
 - "Nadie edita Reels": se crea un equipo de marketing de agentes con aprobación humana. Estratega (Growth), redactor (Contenido), **editor de video** y **diseñador** nuevos, y un **director creativo** que revisa cada pieza con una rúbrica (≥ 80 y veracidad 10/10). André aprueba y publica; Carlos graba.
 - Motores propios con la marca: `pnpm reels:render` (ffmpeg) y `pnpm design:render` (Chromium), ambos con control de calidad técnico. Flujo en `/admin/marketing` (tablas `marketing_clips` y `marketing_pieces`, bucket privado `marketing`).
 - Métrica norte: fechas consultadas y leads desde redes, no seguidores. Manual: `docs/261019 Equipo de marketing.md`.
+
+15.12 Laboratorio de marketing (André, 19/10/2026)
+- Cada pieza se mide por sí sola: links `/r/<código>` y código "pieza-<código>" en WhatsApp atribuyen clics, leads y separaciones (`marketing_attribution`).
+- Los ganadores de pruebas y la calidad del director creativo se deciden con reglas fijas (bayesiana ≥ 1,000 por versión y 90 %; AUC, correlación y auditoría ciega), no a ojo. Detalle: `docs/261019 Laboratorio de marketing.md`.
+- Las fuentes que el entorno no alcanza (Instagram, TikTok, Biblioteca de anuncios, Google Trends) entran como archivos descargados por André o Carlos y se procesan con `pnpm marketing voc|trends|competencia|anuncios`; no se reemplazan con resúmenes de buscadores.
+- El segmento que empuja cada pieza sale de la contribución por tipo de fecha (`docs/261019 Economia de fechas.md`); los mensajes, de la voz del cliente (`docs/261019 Voz del cliente.md`).
