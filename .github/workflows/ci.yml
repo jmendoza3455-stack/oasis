@@ -43,6 +43,8 @@ jobs:
         run: pnpm lint
       - name: Format
         run: pnpm format:check
+      - name: ffmpeg (motor de Reels del equipo de marketing)
+        run: command -v ffmpeg || (sudo apt-get update && sudo apt-get install -y ffmpeg)
       - name: Unit tests + cobertura del dominio (≥90 %)
         run: pnpm test:coverage
       - name: BD (migraciones, RLS, constraints, seed)

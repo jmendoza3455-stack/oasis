@@ -21,6 +21,7 @@
     "users:create": "node --env-file-if-exists=.env.local scripts/create-users.mts",
     "agent": "node --env-file-if-exists=.env.local scripts/agent.mts",
     "db:local": "node scripts/db-local.mts",
+    "reels:render": "tsx scripts/reels-render.mts",
     "analisis:anticipacion": "tsx --env-file-if-exists=.env.local scripts/lead-time.mts",
     "lighthouse": "node scripts/lighthouse.mjs",
     "verify": "pnpm format && pnpm typecheck && pnpm lint && pnpm test:coverage && pnpm test:db"
