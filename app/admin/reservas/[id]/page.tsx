@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { ArrowLeft } from "lucide-react";
 import { DocumentsPanel, PaymentsPanel, SettlementPanel } from "@/components/admin/money-panels";
+import { RescheduleForm } from "@/components/admin/reschedule-form";
 import { TransitionActions } from "@/components/admin/transition-actions";
 import { fileUrl } from "@/lib/storage";
 import { Badge } from "@/components/ui/badge";
@@ -103,6 +104,9 @@ async function Detail({ params }: { params: PageProps<"/admin/reservas/[id]">["p
                 <Row label="Pre-reserva vence" value={dateTime.format(new Date(b.holdExpiresAt))} />
               )}
               {b.cancelReason && <Row label="Motivo de cancelación" value={b.cancelReason} />}
+              {b.notes && (
+                <Row label="Notas" value={<span className="whitespace-pre-wrap">{b.notes}</span>} />
+              )}
             </dl>
           </CardContent>
         </Card>
@@ -135,6 +139,15 @@ async function Detail({ params }: { params: PageProps<"/admin/reservas/[id]">["p
           </CardHeader>
           <CardContent>
             <TransitionActions bookingId={b.id} options={options} />
+            {(b.status === "reserved" || b.status === "confirmed") && (
+              <div className="mt-4 border-t pt-4">
+                <RescheduleForm
+                  bookingId={b.id}
+                  minDate={today}
+                  note={`Reprogramaciones usadas: ${b.rescheduleCount}. Se mantiene el precio pactado; fuera de la política solo el admin.`}
+                />
+              </div>
+            )}
           </CardContent>
         </Card>
       </div>

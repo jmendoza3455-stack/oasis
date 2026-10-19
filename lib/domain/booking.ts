@@ -1,5 +1,6 @@
 // Máquina de estados de la reserva (OASIS.md §5.1). ESPEJO de public.transition_booking()
 // en supabase/migrations/20261018000300_bookings.sql; un test verifica que ambas coincidan.
+import { daysBetween, type ISODate } from "./calendar";
 
 export type BookingStatus =
   "prebooked" | "reserved" | "confirmed" | "done" | "settled" | "cancelled" | "expired";
@@ -168,3 +169,47 @@ export function cancellationRefund(
       : policy.lateCancelRefundPct;
   return Math.round(depositPaid * pct * 100) / 100;
 }
+
+export type RescheduleError =
+  | "reschedule_invalid_status"
+  | "reschedule_date_in_past"
+  | "reschedule_same_date"
+  | "reschedule_limit_reached"
+  | "reschedule_late_requires_admin";
+
+/**
+ * Espejo de reschedule_booking() en SQL: Separada o Confirmada, fecha futura distinta y, para
+ * operaciones, dentro de la política (n.º permitido y anticipación mínima). El admin puede exceptuar.
+ */
+export function checkReschedule(input: {
+  status: BookingStatus;
+  eventDate: ISODate;
+  newDate: ISODate;
+  today: ISODate;
+  reschedulesUsed: number;
+  isAdmin: boolean;
+  policy: { freeMinDays: number; allowed: number };
+}): { ok: true } | { ok: false; error: RescheduleError } {
+  if (input.status !== "reserved" && input.status !== "confirmed")
+    return { ok: false, error: "reschedule_invalid_status" };
+  if (input.newDate <= input.today) return { ok: false, error: "reschedule_date_in_past" };
+  if (input.newDate === input.eventDate) return { ok: false, error: "reschedule_same_date" };
+  if (!input.isAdmin) {
+    if (input.reschedulesUsed >= input.policy.allowed)
+      return { ok: false, error: "reschedule_limit_reached" };
+    if (daysBetween(input.today, input.eventDate) < input.policy.freeMinDays)
+      return { ok: false, error: "reschedule_late_requires_admin" };
+  }
+  return { ok: true };
+}
+
+export const RESCHEDULE_ERROR_MESSAGE: Record<RescheduleError | "date_taken", string> = {
+  reschedule_invalid_status: "Solo se reprograman reservas Separadas o Confirmadas.",
+  reschedule_date_in_past: "Elige una fecha futura.",
+  reschedule_same_date: "La nueva fecha es igual a la actual.",
+  reschedule_limit_reached:
+    "Ya se usaron las reprogramaciones permitidas: solo el admin puede autorizar otra.",
+  reschedule_late_requires_admin:
+    "Falta menos de la anticipación mínima de la política: solo el admin puede reprogramar.",
+  date_taken: "Esa fecha ya está tomada o bloqueada.",
+};

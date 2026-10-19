@@ -3,6 +3,7 @@ import path from "node:path";
 import { describe, expect, it } from "vitest";
 import {
   cancellationRefund,
+  checkReschedule,
   canTransition,
   checkTransition,
   effectsOf,
@@ -162,5 +163,48 @@ describe("máquina de estados", () => {
     expect(cancellationRefund(2950, 75, policy)).toBe(1475);
     expect(cancellationRefund(2950, 60, policy)).toBe(0);
     expect(cancellationRefund(2950, 10, policy)).toBe(0);
+  });
+});
+
+describe("checkReschedule (espejo de reschedule_booking)", () => {
+  const base = {
+    status: "reserved" as const,
+    eventDate: "2027-03-20",
+    newDate: "2027-04-17",
+    today: "2027-01-10",
+    reschedulesUsed: 0,
+    isAdmin: false,
+    policy: { freeMinDays: 30, allowed: 1 },
+  };
+  it("operaciones reprograma dentro de la política", () => {
+    expect(checkReschedule(base)).toEqual({ ok: true });
+    expect(checkReschedule({ ...base, status: "confirmed" })).toEqual({ ok: true });
+  });
+  it("rechaza estados, fechas pasadas o iguales", () => {
+    expect(checkReschedule({ ...base, status: "prebooked" })).toEqual({
+      ok: false,
+      error: "reschedule_invalid_status",
+    });
+    expect(checkReschedule({ ...base, newDate: "2027-01-10" })).toEqual({
+      ok: false,
+      error: "reschedule_date_in_past",
+    });
+    expect(checkReschedule({ ...base, newDate: base.eventDate })).toEqual({
+      ok: false,
+      error: "reschedule_same_date",
+    });
+  });
+  it("fuera de la política solo el admin", () => {
+    expect(checkReschedule({ ...base, reschedulesUsed: 1 })).toEqual({
+      ok: false,
+      error: "reschedule_limit_reached",
+    });
+    expect(checkReschedule({ ...base, today: "2027-03-01" })).toEqual({
+      ok: false,
+      error: "reschedule_late_requires_admin",
+    });
+    expect(
+      checkReschedule({ ...base, reschedulesUsed: 1, today: "2027-03-01", isAdmin: true }),
+    ).toEqual({ ok: true });
   });
 });

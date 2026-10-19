@@ -273,3 +273,66 @@ describe("rango horario", () => {
     expect(new Date(r.hi).toISOString()).toContain("2027-02-14T03:00");
   });
 });
+
+describe("reprogramación (cancellation_policy)", () => {
+  async function reserved(date: string) {
+    const b = await staffBooking(date, { rental_list_net: 4000 });
+    await as(pool, w.admin, async (c) => {
+      await c.query(
+        `insert into public.payments (booking_id, kind, amount, method, status) values ($1, 'deposit', $2, 'transfer', 'validated')`,
+        [b.id, b.deposit_amount],
+      );
+      await c.query(`select public.transition_booking($1, 'reserved')`, [b.id]);
+    });
+    return b;
+  }
+  const resched = (
+    actor: Parameters<typeof as>[1],
+    id: string,
+    date: string,
+    reason = "Cambio del cliente",
+  ) =>
+    as(
+      pool,
+      actor,
+      async (c) =>
+        (await c.query(`select * from public.reschedule_booking($1, $2, $3)`, [id, date, reason]))
+          .rows[0],
+    );
+
+  it("operaciones reprograma una vez dentro de la política; libera la fecha anterior", async () => {
+    const original = nextDate();
+    const b = await reserved(original);
+    const target = nextDate();
+    const r = await resched(w.ops, b.id, target);
+    expect(r.event_date.toISOString().slice(0, 10)).toBe(target);
+    expect(r.reschedule_count).toBe(1);
+    expect(r.notes).toMatch(/Reprogramada del/);
+    // La fecha original queda libre
+    const free = await as(
+      pool,
+      "anon",
+      async (c) =>
+        (await c.query(`select public.is_date_available('bookings', $1) as ok`, [original])).rows[0]
+          .ok,
+    );
+    expect(free).toBe(true);
+    // Segunda vez: fuera de la política para operaciones; el admin puede exceptuar
+    await expect(resched(w.ops, b.id, nextDate())).rejects.toThrow(/reschedule_limit_reached/);
+    await resched(w.admin, b.id, nextDate(), "Excepción aprobada");
+  });
+
+  it("valida motivo, estado y que la nueva fecha esté libre", async () => {
+    const b = await reserved(nextDate());
+    await expect(resched(w.ops, b.id, nextDate(), " ")).rejects.toThrow(
+      /reschedule_reason_required/,
+    );
+    const hold = await staffBooking(nextDate());
+    await expect(resched(w.ops, hold.id, nextDate())).rejects.toThrow(/reschedule_invalid_status/);
+    const taken = await staffBooking(nextDate());
+    await expect(resched(w.ops, b.id, taken.event_date.toISOString().slice(0, 10))).rejects.toThrow(
+      /occupancy_no_overlap/,
+    );
+    await expect(resched(w.plannerA, b.id, nextDate())).rejects.toThrow(/forbidden/);
+  });
+});

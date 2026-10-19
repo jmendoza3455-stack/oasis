@@ -23,6 +23,8 @@ export type BookingDetail = {
   balanceDueOn: string | null;
   contractSignedAt: string | null;
   cancelReason: string | null;
+  rescheduleCount: number;
+  notes: string | null;
   plannerId: string | null;
   plannerName: string | null;
   client: { name: string | null; phone: string | null; email: string | null; ruc: string | null };
@@ -70,6 +72,7 @@ export async function bookingDetail(userId: string, id: string): Promise<Booking
               b.deposit_amount::float8 as "depositAmount", b.guarantee_amount::float8 as "guaranteeAmount",
               to_char(b.balance_due_on, 'YYYY-MM-DD') as "balanceDueOn",
               to_json(b.contract_signed_at) #>> '{}' as "contractSignedAt", b.cancel_reason as "cancelReason",
+              b.reschedule_count as "rescheduleCount", b.notes,
               b.planner_id as "plannerId", p.business_name as "plannerName",
               c.full_name as "clientName", c.phone as "clientPhone", c.email as "clientEmail", c.ruc as "clientRuc",
               public.booking_paid(b.id)::float8 as "paidValidated",

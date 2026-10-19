@@ -4,6 +4,10 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Fase 2 · reprogramación (19/10/2026)
+- Reprogramar reservas Separadas o Confirmadas desde la ficha (`reschedule_booking()`): operaciones dentro de la política (`reschedules_allowed`, `reschedule_free_min_days`); fuera de ella solo el admin. La nueva fecha la valida la exclusion constraint, se recalcula el vencimiento del saldo, se mantiene el precio pactado (S41) y queda nota y auditoría.
+- Espejo `checkReschedule` en el dominio, con tests de unidad, BD y E2E.
+
 ### Fase 2 · promociones (19/10/2026)
 - `/admin/promociones`: el admin crea promociones por fechas, segmentos y tipos de día (p. ej. corporativo L-J), siempre dentro del tope de descuento (garantizado en la BD). Operaciones las ve; nadie más las crea.
 - Se aplican solas en el cotizador público ("Incluye la promoción…"), en las respuestas del Recepcionista y en las pre-reservas del CRM y del chat (`bookings.promotion_id`). No se suman al descuento manual: gana el mayor.
