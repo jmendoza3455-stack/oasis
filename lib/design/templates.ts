@@ -17,7 +17,7 @@ const esc = (s: string) =>
 
 const footer = (i: number, n: number, dark: boolean) => `
   <footer class="foot ${dark ? "on-dark" : ""}">
-    <span>Oasis Pachacámac</span>
+    <span>Oasis Pachacámac · <b>Un espacio sawa</b></span>
     ${n > 1 ? `<span class="idx">${i + 1}/${n}</span>` : ""}
   </footer>`;
 
@@ -67,7 +67,7 @@ export function designHtml(spec: DesignSpec, a: Assets): string {
   const px = (v: number) => `${Math.round(v * scale)}px`;
   return `<!doctype html><html lang="es"><head><meta charset="utf-8"><style>
   ${a.fontCss}
-  :root { --green:#2e3b2b; --ivory:#f7f5f0; --sand:#e6dccb; --camel:#c9a46c; --ink:#2a2f29; --muted:#5d5f58; }
+  :root { --green:#374031; --ivory:#f7f5f0; --sand:#dfd0bf; --camel:#c3a075; --ink:#2a2f29; --muted:#5d5f58; }
   * { box-sizing: border-box; margin: 0; }
   body { background: #000; }
   .slide { width:${W}px; height:${H}px; position:relative; overflow:hidden; padding:${px(96)} ${px(88)} ${px(150)};

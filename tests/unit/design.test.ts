@@ -69,7 +69,7 @@ describe("piezas gráficas", () => {
       },
     );
     expect(html).toContain("&lt;b&gt;hola&lt;/b&gt;");
-    expect(html).toContain("--green:#2e3b2b");
+    expect(html).toContain("--green:#374031");
     expect(html).toContain('class="ghost"');
   });
 });

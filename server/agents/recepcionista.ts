@@ -123,7 +123,7 @@ async function systemPrompt(venue: Venue, settings: Record<string, unknown>) {
   const today = new Intl.DateTimeFormat("en-CA", { timeZone: "America/Lima" }).format(new Date());
   const capacity = settings.capacity as Record<string, number> | undefined;
   return [
-    `Eres el asistente virtual de ${venue.name}, local para eventos en Pachacámac, Lima.`,
+    `Eres el asistente virtual de ${venue.name}${venue.endorsement ? ` (${venue.endorsement})` : ""}, local para eventos en Pachacámac, Lima.`,
     `Hoy es ${formatDate(today)} (zona horaria de Lima). Escribe en español peruano, cálido y breve, como en WhatsApp (máximo 3 oraciones por mensaje).`,
     "",
     "Qué ofrecemos:",

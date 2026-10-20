@@ -7,7 +7,7 @@ Lee OASIS.md antes de cualquier cambio de alcance; si algo cambia, actualízalo 
 
 ## Marca
 
-- Nombre comercial: **Oasis Pachacámac** a secas (nunca "El Oasis" ni "Un espacio SAWA"; OASIS.md §15.13).
+- Marca madre: **SAWA · gestión de espacios & experiencias**; el local es **Oasis Pachacámac · Un espacio SAWA** (nunca "El Oasis"). Manual de marca al 100 % (OASIS.md §15.15): paleta y sello del local del manual; el logo SAWA no se redibuja.
 - La empresa operadora (razón social, RUC, domicilio) sale de `settings` (`company_legal_name`, `company_ruc`, `company_address`) y solo aparece en textos legales.
 - Tokens en `app/globals.css`; logos en `public/brand/` y fuente de verdad en `assets/marca/`.
 - Modelo **multi-espacio**: toda entidad operativa lleva `venue_id`.

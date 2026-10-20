@@ -7,7 +7,7 @@ export default function NotFound() {
     <main className="bg-brand-green text-brand-sand grid min-h-dvh place-items-center px-4 py-16">
       <div className="grid max-w-lg justify-items-center gap-5 text-center">
         <Isotipo tone="light" className="size-16" />
-        <p className="text-brand-camel text-sm tracking-[0.2em] uppercase">Error 404</p>
+        <p className="text-brand-sand/80 text-sm tracking-[0.2em] uppercase">Error 404</p>
         <h1 className="font-display text-4xl">Esta página no existe</h1>
         <p className="text-brand-sand/80">
           Puede que el enlace haya cambiado. Te dejamos los caminos más usados:
@@ -23,7 +23,7 @@ export default function NotFound() {
             Ir al inicio
           </Link>
         </nav>
-        <p className="text-brand-sand/70 text-sm">
+        <p className="text-brand-sand/80 text-sm">
           <Link href="/bodas" className="underline">
             Bodas
           </Link>{" "}

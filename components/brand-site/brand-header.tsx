@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Menu, UserRound } from "lucide-react";
+import { SawaWordmark } from "@/components/brand/logo";
 import { brandInfo } from "@/server/brand-preview";
 
 export const BASE = "/vista-previa";
@@ -9,12 +10,21 @@ const links = [
   { href: "/planners", label: "Planners" },
 ];
 
-/** Nombre de la marca madre; mientras no esté definido se marca como provisional. */
+/** Marca madre (manual SAWA): logotipo y bajada "gestión de espacios & experiencias". */
 export async function BrandName({ className = "" }: { className?: string }) {
   const brand = await brandInfo();
   return (
-    <span className={`font-display tracking-[0.14em] uppercase ${className}`}>
-      {brand.isPlaceholder ? "[Marca]" : brand.name}
+    <span className={`inline-flex flex-col leading-none ${className}`}>
+      {brand.name === "SAWA" ? (
+        <SawaWordmark className="text-3xl" />
+      ) : (
+        <span className="font-display tracking-[0.14em] uppercase">{brand.name}</span>
+      )}
+      {brand.tagline && (
+        <span className="mt-1 text-[11px] font-light tracking-[0.12em] opacity-80">
+          {brand.tagline}
+        </span>
+      )}
     </span>
   );
 }
@@ -67,7 +77,7 @@ export function BrandFooter({ name }: { name: React.ReactNode }) {
         <div className="grid content-start gap-2">
           <p className="text-lg">{name}</p>
           <p className="text-brand-sand/80 max-w-xs text-sm">
-            Experiencias para celebrar fuera de la ciudad, en locales exclusivos.
+            Gestión de espacios y experiencias: locales exclusivos para celebrar fuera de la ciudad.
           </p>
         </div>
         <nav aria-label="Pie" className="grid content-start gap-2 text-sm">

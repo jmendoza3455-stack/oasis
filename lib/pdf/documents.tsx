@@ -2,7 +2,7 @@ import "server-only";
 import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer";
 import { formatDate, formatPEN } from "@/lib/domain";
 
-const GREEN = "#2E3B2B";
+const GREEN = "#374031";
 const s = StyleSheet.create({
   page: { padding: 40, fontSize: 10, fontFamily: "Helvetica", color: "#333333", lineHeight: 1.4 },
   brand: { fontSize: 18, letterSpacing: 4, color: GREEN, fontFamily: "Times-Roman" },

@@ -25,6 +25,8 @@ export function venueJsonLd(info?: VenueSeoInfo): WithContext<LocalBusiness> {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     additionalType: "https://schema.org/EventVenue",
+    // Marca madre (manual SAWA · gestión de espacios & experiencias, OASIS.md §15.15)
+    parentOrganization: { "@type": "Organization", name: "SAWA" },
     "@id": `${SITE_URL}/#local`,
     name: "Oasis Pachacámac",
     description:

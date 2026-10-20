@@ -53,7 +53,7 @@ export default async function Home() {
         />
         <div className="relative mx-auto max-w-6xl px-4 py-14 md:py-24">
           <div className="max-w-xl">
-            <p className="text-brand-sand/70 text-sm tracking-[0.2em] uppercase">
+            <p className="text-brand-sand/80 text-sm tracking-[0.2em] uppercase">
               Pachacámac · Lima
             </p>
             <h1 className="font-display mt-3 text-4xl leading-tight sm:text-5xl lg:text-6xl">
@@ -61,12 +61,12 @@ export default async function Home() {
             </h1>
             <p className="text-brand-sand/85 mt-4 text-lg">
               Bodas, eventos de empresa y full days con piscina, en un espacio exclusivo y bien
-              gestionado.
+              gestionado. Un espacio <strong>sawa</strong>.
             </p>
             <HeroFacts info={info} from={Number.isFinite(from) ? from : null} />
             <CtaLink className="bg-brand-camel mt-8 inline-flex rounded-md px-6 py-3.5 text-base font-medium text-[#2a2418] shadow-lg hover:opacity-90" />
             <ReopeningNote info={info} />
-            <p className="text-brand-sand/70 mt-6 text-sm">
+            <p className="text-brand-sand/80 mt-6 text-sm">
               ¿Eres wedding planner?{" "}
               <Link href="/planners" className="text-brand-sand underline">
                 Conoce el programa

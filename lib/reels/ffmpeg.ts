@@ -66,7 +66,7 @@ export function endCardArgs(isotipoPng: string, out: string): string[] {
     "-f",
     "lavfi",
     "-i",
-    `color=c=0x2e3b2b:s=${W}x${H}:r=${fps}:d=${d}`,
+    `color=c=0x374031:s=${W}x${H}:r=${fps}:d=${d}`,
     "-i",
     isotipoPng,
     "-f",

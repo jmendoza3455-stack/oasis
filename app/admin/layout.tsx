@@ -60,7 +60,7 @@ export default function AdminLayout({ children }: LayoutProps<"/admin">) {
             <Suspense fallback={<div className="h-5" />}>
               <CurrentVenue />
             </Suspense>
-            <p className="text-brand-sand/70 text-[11px]">Back-office</p>
+            <p className="text-brand-sand/80 text-[11px]">Back-office</p>
           </div>
         </div>
         <Suspense fallback={<div className="h-9 md:h-48" />}>

@@ -17,7 +17,7 @@ export async function requirePreview() {
 export const limaToday = () =>
   new Intl.DateTimeFormat("en-CA", { timeZone: "America/Lima" }).format(new Date());
 
-export type BrandInfo = { name: string; isPlaceholder: boolean };
+export type BrandInfo = { name: string; tagline: string | null; isPlaceholder: boolean };
 
 export async function brandInfo(): Promise<BrandInfo> {
   "use cache";
@@ -25,10 +25,10 @@ export async function brandInfo(): Promise<BrandInfo> {
   cacheTag("public-settings");
   const [b] = await withDb({ kind: "service" }, (sql) =>
     sql<BrandInfo>(
-      `select name, is_placeholder as "isPlaceholder" from brands order by created_at limit 1`,
+      `select name, tagline, is_placeholder as "isPlaceholder" from brands order by created_at limit 1`,
     ),
   );
-  return b ?? { name: "Marca por definir", isPlaceholder: true };
+  return b ?? { name: "SAWA", tagline: "gestión de espacios & experiencias", isPlaceholder: false };
 }
 
 export type BrandVenue = {

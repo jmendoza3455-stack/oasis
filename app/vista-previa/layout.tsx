@@ -14,7 +14,7 @@ async function Gate({ children }: { children: React.ReactNode }) {
 }
 
 const name = (
-  <Suspense fallback={<span className="font-display tracking-[0.14em] uppercase">[Marca]</span>}>
+  <Suspense fallback={<span className="text-3xl font-semibold">sawa</span>}>
     <BrandName />
   </Suspense>
 );
@@ -23,8 +23,8 @@ export default function PreviewLayout({ children }: LayoutProps<"/vista-previa">
   return (
     <>
       <p className="bg-brand-camel px-4 py-2 text-center text-sm text-[#2a2418]">
-        <strong>Vista previa, no publicada.</strong> Nombre de la marca, experiencias y fotos por
-        definir: todo lo marcado como ejemplo o pendiente se reemplaza con datos reales.
+        <strong>Vista previa, no publicada.</strong> Experiencias y fotos por definir: todo lo
+        marcado como ejemplo o pendiente se reemplaza con datos reales.
       </p>
       <BrandHeader name={name} />
       <main id="contenido" className="flex-1">

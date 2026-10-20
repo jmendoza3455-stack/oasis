@@ -6,10 +6,10 @@ export const SAFE = { top: 220, bottom: 480, left: 90, right: 150 } as const;
 
 // Colores ASS: &HAABBGGRR (AA = transparencia; 00 opaco)
 const C = {
-  green: "2B3B2E",
+  green: "314037",
   ivory: "F0F5F7",
-  sand: "CBDCE6",
-  camel: "6CA4C9",
+  sand: "BFD0DF",
+  camel: "75A0C3",
   ink: "18242A",
 } as const;
 const col = (bgr: string, alpha = "00") => `&H${alpha}${bgr}`;
@@ -154,7 +154,7 @@ export function buildAss(spec: ReelSpec): string {
     const cx = REEL.width / 2;
     events.push(
       dialogue(s, e, "endTitle", "Oasis Pachacámac", `{\\an5\\pos(${cx},1030)\\fad(200,0)}`),
-      dialogue(s, e, "endSub", "Pachacámac · Lima", `{\\an5\\pos(${cx},1120)\\fad(200,0)}`),
+      dialogue(s, e, "endSub", "Un espacio sawa", `{\\an5\\pos(${cx},1120)\\fad(200,0)}`),
       dialogue(
         s + 0.3,
         e,

@@ -34,7 +34,7 @@ export default async function PreciosPage() {
     <>
       <section className="bg-brand-green text-brand-sand">
         <div className="mx-auto max-w-6xl px-4 py-12 md:py-16">
-          <p className="text-brand-sand/70 text-sm tracking-[0.2em] uppercase">Precios</p>
+          <p className="text-brand-sand/80 text-sm tracking-[0.2em] uppercase">Precios</p>
           <h1 className="font-display mt-3 text-4xl sm:text-5xl">Precios claros, sin sorpresas</h1>
           <p className="text-brand-sand/85 mt-4 max-w-2xl text-lg">
             Alquiler del local completo, con IGV. El precio exacto depende de la fecha, el horario y

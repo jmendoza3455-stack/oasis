@@ -53,7 +53,7 @@ export default async function PlannersPage() {
     <>
       <section className="bg-brand-green text-brand-sand">
         <div className="mx-auto max-w-6xl px-4 py-14 md:py-20">
-          <p className="text-brand-sand/70 text-sm tracking-[0.2em] uppercase">Planners aliadas</p>
+          <p className="text-brand-sand/80 text-sm tracking-[0.2em] uppercase">Planners aliadas</p>
           <h1 className="font-display mt-3 max-w-3xl text-4xl leading-tight sm:text-5xl">
             Nosotros hacemos que el espacio funcione; tú haces que el evento sea único.
           </h1>

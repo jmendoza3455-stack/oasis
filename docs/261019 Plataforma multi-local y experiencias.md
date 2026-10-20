@@ -18,14 +18,16 @@
 ## 2. Arquitectura de marca
 
 ```
-Marca madre (nombre por definir) — web corporativa, buscador, experiencias, cuentas de cliente
+SAWA · gestión de espacios & experiencias — web de la marca, buscador, experiencias, cuentas de cliente
  ├── Local: Oasis Pachacámac          ← primer local (operativo desde el 26/10)
  ├── Local: [siguiente]
  └── Experiencias: paquetes que usan uno o varios locales + servicios de proveedores
 Empresa operadora (dato legal en Configuración): razón social, RUC y domicilio en textos legales
 ```
 
-### Nombres candidatos (dominio .com verificado el 19/10/2026)
+> **Actualización 20/10/2026 (OASIS §15.15):** la marca madre es **SAWA · gestión de espacios & experiencias**, según su manual de marca. Los candidatos de abajo quedan descartados.
+
+### Nombres candidatos (descartados)
 
 | Nombre      | Qué evoca                                      | Dominio disponible      |
 | ----------- | ---------------------------------------------- | ----------------------- |

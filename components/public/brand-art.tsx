@@ -3,10 +3,10 @@ import { cn } from "@/lib/utils";
 // Arte decorativo de marca (palmera y ondas del isotipo) mientras no haya fotos reales.
 // No simula fotos ni datos: es ilustración, aria-hidden.
 const TONES = {
-  green: { bg: "#2e3b2b", fg: "#c9a46c", wave: "#8a9aa3" },
-  olive: { bg: "#7a7a45", fg: "#e6dccb", wave: "#2e3b2b" },
-  camel: { bg: "#c9a46c", fg: "#2e3b2b", wave: "#f7f5f0" },
-  slate: { bg: "#8a9aa3", fg: "#f7f5f0", wave: "#2e3b2b" },
+  green: { bg: "#374031", fg: "#c3a075", wave: "#768689" },
+  olive: { bg: "#716d48", fg: "#dfd0bf", wave: "#374031" },
+  camel: { bg: "#c3a075", fg: "#374031", wave: "#f7f5f0" },
+  slate: { bg: "#768689", fg: "#f7f5f0", wave: "#374031" },
 } as const;
 
 export function BrandArt({

@@ -87,7 +87,7 @@ export function SegmentPage({ segment, info }: { segment: Segment; info: VenueIn
       <section className="bg-brand-green text-brand-sand">
         <div className="mx-auto grid max-w-6xl items-start gap-10 px-4 py-12 md:py-20 lg:grid-cols-[1fr_1fr]">
           <div>
-            <p className="text-brand-sand/70 text-sm tracking-[0.2em] uppercase">{segment.nav}</p>
+            <p className="text-brand-sand/80 text-sm tracking-[0.2em] uppercase">{segment.nav}</p>
             <h1 className="font-display mt-3 text-4xl leading-tight sm:text-5xl">
               {segment.title}
             </h1>

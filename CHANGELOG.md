@@ -4,6 +4,11 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### SAWA marca madre · manual de marca al 100 % (20/10/2026)
+- **SAWA · gestión de espacios & experiencias** pasa a ser la marca madre y vuelve el respaldo **"Un espacio sawa"**: logo, pie (ahora con el sello del manual: OASIS / PACHACÁMAC, filete con rombo y "Un espacio sawa"), portada, metadatos, imagen para compartir, cierres de Reels y carruseles, firma de mensajes, asistente y datos estructurados.
+- Paleta del manual en toda la UI, arte de marca, Reels, carruseles, portadas de destacados e íconos (olivo #716D48, arena #DFD0BF, camel #C3A075, azul grisáceo #768689, grafito #444646; verde del sello #374031).
+- Vista previa de la marca madre con SAWA y su bajada. Migración `20261020000200`.
+
 ### Vista previa de la marca madre (19/10/2026)
 - `/vista-previa` (no publicada: libre en local y en despliegues de prueba; en producción solo admin; `noindex` y fuera de robots):
   - portada de la marca con buscador (tipo, fecha, invitados);

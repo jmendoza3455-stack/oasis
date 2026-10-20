@@ -93,7 +93,8 @@ export function HeroFacts({
 export function ReopeningNote({ info }: { info: VenueInfo }) {
   if (!info.reopeningDate || !info.reopeningUpcoming) return null;
   return (
-    <p className="text-brand-camel mt-3 text-sm font-medium">
+    <p className="text-brand-sand mt-3 flex items-center gap-2 text-sm font-medium">
+      <span aria-hidden className="bg-brand-camel size-1.5 rotate-45" />
       Reabrimos el {formatDate(info.reopeningDate)} · Separa tu fecha de verano
     </p>
   );

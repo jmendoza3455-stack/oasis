@@ -16,7 +16,8 @@ describe("datos estructurados (schema.org)", () => {
     for (const k of ["hasMap", "sameAs", "maximumAttendeeCapacity", "priceRange"])
       expect(j).not.toHaveProperty(k);
     expect(j.address).not.toHaveProperty("streetAddress");
-    expect(JSON.stringify(j)).not.toMatch(/SAWA|COMPLETAR/);
+    expect(JSON.stringify(j)).not.toMatch(/COMPLETAR/);
+    expect(j.parentOrganization).toMatchObject({ name: "SAWA" });
   });
 
   it("usa los datos de Configuración y muestra precios solo si son públicos", () => {

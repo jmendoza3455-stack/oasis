@@ -39,8 +39,8 @@ export default async function BrandHome() {
         />
         <div className="relative mx-auto grid max-w-6xl gap-8 px-4 py-14 md:py-24">
           <div className="max-w-2xl">
-            <p className="text-brand-sand/70 text-sm tracking-[0.2em] uppercase">
-              Experiencias fuera de la ciudad
+            <p className="text-brand-sand/80 text-sm tracking-[0.2em] uppercase">
+              sawa · gestión de espacios &amp; experiencias
             </p>
             <h1 className="font-display mt-3 text-4xl leading-tight sm:text-5xl lg:text-6xl">
               Celebra en el campo, con todo resuelto

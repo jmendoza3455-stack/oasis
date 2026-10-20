@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1920" viewBox="0 0 1080 1920">
-  <rect width="1080" height="1920" fill="#2e3b2b"/>
-  <circle cx="540" cy="960" r="330" fill="#e6dccb"/>
-  <circle cx="540" cy="960" r="352" fill="none" stroke="#c9a46c" stroke-width="8"/>
-  <svg x="390" y="810" xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 24 24" fill="none" stroke="#2e3b2b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-ordered" aria-hidden="true"><path d="M11 5h10"></path><path d="M11 12h10"></path><path d="M11 19h10"></path><path d="M4 4h1v5"></path><path d="M4 9h2"></path><path d="M6.5 20H3.4c0-1 2.6-1.925 2.6-3.5a1.5 1.5 0 0 0-2.6-1.02"></path></svg>
+  <rect width="1080" height="1920" fill="#374031"/>
+  <circle cx="540" cy="960" r="330" fill="#dfd0bf"/>
+  <circle cx="540" cy="960" r="352" fill="none" stroke="#c3a075" stroke-width="8"/>
+  <svg x="390" y="810" xmlns="http://www.w3.org/2000/svg" width="300" height="300" viewBox="0 0 24 24" fill="none" stroke="#374031" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-list-ordered" aria-hidden="true"><path d="M11 5h10"></path><path d="M11 12h10"></path><path d="M11 19h10"></path><path d="M4 4h1v5"></path><path d="M4 9h2"></path><path d="M6.5 20H3.4c0-1 2.6-1.925 2.6-3.5a1.5 1.5 0 0 0-2.6-1.02"></path></svg>
 </svg>

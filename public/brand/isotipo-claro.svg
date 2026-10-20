@@ -1,8 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" fill="none" role="img" aria-label="Oasis Pachacámac">
-  <path d="M48 70C48 50 48 38 48 26" stroke="#E6DCCB" stroke-width="3" stroke-linecap="round"/>
-  <path d="M48 30C38 18 24 18 16 26c12-2 22 0 32 8Z" fill="#E6DCCB"/>
-  <path d="M48 30c10-12 24-12 32-4-12-2-22 0-32 8Z" fill="#E6DCCB"/>
-  <path d="M48 32c-8-6-18-2-24 8 10-6 18-6 24-2Z" fill="#C9A46C"/>
-  <path d="M48 32c8-6 18-2 24 8-10-6-18-6-24-2Z" fill="#C9A46C"/>
-  <path d="M22 78q9-6 18 0t18 0 18 0" stroke="#8A9AA3" stroke-width="3" stroke-linecap="round"/>
+  <path d="M48 70C48 50 48 38 48 26" stroke="#DFD0BF" stroke-width="3" stroke-linecap="round"/>
+  <path d="M48 30C38 18 24 18 16 26c12-2 22 0 32 8Z" fill="#DFD0BF"/>
+  <path d="M48 30c10-12 24-12 32-4-12-2-22 0-32 8Z" fill="#DFD0BF"/>
+  <path d="M48 32c-8-6-18-2-24 8 10-6 18-6 24-2Z" fill="#C3A075"/>
+  <path d="M48 32c8-6 18-2 24 8-10-6-18-6-24-2Z" fill="#C3A075"/>
+  <path d="M22 78q9-6 18 0t18 0 18 0" stroke="#768689" stroke-width="3" stroke-linecap="round"/>
 </svg>

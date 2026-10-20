@@ -394,3 +394,9 @@ Fuente: "SAWA – Estrategia y pasos a seguir" y "SAWA – Manual de marca" (ref
 - **Login con Google** para equipo, planners y clientes; portal "Mi cuenta" del cliente, vinculado solo por correo verificado.
 - No se rehace: se construye por fases (F1 base multi-local, F2 cobros y cuentas, F3 experiencias) sin frenar el go-live del 26/10. Detalle: `docs/261019 Plataforma multi-local y experiencias.md`.
 
+15.15 SAWA como marca madre y manual de marca al 100 % (André y Carlos, 20/10/2026)
+- Se aplica al 100 % el manual **"SAWA · gestión de espacios & experiencias"** (lámina en `assets/marca/referencia-manual-sawa.png`). **SAWA es la marca madre** de los locales y experiencias; cada local lleva el respaldo **"Un espacio SAWA"**. Reemplaza la parte de marca de §15.13 y el "nombre nuevo" de §15.14. La razón social sigue en `settings.company_legal_name` (solo textos legales).
+- Paleta del manual (muestreada de la lámina, ±2 tonos, hasta tener los códigos oficiales): verde olivo #716D48, arena natural #DFD0BF, camel suave #C3A075, azul grisáceo #768689, grafito suave #444646; verde del sello Oasis #374031.
+- Sello del local según el manual: "OASIS / PACHACÁMAC" en serif, filete con rombo y "Un espacio sawa".
+- **Pendiente para el 100 %:** el manual completo (tipografías oficiales, tamaños, áreas de respeto, usos prohibidos) y el logo SAWA en vector. Hasta entonces "sawa" se escribe como texto; la cinta de la W nunca se redibuja.
+

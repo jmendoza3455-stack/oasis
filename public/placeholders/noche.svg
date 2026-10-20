@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 800" width="1200" height="800">
-<rect width="1200" height="800" fill="#2e3b2b"/>
-<g fill="none" stroke="#e6dccb" stroke-width="6" stroke-linecap="round" opacity="0.35"><path d="M-40 620 q 60 -28 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0" opacity="1.0"/><path d="M-40 660 q 60 -28 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0" opacity="0.8"/><path d="M-40 700 q 60 -28 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0" opacity="0.6"/><path d="M-40 740 q 60 -28 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0" opacity="0.4"/></g>
-<g fill="#e6dccb" font-family="Georgia, serif" text-anchor="middle">
+<rect width="1200" height="800" fill="#374031"/>
+<g fill="none" stroke="#dfd0bf" stroke-width="6" stroke-linecap="round" opacity="0.35"><path d="M-40 620 q 60 -28 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0" opacity="1.0"/><path d="M-40 660 q 60 -28 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0" opacity="0.8"/><path d="M-40 700 q 60 -28 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0" opacity="0.6"/><path d="M-40 740 q 60 -28 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0 t 120 0" opacity="0.4"/></g>
+<g fill="#dfd0bf" font-family="Georgia, serif" text-anchor="middle">
 <text x="600" y="370" font-size="64" letter-spacing="6">FOTO PENDIENTE</text>
 <text x="600" y="440" font-size="40" font-family="Arial, sans-serif" opacity="0.85">Montaje de noche</text>
 </g></svg>

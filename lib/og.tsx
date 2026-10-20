@@ -13,8 +13,8 @@ export function brandOgImage(title?: string) {
         flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        background: "#2E3B2B",
-        color: "#E6DCCB",
+        background: "#374031",
+        color: "#DFD0BF",
         fontFamily: "serif",
         padding: 60,
         textAlign: "center",
@@ -23,10 +23,10 @@ export function brandOgImage(title?: string) {
       <div style={{ fontSize: title ? 56 : 96, letterSpacing: title ? 12 : 18 }}>
         OASIS PACHACÁMAC
       </div>
-      <div style={{ marginTop: 26, width: 420, height: 2, background: "#C9A46C" }} />
+      <div style={{ marginTop: 26, width: 420, height: 2, background: "#C3A075" }} />
       {title && <div style={{ marginTop: 34, fontSize: 64, lineHeight: 1.15 }}>{title}</div>}
-      <div style={{ marginTop: 30, fontSize: 32, fontFamily: "sans-serif", color: "#E6DCCBCC" }}>
-        Casa de campo · Pachacámac, Lima
+      <div style={{ marginTop: 30, fontSize: 32, fontFamily: "sans-serif", color: "#DFD0BFCC" }}>
+        Un espacio sawa · Pachacámac, Lima
       </div>
     </div>,
     ogSize,

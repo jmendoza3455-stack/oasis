@@ -9,12 +9,12 @@
   --radius: 0.625rem;
 
   /* Marca */
-  --brand-green: #2e3b2b;
-  --brand-olive: #7a7a45;
-  --brand-sand: #e6dccb;
-  --brand-camel: #c9a46c;
-  --brand-slate: #8a9aa3;
-  --brand-graphite: #3a3a3a;
+  --brand-green: #374031;
+  --brand-olive: #716d48;
+  --brand-sand: #dfd0bf;
+  --brand-camel: #c3a075;
+  --brand-slate: #768689;
+  --brand-graphite: #444646;
   --brand-ivory: #f7f5f0;
 
   --background: var(--brand-ivory);

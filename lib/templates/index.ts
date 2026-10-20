@@ -39,7 +39,7 @@ type BookingTemplate = Template<BookingCtx> & { whatsapp: (c: BookingCtx) => str
 const bk = (t: BookingTemplate) => t;
 const dg = (t: Template<DigestCtx>) => t;
 
-const sign = (c: { venueName: string }) => `\n\nEquipo ${c.venueName}`;
+const sign = (c: { venueName: string }) => `\n\nEquipo ${c.venueName} · Un espacio SAWA`;
 
 export const TEMPLATES = {
   balance_due_soon: bk({

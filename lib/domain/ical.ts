@@ -54,7 +54,7 @@ export function buildIcs(calendarName: string, events: readonly IcsEvent[]): str
   const lines = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//Oasis Pachacamac//Calendario//ES",
+    "PRODID:-//SAWA//Oasis Pachacamac//ES",
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     `X-WR-CALNAME:${icsEscape(calendarName)}`,

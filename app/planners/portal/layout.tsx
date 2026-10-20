@@ -40,7 +40,7 @@ export default function PortalLayout({ children }: LayoutProps<"/planners/portal
               <Isotipo tone="light" className="size-8" />
               <div className="leading-tight">
                 <p className="font-display text-sm tracking-[0.12em] uppercase">Oasis Pachacámac</p>
-                <p className="text-brand-sand/70 text-[11px]">Portal de planners</p>
+                <p className="text-brand-sand/80 text-[11px]">Portal de planners</p>
               </div>
             </div>
             <Suspense fallback={null}>
