@@ -5,6 +5,7 @@ import type { Experience } from "@/lib/content/experiences";
 import { SEGMENTS } from "@/lib/content/segments";
 import type { BrandVenue } from "@/server/brand-preview";
 import { BASE } from "./brand-header";
+import { BrandArt } from "@/components/public/brand-art";
 import { PhotoSlot } from "./photo-slot";
 
 export const segmentLabel = (slug: string) => SEGMENTS.find((s) => s.slug === slug)?.nav ?? slug;
@@ -51,15 +52,24 @@ export function VenueCard({
   v,
   status,
   fits,
+  base = BASE,
+  photo = "/placeholders/jardin.svg",
 }: {
   v: BrandVenue;
   status?: keyof typeof STATUS;
   fits?: boolean;
+  base?: string;
+  /** null = arte de marca (sitio público sin fotos reales todavía) */
+  photo?: string | null;
 }) {
   const cap = Math.max(...Object.values(v.capacity).map((c) => c ?? 0));
   return (
     <article className="bg-card grid overflow-hidden rounded-2xl border md:grid-cols-[1fr_1.2fr]">
-      <PhotoSlot src="/placeholders/jardin.svg" alt={v.name} className="h-full rounded-none" />
+      {photo ? (
+        <PhotoSlot src={photo} alt={v.name} className="h-full rounded-none" />
+      ) : (
+        <BrandArt tone="green" className="h-full min-h-48" />
+      )}
       <div className="grid content-start gap-3 p-5">
         <div className="flex flex-wrap items-center gap-2">
           <h3 className="font-display text-2xl">{v.name}</h3>
@@ -87,7 +97,7 @@ export function VenueCard({
           )}
         </ul>
         <Link
-          href={`${BASE}/locales/${v.slug}`}
+          href={`${base}/locales/${v.slug}`}
           className="bg-primary text-primary-foreground hover:bg-primary/90 inline-flex w-fit items-center gap-1 rounded-md px-4 py-2 text-sm font-medium"
         >
           Ver el local <ArrowRight className="size-4" aria-hidden />

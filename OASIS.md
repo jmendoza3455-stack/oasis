@@ -399,4 +399,5 @@ Fuente: "SAWA – Estrategia y pasos a seguir" y "SAWA – Manual de marca" (ref
 - Paleta del manual (muestreada de la lámina, ±2 tonos, hasta tener los códigos oficiales): verde olivo #716D48, arena natural #DFD0BF, camel suave #C3A075, azul grisáceo #768689, grafito suave #444646; verde del sello Oasis #374031.
 - Sello del local según el manual: "OASIS / PACHACÁMAC" en serif, filete con rombo y "Un espacio sawa".
 - **Pendiente para el 100 %:** el manual completo (tipografías oficiales, tamaños, áreas de respeto, usos prohibidos) y el logo SAWA en vector. Hasta entonces "sawa" se escribe como texto; la cinta de la W nunca se redibuja.
+- Web pública **reducida** de SAWA en `/sawa` (22/10/2026): buscador y locales con datos reales; experiencias, "Mi cuenta" y pago quedan en `/vista-previa` hasta tener paquetes reales, fotos y pasarela. Sin indexar hasta definir el dominio de la marca (p. ej. `espacios.sawa.com.pe`).
 

@@ -6,13 +6,15 @@ import { BASE } from "./brand-header";
 export function SearchForm({
   defaults = {},
   min,
+  base = BASE,
 }: {
   defaults?: { tipo?: string; fecha?: string; invitados?: string };
   min: string;
+  base?: string;
 }) {
   return (
     <form
-      action={`${BASE}/buscar`}
+      action={`${base}/buscar`}
       method="get"
       role="search"
       aria-label="Buscar locales y experiencias"

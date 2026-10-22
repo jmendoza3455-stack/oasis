@@ -4,6 +4,10 @@ Formato basado en [Keep a Changelog](https://keepachangelog.com/es-ES/1.1.0/). F
 
 ## [Sin publicar]
 
+### Web SAWA pública (reducida) y CI estable (22/10/2026)
+- `/sawa`: web de la marca madre con buscador (tipo, fecha, invitados), resultados con disponibilidad en vivo y aforo, locales y página de Oasis Pachacámac con el sello del manual. Sin experiencias de ejemplo, cuentas ni pagos ("próximamente") y sin fotos provisionales. No se indexa hasta definir el dominio de la marca.
+- CI: Lighthouse usa el Chromium de Playwright, reintenta si el navegador no arranca y el runner queda fijo en Ubuntu 24.04 (la migración de GitHub a Ubuntu 26 rompía el paso en `main`).
+
 ### SAWA marca madre · manual de marca al 100 % (20/10/2026)
 - **SAWA · gestión de espacios & experiencias** pasa a ser la marca madre y vuelve el respaldo **"Un espacio sawa"**: logo, pie (ahora con el sello del manual: OASIS / PACHACÁMAC, filete con rombo y "Un espacio sawa"), portada, metadatos, imagen para compartir, cierres de Reels y carruseles, firma de mensajes, asistente y datos estructurados.
 - Paleta del manual en toda la UI, arte de marca, Reels, carruseles, portadas de destacados e íconos (olivo #716D48, arena #DFD0BF, camel #C3A075, azul grisáceo #768689, grafito #444646; verde del sello #374031).
