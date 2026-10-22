@@ -11,7 +11,7 @@ on:
 
 jobs:
   dump:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 15
     env:
       SUPABASE_DB_URL: ${{ secrets.SUPABASE_DB_URL }}
@@ -42,7 +42,7 @@ jobs:
 
   storage:
     # Archivos del bucket privado "documents" (vouchers, fotos de actas, PDFs), cifrados.
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 30
     env:
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}

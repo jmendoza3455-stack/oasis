@@ -11,7 +11,9 @@ concurrency:
 
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    # Versión fija: el 19/10/2026 GitHub empezó a mover ubuntu-latest a Ubuntu 26 y Chrome dejó de
+    # arrancar para Lighthouse. Se actualiza a propósito, no por sorpresa.
+    runs-on: ubuntu-24.04
     timeout-minutes: 25
     services:
       postgres:
@@ -61,8 +63,9 @@ jobs:
         env:
           LH_MIN_PERF: "85"
           LH_MAX_LCP: "3500"
-          CHROME_PATH: /usr/bin/google-chrome
         run: |
+          # El mismo Chromium que usan las pruebas E2E (instalado arriba por Playwright)
+          export CHROME_PATH=$(node -e "console.log(require('@playwright/test').chromium.executablePath())")
           PORT=3100 pnpm start &
           npx --yes wait-on http://localhost:3100 --timeout 60000
           pnpm lighthouse

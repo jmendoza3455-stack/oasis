@@ -56,6 +56,11 @@ for (const route of routes.flatMap((r) => [r, r])) {
     const msg = String(error.stderr ?? error.message)
       .slice(-600)
       .replaceAll("\n", " ");
+    // Un error al lanzar Chrome se reintenta una vez (el segundo intento de la ruta)
+    if (!isRetry) {
+      console.log(`Lighthouse no pudo medir ${route}; reintento: ${msg.slice(0, 160)}`);
+      continue;
+    }
     console.log(
       `${process.env.GITHUB_ACTIONS ? "::error::" : ""}Lighthouse falló en ${route}: ${msg}`,
     );
